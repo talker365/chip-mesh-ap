@@ -1,0 +1,14 @@
+#!/usr/bin/expect
+
+set remotescript [lindex $argv 0];
+set username [lindex $argv 1];
+set servername [lindex $argv 2];
+set password [lindex $argv 3];
+
+spawn ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q $username@$servername $remotescript
+
+set pass "$password"
+expect {
+    password: {send "$pass\r"; exp_continue}
+}
+
