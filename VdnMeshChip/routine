@@ -141,7 +141,7 @@ systemctl enable hostapd-systemd
 systemctl start hostapd-systemd 
 
 # 18) Power down:
-poweroff
+#poweroff
 
 
 

@@ -29,6 +29,6 @@ expect run.exp "bash /tmp/vdn/routine" root chip.local chip
 cd $orig
 
 # Clean up temporary installation directory...
-rm -r /temp/chip.install
+rm -r /tmp/chip.install
 
 

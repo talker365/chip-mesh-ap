@@ -6,21 +6,30 @@
 #   2.  VdnMeshChip.tar - this archive contains all remaining installation files
 # =======================================================================================
 
+# Capture current path...
+orig=`pwd`
+
 # Clear the deployment folder for the new build...
-rm -r deploy/*
+rm -r $orig/deploy/*
+
+cd $orig/VdnMeshChip/packages
 
 # tar all packages...
-tar -cf deploy/packages.tar VdnMeshChip/packages/*
+tar -cf $orig/deploy/packages.tar *
 
 # move packages to main tar...
-tar -cf deploy/VdnMeshChip.tar deploy/packages.tar
-rm deploy/packages.tar
+cd $orig/deploy
+tar -cf VdnMeshChip.tar packages.tar
+rm packages.tar
 
 # include installation support files in main tar...
-tar -rf deploy/VdnMeshChip.tar VdnMeshChip/push.exp
-tar -rf deploy/VdnMeshChip.tar VdnMeshChip/run.exp
-tar -rf deploy/VdnMeshChip.tar VdnMeshChip/routine
+cd $orig/VdnMeshChip
+tar -rf $orig/deploy/VdnMeshChip.tar push.exp
+tar -rf $orig/deploy/VdnMeshChip.tar run.exp
+tar -rf $orig/deploy/VdnMeshChip.tar routine
 
 # include install script...
-cp install.sh deploy/.
+cp $orig/install.sh $orig/deploy/.
+
+cd $orig
 
