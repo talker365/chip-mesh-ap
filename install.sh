@@ -20,6 +20,7 @@ expect run.exp "mkdir /tmp/vdn" root chip.local chip
 
 # Push files to CHIP...
 expect push.exp packages.tar /tmp/vdn/. root chip.local chip
+expect push.exp web.tar /tmp/vdn/. root chip.local chip
 expect push.exp routine /tmp/vdn/. root chip.local chip
 
 # Begin installation on the CHIP...

@@ -140,6 +140,13 @@ systemctl enable hostapd-systemd
 # 17) Start AP:
 systemctl start hostapd-systemd 
 
+# 18) Deploy web files:
+cp /tmp/vdn/web.tar /var/www/html/.
+cd /var/www/html
+tar -xf web.tar
+cd /tmp/vdn
+
+
 # 18) Power down:
 #poweroff
 

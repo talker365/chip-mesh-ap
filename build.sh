@@ -12,15 +12,19 @@ orig=`pwd`
 # Clear the deployment folder for the new build...
 rm -r $orig/deploy/*
 
-cd $orig/VdnMeshChip/packages
-
 # tar all packages...
+cd $orig/VdnMeshChip/packages
 tar -cf $orig/deploy/packages.tar *
+
+# tar web pages...
+cd $orig/VdnMeshChip/web
+tar -cf $orig/deploy/web.tar *
 
 # move packages to main tar...
 cd $orig/deploy
 tar -cf VdnMeshChip.tar packages.tar
-rm packages.tar
+tar -rf VdnMeshChip.tar web.tar
+rm packages.tar web.tar
 
 # include installation support files in main tar...
 cd $orig/VdnMeshChip
