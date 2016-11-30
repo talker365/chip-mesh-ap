@@ -39,6 +39,11 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q -i vdn_rsa ro
 echo -e '\n\nMicro Mesh Installation Complete!\n'
 echo -e 'Please connect a device to the new access point (SSID:  aredn-vdn-AP) and\nnavigate your browser to http://chip.local to complete the setup.\n' 
 
+# Auto Launch the Default Browser to http://chip.local
+OS=`uname`
+
+   if [ $OS == "Darwin" ] ; then `open http://chip.local`; fi
+   if [ $OS == "Linux" ] ; then `x-www-browser http://chip.local`; fi
 # Return to original directory...
 cd $orig
 
