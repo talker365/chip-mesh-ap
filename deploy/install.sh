@@ -24,7 +24,7 @@ expect push.exp web.tar /tmp/vdn/. root chip.local chip
 expect push.exp routine /tmp/vdn/. root chip.local chip
 
 # Begin installation on the CHIP...
-expect run.exp "bash /tmp/vdn/routine" root chip.local chip
+expect run.exp "bash /tmp/vdn/routine &" root chip.local chip
 
 # Return to original directory...
 cd $orig
