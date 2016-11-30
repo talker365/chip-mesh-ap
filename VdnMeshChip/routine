@@ -8,32 +8,32 @@ cd /tmp/vdn
 tar -xf packages.tar
 
 # 2) Install dnsmasq:
-dpkg -G -i dnsmasq_2.72-3+deb8u1_all.deb
+dpkg -G -E -i dnsmasq_2.72-3+deb8u1_all.deb
 
 # 2) Install support files:
-dpkg -G -i liberror-perl_0.17-1.1_all.deb
-dpkg -G -i libcurl3-gnutls_7.38.0-4+deb8u5_armhf.deb
+dpkg -G -E -i liberror-perl_0.17-1.1_all.deb
+dpkg -G -E -i libcurl3-gnutls_7.38.0-4+deb8u5_armhf.deb
 
 # 2) Install git:
-dpkg -G -i git-man_2.1.4-2.1+deb8u2_all.deb
-dpkg -G -i git_1%3a2.1.4-2.1+deb8u2_armhf.deb
-dpkg -G -i git_2.1.4-2.1+deb8u2_armhf.deb
+dpkg -G -E -i git-man_2.1.4-2.1+deb8u2_all.deb
+dpkg -G -E -i git_1%3a2.1.4-2.1+deb8u2_armhf.deb
+dpkg -G -E -i git_2.1.4-2.1+deb8u2_armhf.deb
 
 # 2) Install support files:
-dpkg -G -i rsync_3.1.1-3_armhf.deb
-dpkg -G -i ssl-cert_1.0.35_all.deb
+dpkg -G -E -i rsync_3.1.1-3_armhf.deb
+dpkg -G -E -i ssl-cert_1.0.35_all.deb
 
 # 2) Install apache:
-dpkg -G -i libapr1_1.5.1-3_armhf.deb
-dpkg -G -i libaprutil1_1.5.4-1_armhf.deb
-dpkg -G -i libaprutil1-dbd-sqlite3_1.5.4-1_armhf.deb
-dpkg -G -i libaprutil1-ldap_1.5.4-1_armhf.deb
-dpkg -G -i liblua5.1-0_5.1.5-7.1_armhf.deb
-dpkg -G -i apache2-bin_2.4.10-10+deb8u7_armhf.deb
-dpkg -G -i apache2-data_2.4.10-10+deb8u7_all.deb
-dpkg -G -i apache2-utils_2.4.10-10+deb8u7_armhf.deb
-dpkg -G -i mime-support_3.58_all.deb
-dpkg -G -i apache2_2.4.10-10+deb8u7_armhf.deb
+dpkg -G -E -i libapr1_1.5.1-3_armhf.deb
+dpkg -G -E -i libaprutil1_1.5.4-1_armhf.deb
+dpkg -G -E -i libaprutil1-dbd-sqlite3_1.5.4-1_armhf.deb
+dpkg -G -E -i libaprutil1-ldap_1.5.4-1_armhf.deb
+dpkg -G -E -i liblua5.1-0_5.1.5-7.1_armhf.deb
+dpkg -G -E -i apache2-bin_2.4.10-10+deb8u7_armhf.deb
+dpkg -G -E -i apache2-data_2.4.10-10+deb8u7_all.deb
+dpkg -G -E -i apache2-utils_2.4.10-10+deb8u7_armhf.deb
+dpkg -G -E -i mime-support_3.58_all.deb
+dpkg -G -E -i apache2_2.4.10-10+deb8u7_armhf.deb
 
 
 
@@ -144,6 +144,8 @@ systemctl start hostapd-systemd
 cp /tmp/vdn/web.tar /var/www/html/.
 cd /var/www/html
 tar -xf web.tar
+cp index.html apache.html
+cp startup.htm index.html
 cd /tmp/vdn
 
 

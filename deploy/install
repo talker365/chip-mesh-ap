@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# This is the VDN Chip Mesh Firmware installation process.  This script will untar
+# the package files from VdnMeshChip.tar and move them to the chip.  After moving
+# the files, the installation routine will be started remotely on the chip.
+
+# Capture current path...
+orig=`pwd`
+
+# Create temporary directory for installation files...
+mkdir /tmp/chip.install
+
+# Untar installation files...
+cp VdnMeshChip.tar /tmp/chip.install/.
+cd /tmp/chip.install
+tar -xf VdnMeshChip.tar
+chmod 600 /tmp/chip.install/vdn_rsa
+
+# Create remote directories for installation files...
+expect run.exp "mkdir /tmp/vdn; mkdir /root/.ssh" root chip.local chip
+
+# Setup key...
+expect push.exp vdn_rsa.pub /tmp/vdn/. root chip.local chip
+expect run.exp "cat /tmp/vdn/vdn_rsa.pub >> /root/.ssh/authorized_keys" root chip.local chip
+
+# Push files to CHIP...
+#expect push.exp packages.tar /tmp/vdn/. root chip.local chip
+#expect push.exp web.tar /tmp/vdn/. root chip.local chip
+#expect push.exp routine /tmp/vdn/. root chip.local chip
+scp -i vdn_rsa packages.tar root@chip.local:/tmp/vdn/.
+scp -i vdn_rsa web.tar root@chip.local:/tmp/vdn/.
+scp -i vdn_rsa routine root@chip.local:/tmp/vdn/.
+
+# Begin installation on the CHIP...
+#expect run.exp "bash /tmp/vdn/routine" root chip.local chip
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q -i vdn_rsa root@chip.local "chmod +x /tmp/vdn/routine"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q -i vdn_rsa root@chip.local "/tmp/vdn/./routine"
+
+echo -e '\n\nMicro Mesh Installation Complete!\n'
+echo -e 'Please connect a device to the new access point (SSID:  aredn-vdn-AP) and\nnavigate your browser to http://chip.local to complete the setup.\n' 
+
+# Return to original directory...
+cd $orig
+
+# Clean up temporary installation directory...
+rm -r /tmp/chip.install
