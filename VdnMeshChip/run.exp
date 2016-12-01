@@ -8,7 +8,7 @@ set password [lindex $argv 3];
 set size_orig [match_max]
 match_max 60000
 
-spawn ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q $username@$servername $remotescript
+spawn ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q $username@$servername $remotescript
 
 set pass "$password"
 expect {

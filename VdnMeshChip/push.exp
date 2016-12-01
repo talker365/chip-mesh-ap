@@ -6,7 +6,7 @@ set username [lindex $argv 2];
 set servername [lindex $argv 3];
 set password [lindex $argv 4];
 
-spawn scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q $localfile $username@$servername:$remotefile
+spawn scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q $localfile $username@$servername:$remotefile
 
 set pass "$password"
 expect {

@@ -40,14 +40,14 @@ expect run.exp "cat /tmp/vdn/vdn_rsa.pub >> /root/.ssh/authorized_keys" root chi
 #expect push.exp packages.tar /tmp/vdn/. root chip.local chip
 #expect push.exp web.tar /tmp/vdn/. root chip.local chip
 #expect push.exp routine /tmp/vdn/. root chip.local chip
-scp -i vdn_rsa packages.tar root@chip.local:/tmp/vdn/.
-scp -i vdn_rsa web.tar root@chip.local:/tmp/vdn/.
-scp -i vdn_rsa routine root@chip.local:/tmp/vdn/.
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa packages.tar root@chip.local:/tmp/vdn/.
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa web.tar root@chip.local:/tmp/vdn/.
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa routine root@chip.local:/tmp/vdn/.
 
 # Begin installation on the CHIP...
 #expect run.exp "bash /tmp/vdn/routine" root chip.local chip
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q -i vdn_rsa root@chip.local "chmod +x /tmp/vdn/routine"
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q -i vdn_rsa root@chip.local "/tmp/vdn/./routine"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "chmod +x /tmp/vdn/routine"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "/tmp/vdn/./routine"
 
 echo -e '\n\nMicro Mesh Installation Complete!\n'
 echo -e 'Please connect a device to the new access point (SSID:  aredn-vdn-AP) and\nnavigate your browser to http://chip.local to complete the setup.\n' 
