@@ -4,6 +4,19 @@
 # the package files from VdnMeshChip.tar and move them to the chip.  After moving
 # the files, the installation routine will be started remotely on the chip.
 
+echo -e '\nInstalling Micro Mesh...\n'
+echo -e 'Looking for chip (chip.local)'
+echo -e '(Please use <CTRL> + c  to cancel)'
+
+AVAILABLE=''
+while [[ $AVAILABLE == '' ]]
+do
+    AVAILABLE=`ping -c1 chip.local 2>/dev/null | grep '64 bytes from '`
+    printf "."
+done
+
+echo -e '\nFound chip.local!'
+
 # Capture current path...
 orig=`pwd`
 
@@ -37,12 +50,12 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q -i vdn_rsa ro
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -q -i vdn_rsa root@chip.local "/tmp/vdn/./routine"
 
 echo -e '\n\nMicro Mesh Installation Complete!\n'
-#echo -e 'Please connect a device to the new access point (SSID:  aredn-vdn-AP) and\nnavigate your browser to http://chip.local to complete the setup.\n' 
+echo -e 'Please connect a device to the new access point (SSID:  aredn-vdn-AP) and\nnavigate your browser to http://chip.local to complete the setup.\n' 
 
 # Auto Launch the Default Browser to http://chip.local
 OS=`uname`
-   if [ $OS == "Darwin" ] ; then `open http://chip.local`; fi
-   if [ $OS == "Linux" ] ; then `x-www-browser http://chip.local`; fi
+if [ $OS == "Darwin" ] ; then `open http://chip.local`; fi
+if [ $OS == "Linux" ] ; then `x-www-browser http://chip.local`; fi
 
 # Return to original directory...
 cd $orig
