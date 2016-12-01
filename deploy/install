@@ -17,7 +17,7 @@ done
 echo -e '\nFound chip.local!'
 
 
-echo -e "\nExtracting installation files locally..."
+echo -e "Extracting installation files locally..."
 # Capture current path...
 orig=`pwd`
 
@@ -31,7 +31,7 @@ tar -xf VdnMeshChip.tar
 chmod 600 /tmp/chip.install/vdn_rsa
 
 
-echo -e "\nCopying installation files to chip..."
+echo -e "Copying installation files to chip..."
 # Create remote directories for installation files...
 expect run.exp "mkdir /tmp/vdn; mkdir /root/.ssh" root chip.local chip >/dev/null 2>&1
 
@@ -40,7 +40,7 @@ expect push.exp vdn_rsa.pub /tmp/vdn/. root chip.local chip >/dev/null 2>&1
 expect run.exp "cat /tmp/vdn/vdn_rsa.pub >> /root/.ssh/authorized_keys" root chip.local chip >/dev/null 2>&1
 
 # Set date on chip...
-echo -e "\nSetting date on the chip to `date`"
+echo -e "Setting date on the chip to `date`"
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa chip.local "date `date '+%m%d%H%M%Y.%S'`" >/dev/null 2>&1
 
 # Push files to CHIP...
@@ -50,7 +50,8 @@ scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuth
 
 # Begin installation on the CHIP...
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "chmod +x /tmp/vdn/routine" >/dev/null 2>&1
-echo -e "\nStarting Micro Mesh installation on chip...\n"
+echo -e "Starting Micro Mesh installation on chip..."
+echo -e "=============================================================="
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "/tmp/vdn/./routine"
 
 echo -e "\n\nMicro Mesh Installation Complete!"
