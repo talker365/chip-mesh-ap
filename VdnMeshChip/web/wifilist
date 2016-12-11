@@ -1,0 +1,4 @@
+*  SSID    MODE   CHAN  RATE       SIGNAL  BARS  SECURITY 
+   wlan01  Infra  11    54 Mbit/s  92      ▂▄▆█  WPA2     
+   wlan00  Infra  6     54 Mbit/s  80      ▂▄▆_  WPA2     
+   --      Infra  11    54 Mbit/s  62      ▂▄▆_  WPA2 
