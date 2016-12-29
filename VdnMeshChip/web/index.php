@@ -3,9 +3,14 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<!--
 <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
 <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
 <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+-->
+<link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
+<script src="jquery-1.11.3.min.js"></script>
+<script src="jquery.mobile-1.4.5.min.js"></script>
 </head>
 <body>
 
@@ -58,6 +63,7 @@
       <h2>Options</h2>
       <p>Some text..</p>
     </div>
+	<h1>Choose Setup...</h1>
     <p>Select the desired chip mode</p>
 
 	<p>
@@ -104,24 +110,30 @@
       <h2>Options</h2>
       <p>Some text..</p>
     </div>
+	<h1>Configure...</h1>
     <p>Configure all settings for the pending installation...</p>
 
     <!--<form method="post" action="index.php#page_configure">-->
-		<?php echo shell_exec("/var/www/html/chip/./wifiscan");	?>
+		<?php
+			$output = shell_exec('bash /var/www/html/wifiscan');
+			echo "<pre>" . $output . "</pre>";
+		?>
+		<?php 
+			echo "<pre>HELLO WORLD!</pre>";
+		?>
     <!--</form>-->
 
 	<br /><br />
-    <form method="post" action="index.php#page_deploy">
-		<div class="ui-field-contain">
-			<label for="ssid">SSID:</label>
-			<input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true">
-			<label for="password">Password:</label>
-			<input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true">
-		</div>
-        <input type="submit" data-inline="true" value="Continue">
-    </form>
-
-
+	<div class="ui-field-contain">
+		<label for="ssid">SSID:</label>
+		<input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true">
+		<label for="password">Password:</label>
+		<input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true">
+	</div>
+	<!--
+	<a href="#page_deploy" class="ui-btn" data-transition="slide">Continue</a>
+	-->
+	<a href="#page_deploy" class="ui-btn" data-transition="slide" onclick="document.getElementById('hiddenSSID').value=document.getElementById('ssid').value;document.getElementById('hiddenPassword').value=document.getElementById('password').value">Continue</a>
 
   </div>
 
@@ -153,7 +165,14 @@
       <h2>Options</h2>
       <p>Some text..</p>
     </div>
+	<h1>Deploy...</h1>
     <p>Review and finalize deployment to chip</p>
+    <form method="post" action="deploy.php">
+		<input type="hidden" name="hiddenSSID" value="">
+		<input type="hidden" name="hiddenPassword" value="">
+		<input type="hidden" name="hiddenInstallType" value="">
+    	<input type="submit" data-inline="true" value="Continue">
+    </form>
   </div>
 
   <div data-role="footer">

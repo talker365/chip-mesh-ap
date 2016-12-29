@@ -145,8 +145,7 @@ echo -e "\nDeploying web installer..."
 cp /tmp/vdn/web.tar /var/www/html/.
 cd /var/www/html
 tar -xf web.tar
-cp index.html apache.html
-cp startup.htm index.html
+rm index.html
 cd /tmp/vdn
 
 
