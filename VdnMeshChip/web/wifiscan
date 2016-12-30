@@ -1,8 +1,8 @@
 #!/bin/bash
 # *  SSID              MODE    CHAN  RATE       SIGNAL  BARS  SECURITY
 
-#nmcli device wifi list > /var/www/tmp/wifilist 2> /tmp/error
-cp wifilist /var/www/tmp/.
+nmcli device wifi list > /tmp/wifilist 2> /tmp/error
+#cp wifilist /tmp/.
 
 printf "<table>"
 while read SSID MODE CHAN RATE UNITS SIG BARS SECURITY ; do
@@ -24,10 +24,8 @@ while read SSID MODE CHAN RATE UNITS SIG BARS SECURITY ; do
   		printf "</tr>\n\n"
 fi
 
-done < /var/www/tmp/wifilist
+done < /tmp/wifilist
 
 printf "</table>"
 
-printf "<div>hello</div>"
-
-rm /var/www/tmp/wifilist
+rm /tmp/wifilist

@@ -115,11 +115,7 @@
 
     <!--<form method="post" action="index.php#page_configure">-->
 		<?php
-			$output = shell_exec('bash /var/www/html/wifiscan');
-			echo "<pre>" . $output . "</pre>";
-		?>
-		<?php 
-			echo "<pre>HELLO WORLD!</pre>";
+			echo shell_exec("/var/www/html/./wifiscan");
 		?>
     <!--</form>-->
 
