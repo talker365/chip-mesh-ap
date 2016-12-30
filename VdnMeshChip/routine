@@ -35,16 +35,16 @@ dpkg -G -E -i apache2-utils_2.4.10-10+deb8u7_armhf.deb
 dpkg -G -E -i mime-support_3.58_all.deb
 dpkg -G -E -i apache2_2.4.10-10+deb8u7_armhf.deb
 # php files...
-dpkg -G -E -i libmagic1.deb
-dpkg -G -E -i libonig2.deb
-dpkg -G -E -i libperl4-corelibs-perl.deb
-dpkg -G -E -i libqdbm14.deb
-dpkg -G -E -i lsof.deb
-dpkg -G -E -i php5-cli.deb
-dpkg -G -E -i php5-common.deb
-dpkg -G -E -i php5-json.deb
-dpkg -G -E -i php5-readline.deb
-dpkg -G -E -i psmisc.deb
+dpkg -G -E -i libmagic1_1%3a5.22+15-2+deb8u2_armhf.deb
+dpkg -G -E -i libonig2_5.9.5-3.2_armhf.deb
+dpkg -G -E -i libperl4-corelibs-perl_0.003-1_all.deb
+dpkg -G -E -i libqdbm14_1.8.78-5+b1_armhf.deb
+dpkg -G -E -i lsof_4.86+dfsg-1_armhf.deb
+dpkg -G -E -i psmisc_22.21-2_armhf.deb
+dpkg -G -E -i php5-common_5.6.29+dfsg-0+deb8u1_armhf.deb
+dpkg -G -E -i php5-cli_5.6.29+dfsg-0+deb8u1_armhf.deb
+dpkg -G -E -i php5-json_1.3.6-1_armhf.deb
+dpkg -G -E -i php5-readline_5.6.29+dfsg-0+deb8u1_armhf.deb
 dpkg -G -E -i libapache2-mod-php5_5.6.29+dfsg-0+deb8u1_armhf.deb
 
 
