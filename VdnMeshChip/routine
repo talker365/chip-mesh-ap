@@ -34,6 +34,7 @@ dpkg -G -E -i apache2-data_2.4.10-10+deb8u7_all.deb
 dpkg -G -E -i apache2-utils_2.4.10-10+deb8u7_armhf.deb
 dpkg -G -E -i mime-support_3.58_all.deb
 dpkg -G -E -i apache2_2.4.10-10+deb8u7_armhf.deb
+dpkg -G -E -i libapache2-mod-php5_5.6.29+dfsg-0+deb8u1_armhf.deb
 
 
 
