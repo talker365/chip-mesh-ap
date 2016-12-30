@@ -12,6 +12,9 @@ orig=`pwd`
 
 # Clear the deployment folder for the new build...
 rm -r $orig/deploy/*
+mkdir $orig/deploy/mac
+mkdir $orig/deploy/linux
+mkdir $orig/deploy/windows
 
 echo "Archiving installation files..."
 # tar all packages...
@@ -36,9 +39,12 @@ tar -rf $orig/deploy/VdnMeshChip.tar routine
 tar -rf $orig/deploy/VdnMeshChip.tar vdn_rsa.pub
 tar -rf $orig/deploy/VdnMeshChip.tar vdn_rsa
 
-# include install script...
-cp $orig/install $orig/deploy/.
+# create single file Mac Installer...
+cp $orig/installers/mac/install $orig/deploy/mac/install
+cat $orig/deploy/VdnMeshChip.tar >> $orig/deploy/mac/install
 
+# remove build files
+rm $orig/deploy/VdnMeshChip.tar
 cd $orig
 
 echo "Build complete!"

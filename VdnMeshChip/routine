@@ -46,6 +46,13 @@ dpkg -G -E -i php5-json_1.3.6-1_armhf.deb
 dpkg -G -E -i php5-cli_5.6.29+dfsg-0+deb8u1_armhf.deb
 dpkg -G -E -i php5-readline_5.6.29+dfsg-0+deb8u1_armhf.deb
 dpkg -G -E -i libapache2-mod-php5_5.6.29+dfsg-0+deb8u1_armhf.deb
+# vim...
+dpkg -G -E -i libgpm2_1.20.4-6.1+b2_armhf.deb
+dpkg -G -E -i vim-common_2%3a7.4.488-7+deb8u1_armhf.deb
+dpkg -G -E -i vim-tiny_2%3a7.4.488-7+deb8u1_armhf.deb
+dpkg -G -E -i vim-runtime_2%3a7.4.488-7+deb8u1_all.deb
+dpkg -G -E -i vim_2%3a7.4.488-7+deb8u1_armhf.deb
+
 
 
 
@@ -56,15 +63,15 @@ cp /tmp/vdn/nf_nat_masquerade_ipv4.ko .
 depmod
 cd /tmp/vdn
 
-# 5) Create a configure file . With this eth0 becomes a way to connect to a network, and wlan1 becomes CHIPs access point.
-# Add some lines in order to transfer ethernet to wlan1
+# 5) Create a configure file . With this eth0 becomes a way to connect to a network, and wlan0 becomes CHIPs access point.
+# Add some lines in order to transfer ethernet to wlan0
 # We also want to set the range and time of leases:
 
 echo "#If you want dnsmasq to listen for DHCP and DNS requests only on" > /etc/dnsmasq.d/access_point.conf
 echo "#specified interfaces (and the loopback) give the name of the" >> /etc/dnsmasq.d/access_point.conf
 echo "#interface (eg eth0) here." >> /etc/dnsmasq.d/access_point.conf
 echo "#Repeat the line for more than one interface." >> /etc/dnsmasq.d/access_point.conf
-echo "interface=wlan1" >> /etc/dnsmasq.d/access_point.conf
+echo "interface=wlan0" >> /etc/dnsmasq.d/access_point.conf
 echo "#Or you can specify which interface not to listen on" >> /etc/dnsmasq.d/access_point.conf
 echo "except-interface=eth0 " >> /etc/dnsmasq.d/access_point.conf
 echo "" >> /etc/dnsmasq.d/access_point.conf
@@ -77,14 +84,14 @@ echo "dhcp-range=172.20.0.100,172.20.0.250,1h " >> /etc/dnsmasq.d/access_point.c
 
 # 6) Set up a static IP for the AP(accesspoint)
 echo "" >> /etc/network/interfaces
-echo "auto wlan1" >> /etc/network/interfaces
-echo "iface wlan1 inet static" >> /etc/network/interfaces
+echo "auto wlan0" >> /etc/network/interfaces
+echo "iface wlan0 inet static" >> /etc/network/interfaces
 echo "    address 172.20.0.1" >> /etc/network/interfaces
 echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
-# 7) Restart the wlan1 interface:
-ifdown wlan1
-ifup wlan1
+# 7) Restart the wlan0 interface:
+ifdown wlan0
+ifup wlan0
 
 # 8) Restart the DHCP server
 /etc/init.d/dnsmasq restart  
@@ -95,15 +102,15 @@ ifup wlan1
 ###  # 10) Setup NAT to route through eth0
 ###  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-# 11) Configure the WiFi access point on wlan1
-echo "interface=wlan1" > /etc/hostapd.conf
+# 11) Configure the WiFi access point on wlan0
+echo "interface=wlan0" > /etc/hostapd.conf
 echo "driver=nl80211" >> /etc/hostapd.conf
 echo "ssid=aredn-vdn-AP" >> /etc/hostapd.conf
 echo "channel=1" >> /etc/hostapd.conf
 echo "auth_algs=3" >> /etc/hostapd.conf
 echo "max_num_sta=10" >> /etc/hostapd.conf
 echo "wpa=2" >> /etc/hostapd.conf
-echo "wpa_passphrase=123456789" >> /etc/hostapd.conf
+echo "wpa_passphrase=micromesh" >> /etc/hostapd.conf
 echo "wpa_pairwise=TKIP CCMP" >> /etc/hostapd.conf
 echo "rsn_pairwise=CCMP" >> /etc/hostapd.conf
 echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
@@ -112,8 +119,8 @@ echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
 echo "#!/bin/bash" > /usr/sbin/vdn-router
 echo "" >> /usr/sbin/vdn-router
 echo "# Make sure interface is up" >> /usr/sbin/vdn-router
-echo "ifdown wlan1" >> /usr/sbin/vdn-router
-echo "ifup wlan1" >> /usr/sbin/vdn-router
+echo "ifdown wlan0" >> /usr/sbin/vdn-router
+echo "ifup wlan0" >> /usr/sbin/vdn-router
 echo "" >> /usr/sbin/vdn-router
 echo "# Enable DNS forwarding" >> /usr/sbin/vdn-router
 echo "#sysctl -w net.ipv4.ip_forward=1" >> /usr/sbin/vdn-router
@@ -151,6 +158,22 @@ systemctl enable hostapd-systemd
 
 # 17) Start AP:
 systemctl start hostapd-systemd 
+
+
+
+# setting up terminal preferences
+echo "alias ls='ls --color=auto'" >> /root/.profile
+echo "alias ll='ls -la'" >> /root/.profile
+echo "alias l='ls -l'" >> /root/.profile
+echo "PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;36m\]\w\[\033[00m\]\$ '"  >> /root/.profile
+LS_COLORS=$LS_COLORS:'di=0;36:' ; export LS_COLORS
+
+# setting up vim
+echo "syntax on" > /root/.vimrc
+echo "colorscheme desert" >> /root/.vimrc
+echo "set ts=4" >> /root/.vimrc
+echo "set number" >> /root/.vimrc
+
 
 # 18) Deploy web files:
 echo -e "\nDeploying web installer..."
