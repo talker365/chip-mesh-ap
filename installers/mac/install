@@ -55,7 +55,7 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuth
 
 echo -e "\n\nMicro Mesh Installation Complete!"
 echo -e "\nYour browser is now launching to http://chip.local.  You may also connect a device to \nthe new access point (SSID:  aredn-vdn-AP) and navigate its browser to http://chip.local \nto complete the setup.\n"
-echo -e "(AccessPoint password is:  mesh)"
+echo -e "(AccessPoint password is:  micromesh)"
 
 # Auto Launch the Default Browser to http://chip.local
 OS=`uname`
