@@ -42,8 +42,8 @@ dpkg -G -E -i libqdbm14_1.8.78-5+b1_armhf.deb
 dpkg -G -E -i lsof_4.86+dfsg-1_armhf.deb
 dpkg -G -E -i psmisc_22.21-2_armhf.deb
 dpkg -G -E -i php5-common_5.6.29+dfsg-0+deb8u1_armhf.deb
-dpkg -G -E -i php5-cli_5.6.29+dfsg-0+deb8u1_armhf.deb
 dpkg -G -E -i php5-json_1.3.6-1_armhf.deb
+dpkg -G -E -i php5-cli_5.6.29+dfsg-0+deb8u1_armhf.deb
 dpkg -G -E -i php5-readline_5.6.29+dfsg-0+deb8u1_armhf.deb
 dpkg -G -E -i libapache2-mod-php5_5.6.29+dfsg-0+deb8u1_armhf.deb
 
