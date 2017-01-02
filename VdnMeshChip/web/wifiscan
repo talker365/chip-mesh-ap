@@ -4,8 +4,13 @@
 if [[ $# -eq 0 ]]; then echo -e "Available Parameters are AP or MESH\n\n"; exit 1; fi
 if [[ $1 == "AP" ]]; then mode="Infra"; fi
 if [[ $1 == "MESH" ]]; then mode="Ad-Hoc"; fi
+if [[ $2 != "HTML" ]]; then 
+   nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq 
+   exit 0
+else
+   nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > /tmp/wifilist 2> /tmp/error
+fi
 
-nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > /tmp/wifilist 2> /tmp/error
 
 printf "<table>"
 while read SSID MODE CHAN SIG BARS ; do
