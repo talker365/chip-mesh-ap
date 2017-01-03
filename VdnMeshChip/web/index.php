@@ -3,14 +3,17 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<!--
-<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
-<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
-<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
--->
 <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
 <script src="jquery-1.11.3.min.js"></script>
 <script src="jquery.mobile-1.4.5.min.js"></script>
+<script>
+	function populateForm() {
+		document.getElementById("hiddenSSID").value = document.getElementById("ssid").value;
+		document.getElementById("hiddenPassword").value = document.getElementById("password").value;
+		document.getElementById("visibleSSID").innerHTML = document.getElementById("ssid").value;
+	}
+</script>
+
 </head>
 <body>
 
@@ -113,11 +116,7 @@
 	<h1>Configure...</h1>
     <p>Configure all settings for the pending installation...</p>
 
-    <!--<form method="post" action="index.php#page_configure">-->
-		<?php
-			echo shell_exec("/var/www/html/./wifiscan");
-		?>
-    <!--</form>-->
+	<?php echo shell_exec("/var/www/html/./wifiscan"); 	?>
 
 	<br /><br />
 	<div class="ui-field-contain">
@@ -129,7 +128,7 @@
 	<!--
 	<a href="#page_deploy" class="ui-btn" data-transition="slide">Continue</a>
 	-->
-	<a href="#page_deploy" class="ui-btn" data-transition="slide" onclick="document.getElementById('hiddenSSID').value=document.getElementById('ssid').value;document.getElementById('hiddenPassword').value=document.getElementById('password').value">Continue</a>
+	<a href="#page_deploy" class="ui-btn" data-transition="slide" onclick="populateForm();">Continue</a>
 
   </div>
 
@@ -164,10 +163,11 @@
 	<h1>Deploy...</h1>
     <p>Review and finalize deployment to chip</p>
     <form method="post" action="deploy.php">
-		<input type="hidden" name="hiddenSSID" value="">
-		<input type="hidden" name="hiddenPassword" value="">
-		<input type="hidden" name="hiddenInstallType" value="">
-    	<input type="submit" data-inline="true" value="Continue">
+		<input type="hidden" name="hiddenSSID" id="hiddenSSID" value="">
+		<p> SSID: <span id="visibleSSID"></span> </p>
+		<input type="hidden" name="hiddenPassword" id="hiddenPassword" value="">
+		<input type="hidden" name="hiddenInstallType" id="hiddenInstallType" value="">
+    	<input type="submit" data-inline="true" value="Continue" onclick="populateForm();">
     </form>
   </div>
 

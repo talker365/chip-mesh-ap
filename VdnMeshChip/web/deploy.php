@@ -9,8 +9,17 @@
 </head>
 <body>
 
-	SSID: <?php echo $_GET["hiddenSSID"]; ?><br>
-	Password: <?php echo $_GET["hiddenPassword"]; ?>
+	SSID: <?php echo $_POST["hiddenSSID"]; ?> <br />
+	<!--Password: <?php echo $_POST["hiddenPassword"]; ?> <br />-->
 
+	<?php
+		$cmd = "nmcli device wifi connect '" . $_POST["hiddenSSID"] . "' password '" . $_POST["hiddenPassword"] . "' ifname wlan1 2>&1";
+		echo $cmd . "<br />";
+		echo shell_exec("sudo nmcli device wifi connect '" . $_POST["hiddenSSID"] . "' password '" . $_POST["hiddenPassword"] . "' ifname wlan1 2>&1");
+		echo "<br />";
+		echo "Turning on interface:  ifup wlan1";
+		echo shell_exec("sudo ifup wlan1 2>&1")
+
+	?>
 </body>
 </html>
