@@ -8,7 +8,7 @@ if [[ $2 != "HTML" ]]; then
    nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq 
    exit 0
 else
-   nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > /tmp/wifilist 2> /tmp/error
+   nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > wifilist
 fi
 
 
@@ -30,8 +30,8 @@ while read SSID MODE CHAN SIG BARS ; do
   		printf "</tr>\n\n"
 fi
 
-done < /tmp/wifilist
+done < wifilist
 
 printf "</table>"
 
-rm /tmp/wifilist
+rm wifilist
