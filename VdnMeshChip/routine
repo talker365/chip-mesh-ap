@@ -63,15 +63,15 @@ cp /tmp/vdn/nf_nat_masquerade_ipv4.ko .
 depmod
 cd /tmp/vdn
 
-# 5) Create a configure file . With this eth0 becomes a way to connect to a network, and wlan0 becomes CHIPs access point.
-# Add some lines in order to transfer ethernet to wlan0
+# 5) Create a configure file . With this eth0 becomes a way to connect to a network, and wlan1 becomes CHIPs access point.
+# Add some lines in order to transfer ethernet to wlan1
 # We also want to set the range and time of leases:
 
 echo "#If you want dnsmasq to listen for DHCP and DNS requests only on" > /etc/dnsmasq.d/access_point.conf
 echo "#specified interfaces (and the loopback) give the name of the" >> /etc/dnsmasq.d/access_point.conf
 echo "#interface (eg eth0) here." >> /etc/dnsmasq.d/access_point.conf
 echo "#Repeat the line for more than one interface." >> /etc/dnsmasq.d/access_point.conf
-echo "interface=wlan0" >> /etc/dnsmasq.d/access_point.conf
+echo "interface=wlan1" >> /etc/dnsmasq.d/access_point.conf
 echo "#Or you can specify which interface not to listen on" >> /etc/dnsmasq.d/access_point.conf
 echo "except-interface=eth0 " >> /etc/dnsmasq.d/access_point.conf
 echo "" >> /etc/dnsmasq.d/access_point.conf
@@ -84,14 +84,14 @@ echo "dhcp-range=172.20.0.100,172.20.0.250,1h " >> /etc/dnsmasq.d/access_point.c
 
 # 6) Set up a static IP for the AP(accesspoint)
 echo "" >> /etc/network/interfaces
-echo "auto wlan0" >> /etc/network/interfaces
-echo "iface wlan0 inet static" >> /etc/network/interfaces
+echo "auto wlan1" >> /etc/network/interfaces
+echo "iface wlan1 inet static" >> /etc/network/interfaces
 echo "    address 172.20.0.1" >> /etc/network/interfaces
 echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
-# 7) Restart the wlan0 interface:
-ifdown wlan0
-ifup wlan0
+# 7) Restart the wlan1 interface:
+ifdown wlan1
+ifup wlan1
 
 # 8) Restart the DHCP server
 /etc/init.d/dnsmasq restart  
@@ -102,8 +102,8 @@ ifup wlan0
 ###  # 10) Setup NAT to route through eth0
 ###  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-# 11) Configure the WiFi access point on wlan0
-echo "interface=wlan0" > /etc/hostapd.conf
+# 11) Configure the WiFi access point on wlan1
+echo "interface=wlan1" > /etc/hostapd.conf
 echo "driver=nl80211" >> /etc/hostapd.conf
 echo "ssid=aredn-vdn-AP" >> /etc/hostapd.conf
 echo "channel=1" >> /etc/hostapd.conf
@@ -119,8 +119,8 @@ echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
 echo "#!/bin/bash" > /usr/sbin/vdn-router
 echo "" >> /usr/sbin/vdn-router
 echo "# Make sure interface is up" >> /usr/sbin/vdn-router
-echo "ifdown wlan0" >> /usr/sbin/vdn-router
-echo "ifup wlan0" >> /usr/sbin/vdn-router
+echo "ifdown wlan1" >> /usr/sbin/vdn-router
+echo "ifup wlan1" >> /usr/sbin/vdn-router
 echo "" >> /usr/sbin/vdn-router
 echo "# Enable DNS forwarding" >> /usr/sbin/vdn-router
 echo "#sysctl -w net.ipv4.ip_forward=1" >> /usr/sbin/vdn-router
@@ -184,5 +184,7 @@ rm index.html
 cd /tmp/vdn
 
 
+echo "# Apache" >> /etc/sudoers
+echo "www-data ALL=(ALL:ALL) NOPASSWD: /sbin/iwlist, /usr/bin/nmcli, /sbin/ifup, /sbin/ifdown" >> /etc/sudoers
 
 
