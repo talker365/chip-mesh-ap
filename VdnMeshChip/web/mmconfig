@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Interface Modes:
+#
+# 1) AP MESH ETH0  (If a Node, Wouldn't this be a DTD ? If Yes, we need to establish VLAN2 / If No this would just be a AP Bridge)
+#    wlan1=Access Point, wlan0 Not used, eth0=Connection to Mesh Switch
+#
+# 2) AP MESH WLAN0 (Access Point & Mesh Node)
+#    wlan1=Access Point, wlan0=Mesh RF, eth0 Not used
+#
+# 3) AP MESH ETH0-WAN (Access Point & Mesh Node with WAN for Internet / Tunneling)
+#    wlan1=Access Point, wlan0=Mesh RF, eth0=Connection to Home Network
+#
+# 4) AP MESH WLAN0-WAN (If a Node, Woudln't this be a DTD ? If Yes, we need to establish VLAN2 / If not wouldn't this just become a Router)
+#    wlan1=Access Point, wlan0=Home Wifi Network, eth0=Connection to Mesh Switch
+#
+# 5) AP MESH LAN  ( Access Point & Mesh Node with Lan Port on Mesh Network)
+#    wlan1=Access Point, wlan0=Mesh RF, eth0=LAN on Mesh
+#
+# 6) AP WIFI ( Access Point for Wireless Clients / Chip Projects )
+#   wlan1=Access Point, wlan0=Home Network, eth0=Not Used
+
+
+cat mmconfig
+
