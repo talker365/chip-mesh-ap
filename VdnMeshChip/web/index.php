@@ -67,22 +67,55 @@
       <p>Some text..</p>
     </div>
 	<h1>Choose Setup...</h1>
-    <p>Select the desired chip mode</p>
 
-	<p>
-	Sorry, you have no choice yet, this is the only option.
-	
-	<ul>
-		<li>
-			Wireless Client and Access Point
+	<fieldset data-role="controlgroup">
+		<legend>Select one of the options below:</legend>
+		<label for="type1">
+			Access Point for existing Mesh Node
 		    <ul>
-       			<li> eth0 - not used </li> 
-		        <li> wlan0 - home wifi </li> 
+       			<li> eth0 - existing mesh node </li> 
+		        <li> wlan0 - not used </li> 
 		        <li> wlan1 - access point </li> 
 		    </ul> 
-
-		</li>
-	</ul>	
+		</label>
+		<input type="radio" name="installtype" id="type1" value="type1">
+        <label for="type2">
+            Wireless Client and Access Point
+            <ul>
+                <li> eth0 - not used </li> 
+                <li> wlan0 - home wifi </li> 
+                <li> wlan1 - access point </li> 
+            </ul> 
+        </label>
+        <input type="radio" name="installtype" id="type2" value="type2">
+        <label for="type3">
+            Access Point and Tunnel for existing Mesh NodeWireless Client and Access Point
+            <ul>
+                <li> eth0 - existing mesh node </li> 
+                <li> wlan0 - home wifi </li> 
+                <li> wlan1 - access point </li> 
+            </ul> 
+        </label>
+        <input type="radio" name="installtype" id="type3" value="type3">
+		<label for="type4">
+			Micro Mesh Node and Access Point
+		    <ul>
+       			<li> eth0 - not used </li> 
+		        <li> wlan0 - mesh node </li> 
+		        <li> wlan1 - access point </li> 
+		    </ul> 
+		</label>
+		<input type="radio" name="installtype" id="type4" value="type4">
+        <label for="type5">
+            Micro Mesh Node, WAN, and Access Point
+            <ul>
+                <li> eth0 - home network </li> 
+                <li> wlan0 - mesh node </li> 
+                <li> wlan1 - access point </li>
+           </ul>
+        </label>
+        <input type="radio" name="installtype" id="type5" value="type5">
+	</fieldset>
 
 	<a href="#page_configure" class="ui-btn">Continue</a>
   </div>

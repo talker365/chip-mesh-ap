@@ -13,12 +13,9 @@
 	<!--Password: <?php echo $_POST["hiddenPassword"]; ?> <br />-->
 
 	<?php
-		$cmd = "nmcli device wifi connect '" . $_POST["hiddenSSID"] . "' password '" . $_POST["hiddenPassword"] . "' ifname wlan0 2>&1";
-		echo $cmd . "<br />";
+		echo shell_exec("sudo nmcli dev disconnect wlan0");
 		echo shell_exec("sudo nmcli device wifi connect '" . $_POST["hiddenSSID"] . "' password '" . $_POST["hiddenPassword"] . "' ifname wlan0 2>&1");
 		echo "<br />";
-		echo "Turning on interface:  ifup wlan0";
-		echo shell_exec("sudo ifup wlan0 2>&1")
 
 	?>
 </body>
