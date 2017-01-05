@@ -116,7 +116,7 @@
 	<h1>Configure...</h1>
     <p>Configure all settings for the pending installation...</p>
 
-	<?php echo shell_exec("/var/www/html/./wifiscan AP HTML"); 	?>
+	<?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1"); 	?>
 
 	<br /><br />
 	<div class="ui-field-contain">
