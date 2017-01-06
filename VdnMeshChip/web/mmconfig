@@ -1,25 +1,59 @@
 #!/bin/bash
 
-# Interface Modes:
-#
-# 1) AP MESH ETH0  (If a Node, Wouldn't this be a DTD ? If Yes, we need to establish VLAN2 / If No this would just be a AP Bridge)
-#    wlan1=Access Point, wlan0 Not used, eth0=Connection to Mesh Switch
-#
-# 2) AP MESH WLAN0 (Access Point & Mesh Node)
-#    wlan1=Access Point, wlan0=Mesh RF, eth0 Not used
-#
-# 3) AP MESH ETH0-WAN (Access Point & Mesh Node with WAN for Internet / Tunneling)
-#    wlan1=Access Point, wlan0=Mesh RF, eth0=Connection to Home Network
-#
-# 4) AP MESH WLAN0-WAN (If a Node, Woudln't this be a DTD ? If Yes, we need to establish VLAN2 / If not wouldn't this just become a Router)
-#    wlan1=Access Point, wlan0=Home Wifi Network, eth0=Connection to Mesh Switch
-#
-# 5) AP MESH LAN  ( Access Point & Mesh Node with Lan Port on Mesh Network)
-#    wlan1=Access Point, wlan0=Mesh RF, eth0=LAN on Mesh
-#
-# 6) AP WIFI ( Access Point for Wireless Clients / Chip Projects )
-#   wlan1=Access Point, wlan0=Home Network, eth0=Not Used
+<<Interface_Modes
 
+ Interface: wlan1 = AP for all modes.
 
-cat mmconfig
+ ROUTER MODE:
+
+ Access Point    (wlan1)
+ Wifi Connection (wlan0)
+ ETH0 = LAN "Provide a wired ethernet connection"
+ ETH0 = WAN "Provide WAN Access to Connected Device"
+
+ MESH MODE:
+ Access Point    (wlan1)
+
+ MESH Connection 
+   (Wlan0 "RF"  : (Eth0 "N/A")
+   (Wlan0 "RF") : (Eth0 "LAN")
+   (Wlan0 "RF") : (Eth0 "WAN")
+   (Wlan0 "WAN" : (Eth0 "DTD Link")
+
+Interface_Modes
+
+# Example Use:
+# mmconfig NODEID ROUTER (LAN or WAN)
+# mmconfig NODEID MESH (LAN, WAN, DTD)
+
+echo "Change hostname to $1"
+
+# Router Mode
+if [[ $2 == "ROUTER" ]]; then 
+
+   if [[ $3 == "LAN" ]]; then
+     echo "Router with Wired Lan"
+   fi
+
+   if [[ $3 == "WAN" ]]; then
+      echo "Router with WAN Feed"
+   fi
+fi
+
+# Mesh Mode
+if [[ $2 == "MESH" ]]; then 
+
+   if [[ $3 == "LAN" ]]; then 
+     echo "Mesh Node with Wired Lan"
+   fi
+
+   if [[ $3 == "WAN" ]]; then
+      echo "Mesh Node with Eth0=WAN input"
+   fi
+
+   if [[ $3 == "DTD" ]]; then
+      echo "Mesh Node with Wlan1(WAN) with Eth0= DTD Link" 
+   fi
+fi
+
 
