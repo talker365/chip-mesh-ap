@@ -105,8 +105,8 @@ ifup wlan1
 # 11) Configure the WiFi access point on wlan1
 echo "interface=wlan1" > /etc/hostapd.conf
 echo "driver=nl80211" >> /etc/hostapd.conf
-echo "ssid=aredn-vdn-AP" >> /etc/hostapd.conf
-echo "channel=1" >> /etc/hostapd.conf
+echo "ssid=vdn-micro-AP" >> /etc/hostapd.conf
+echo "channel=11" >> /etc/hostapd.conf
 echo "auth_algs=3" >> /etc/hostapd.conf
 echo "max_num_sta=10" >> /etc/hostapd.conf
 echo "wpa=2" >> /etc/hostapd.conf

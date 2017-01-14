@@ -6,38 +6,32 @@
 <link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
 <script src="jquery-1.11.3.min.js"></script>
 <script src="jquery.mobile-1.4.5.min.js"></script>
-<script>
-	function populateForm() {
-		document.getElementById("hiddenSSID").value = document.getElementById("ssid").value;
-		document.getElementById("hiddenPassword").value = document.getElementById("password").value;
-		document.getElementById("visibleSSID").innerHTML = document.getElementById("ssid").value;
-	}
-</script>
-
+<script src="index.js"></script>
+<?php
+	$theme = "b";
+?>
 </head>
 <body>
 
-<div data-role="page" id="page_home" data-theme="b">
+<div data-role="page" id="page_home" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
 	<a href="#optionsPanel" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-left">Options</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_setup" data-transition="slide">Choose Setup</a></li>
-        <li><a href="#page_configure" data-transition="slide">Configure</a></li>
+        <li><a href="#page_configure" data-transition="slide" onclick="loadConfigure();">Configure</a></li>
         <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
       </ul>
     </div>
   </div>
 
   <div data-role="main" class="ui-content">
-	<div data-role="panel" id="optionsPanel">
-	  <h2>Options</h2>
-	  <p>Some text..</p>
-	</div>
-    <p>Welcome to the Micro Mesh installer.</p>
-	<p> The following steps will help you setup and configure your chip. </p>
+    <?php include 'installer_options.include.php'; ?>
+
+	<p> Info about the micro mesh and router... </p>
+
 	<a href="#page_setup" class="ui-btn">Begin</a>
   </div>
 
@@ -47,126 +41,269 @@
 </div> 
 
 
-<div data-role="page" id="page_setup" data-theme="b">
+<div data-role="page" id="page_microtype" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
     <a href="#optionsPanel" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-left">Options</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
-        <li><a href="#page_setup">Choose Setup</a></li>
-        <li><a href="#page_configure" data-transition="slide">Configure</a></li>
+        <li><a href="#page_setup" data-transition="slide">Choose Setup</a></li>
+        <li><a href="#page_configure" data-transition="slide" onclick="loadConfigure();">Configure</a></li>
         <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
       </ul>
     </div>
   </div>
 
   <div data-role="main" class="ui-content">
-    <div data-role="panel" id="optionsPanel">
-      <h2>Options</h2>
-      <p>Some text..</p>
-    </div>
-	<h1>Choose Setup...</h1>
+    <?php include 'installer_options.include.php'; ?>
 
-	<fieldset data-role="controlgroup">
-		<legend>Select one of the options below:</legend>
-		<label for="type1">
-			Access Point for existing Mesh Node
-		    <ul>
-       			<li> eth0 - existing mesh node </li> 
-		        <li> wlan0 - not used </li> 
-		        <li> wlan1 - access point </li> 
-		    </ul> 
-		</label>
-		<input type="radio" name="installtype" id="type1" value="type1">
-        <label for="type2">
-            Wireless Client and Access Point
-            <ul>
-                <li> eth0 - not used </li> 
-                <li> wlan0 - home wifi </li> 
-                <li> wlan1 - access point </li> 
-            </ul> 
-        </label>
-        <input type="radio" name="installtype" id="type2" value="type2">
-        <label for="type3">
-            Access Point and Tunnel for existing Mesh NodeWireless Client and Access Point
-            <ul>
-                <li> eth0 - existing mesh node </li> 
-                <li> wlan0 - home wifi </li> 
-                <li> wlan1 - access point </li> 
-            </ul> 
-        </label>
-        <input type="radio" name="installtype" id="type3" value="type3">
-		<label for="type4">
-			Micro Mesh Node and Access Point
-		    <ul>
-       			<li> eth0 - not used </li> 
-		        <li> wlan0 - mesh node </li> 
-		        <li> wlan1 - access point </li> 
-		    </ul> 
-		</label>
-		<input type="radio" name="installtype" id="type4" value="type4">
-        <label for="type5">
-            Micro Mesh Node, WAN, and Access Point
-            <ul>
-                <li> eth0 - home network </li> 
-                <li> wlan0 - mesh node </li> 
-                <li> wlan1 - access point </li>
-           </ul>
-        </label>
-        <input type="radio" name="installtype" id="type5" value="type5">
-	</fieldset>
+    <p> Blank Page </p>
 
-	<a href="#page_configure" class="ui-btn">Continue</a>
+    <a href="#page_setup" class="ui-btn">Begin</a>
   </div>
 
   <div data-role="footer">
     <h1>Valley Digital Network (VDN)</h1>
   </div>
-</div> 
+</div>
 
 
 
-<div data-role="page" id="page_configure" data-theme="b">
+<div data-role="page" id="page_setup" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
-    <a href="#optionsPanel" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-left">Options</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="">Home</a>
+    <a href="#page_setup_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
-        <li><a href="#page_setup" data-transition="slide" data-direction="reverse">Choose Setup</a></li>
-        <li><a href="#page_configure">Configure</a></li>
+        <li><a href="#page_setup" class="ui-btn-active">Choose Setup</a></li>
+        <li><a href="#page_configure" data-transition="slide" onclick="loadConfigure();">Configure</a></li>
         <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
       </ul>
     </div>
   </div>
 
   <div data-role="main" class="ui-content">
-    <div data-role="panel" id="optionsPanel">
-      <h2>Options</h2>
-      <p>Some text..</p>
+    <?php include 'installer_options.include.php'; ?>
+
+    <fieldset data-role="controlgroup">
+        <legend> 
+			Installation Type:
+		</legend>
+        <label for="micromesh">
+            Micro Mesh Node
+            <ul>
+                <li> Create a mesh node that also provides a wifi access point</li>
+            </ul>
+        </label>
+        <input type="radio" name="microtype" id="micromesh" value="micromesh" checked="checked">
+        <label for="microrouter">
+            Micro Mesh Router
+            <ul>
+                <li> Create a wifi access point that connects to your existing mesh node</li>
+            </ul>
+        </label>
+        <input type="radio" name="microtype" id="microrouter" value="microrouter">
+   </fieldset>
+
+
+	<a href="#page_configure" class="ui-btn" onclick="loadConfigure();">Continue</a>
+  </div>
+
+  <div data-role="footer">
+    <h1>Valley Digital Network (VDN)</h1>
+  </div>
+  <div data-role="popup" id="page_setup_info">
+	<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+	<br />
+	<p> There are two types of installations that can be selected. </p>
+	<p>
+		The <b>Micro Mesh Node</b> installation will create a mesh node using one of the two wifi radios
+		available on the chip. This node will be able to communicate with other mesh nodes in range over
+		that wifi radio.  The remaining wifi radio on the chip will be used as an Access Point, which 
+		allows direct connection to the mesh from personal devices such as: smart phones, tablets, laptops,
+		etc.  If an ethernet connection is also available on the chip, it can be used to provide WAN or LAN
+		access.
+	</p>
+	<p>
+		The <b>Micro Mesh Router</b> installation does not create a mesh node.  Instead, this choice will
+		only create an Access Point on the chip using one of the wifi radios.  Additionally, the chip will
+		need to have an ethernet connection to a LAN port on an existing mesh node.  All traffic from the
+		Access Point is routed to the ethernet connected mesh node.  This allows direct connection to the
+		mesh from personal devices such as: smart phones, tablets, laptops, etc. using the chip as a 
+		router.
+	</p>
+  </div>
+</div> 
+
+
+
+<div data-role="page" id="page_configure" data-theme="<?php echo $theme; ?>">
+  <div data-role="header">
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
+    <a href="#page_configure_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
+    <h1>Micro Mesh Installer</h1>
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#page_setup" data-transition="slide" data-direction="reverse">Choose Setup</a></li>
+        <li><a href="#page_configure" class="ui-btn-active" onclick="loadConfigure();">Configure</a></li>
+        <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
+      </ul>
     </div>
-	<h1>Configure...</h1>
-    <p>Configure all settings for the pending installation...</p>
+  </div>
 
-	<?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1"); 	?>
+  <div data-role="main" class="ui-content">
+    <?php include 'installer_options.include.php'; ?>
+	
+	<div id="divConfigureMesh">
+		<h2> Mesh Node Configuration </h2>
+		<div class="ui-field-contain">
+			<label for="callsign">Callsign:</label>
+	    	<input type="text" name="callsign" id="callsign" value="nocall" placeholder="Please enter your callsign">
+			<label for="meshhostname">Node name:</label>
+	    	<input type="text" name="meshhostname" id="meshhostname" value="nocall-micromesh-01" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
+	        <label for="meshpassword">Admin Password:</label>
+	        <input type="text" name="meshpassword" id="meshpassword" value="micromesh" placeholder="This is the password used to access this micro mesh node's mangement features">
+			<label for="nodechannel">Select Channel</label>
+			<select name="nodechannel" id="nodechannel">
+				<optgroup label="Ham Band and ISM/WiFi">
+					<option value="1" selected>1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+				</optgroup>
+				<optgroup label="WiFi Only">
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+				</optgroup>
+			</select>
+		</div>
 
-	<br /><br />
-	<div class="ui-field-contain">
-		<label for="ssid">SSID:</label>
-		<input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true">
-		<label for="password">Password:</label>
-		<input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true">
+
+        <h2> Ethernet Connection </h2>
+        <?php
+            $eth0present = shell_exec("/var/www/html/chip/./mmconfig 2>&1");
+            #echo "<p> DEBUG: mmconfig=$eth0present </p>";
+
+            if (trim($eth0present) == "TRUE") {
+        ?>
+            <fieldset data-role="controlgroup">
+                <legend>A wired connection was identified, please select how to use it:</legend>
+                <label for="meshLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
+                <input type="radio" name="meshEthernetType" id="meshLan" value="meshLan">
+                <label for="meshWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
+                <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan" checked="checked">
+            </fieldset>
+        <?php
+            } else {
+        ?>
+            <p> No wired connection found </p>
+        <?php
+            }
+        ?>
 	</div>
-	<!--
-	<a href="#page_deploy" class="ui-btn" data-transition="slide">Continue</a>
-	-->
-	<a href="#page_deploy" class="ui-btn" data-transition="slide" onclick="populateForm();">Continue</a>
 
+    <div id="divConfigureRouter" style="display:none;">
+		<h2> Router Name </h2>
+	    <label id="label_routerhostname" for="routerhostname"> Router name:</label>
+	    <input type="text" name="routerhostname" id="routerhostname" value="MicroRouter01">
+	    <span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
+
+        <h2> WiFi Connection </h2>
+        <?php echo shell_exec("/var/www/html/chip/./wifiscan AP HTML 2>&1");    ?>
+
+        <br /><br />
+        <div class="ui-field-contain">
+            <label for="ssid">SSID:</label>
+            <input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true">
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true">
+        </div>
+
+		<h2> Ethernet Connection </h2>
+	    <?php
+	        $eth0present = shell_exec("/var/www/html/chip/./mmconfig 2>&1");
+	        #echo "<p> DEBUG: mmconfig=$eth0present </p>";
+	
+	        if (trim($eth0present) == "TRUE") {
+	    ?>
+	        <fieldset data-role="controlgroup">
+	            <legend>A wired connection was identified, please select how to use it:</legend>
+	            <label for="routerLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
+	            <input type="radio" name="routerEthernetType" id="routerLan" value="routerLan">
+	            <label for="routerWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
+	            <input type="radio" name="routerEthernetType" id="routerWan" value="routerWan" checked="checked">
+	        </fieldset>
+	    <?php
+	        } else {
+	    ?>
+	        <p> No wired connection found </p>
+	    <?php
+	        }
+	    ?>
+	</div>
+
+	<div id="divConfigureAccessPoint">
+		<h2> Access Point </h2>
+        <div class="ui-field-contain">
+            <label for="accesspointssid">SSID:</label>
+            <input type="text" name="accesspointssid" id="accesspointssid" value="vdn-micro-AP" placeholder="SSID used by the access point">
+            <label for="accesspointpassword">Password:</label>
+            <input type="text" name="accesspointpassword" id="accesspointpassword" value="micromesh" placeholder="This is the password used to access the access point">
+            <label for="accesspointchannel">Select Channel</label>
+            <select name="accesspointchannel" id="accesspointchannel">
+                <optgroup label="Ham Band and ISM/WiFi">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </optgroup>
+                <optgroup label="WiFi Only">
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11" selected>11</option>
+                </optgroup>
+            </select>
+        </div>
+
+
+	</div>
+
+
+	<a href="#page_deploy" class="ui-btn" data-transition="slide" onclick="populateForm();">Continue</a>
   </div>
 
   <div data-role="footer">
     <h1>Valley Digital Network (VDN)</h1>
+  </div>
+  <div data-role="popup" id="page_configure_info">
+    <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+    <br />
+	<p>
+		Depending on the type of installation you selected, some of the sections below may not apply.
+	</p>
+	<h3> Device Name </h3>
+	<p>
+		Please
+	</p>
+	<h3> Ethernet Connection </h3>
+	<p>
+		Please
+	</p>
+	<h3> WiFi Connection </h3>
+	<p>
+		Please
+	</p>
   </div>
 </div> 
 
@@ -174,28 +311,24 @@
 
 
 
-<div data-role="page" id="page_deploy" data-theme="b">
+<div data-role="page" id="page_deploy" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
     <a href="#optionsPanel" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-left">Options</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_setup" data-transition="slide" data-direction="reverse">Choose Setup</a></li>
-        <li><a href="#page_configure" data-transition="slide" data-direction="reverse">Configure</a></li>
-        <li><a href="#page_deploy">Deploy</a></li>
+        <li><a href="#page_configure" data-transition="slide" data-direction="reverse" onclick="loadConfigure();">Configure</a></li>
+        <li><a href="#page_deploy" class="ui-btn-active">Deploy</a></li>
       </ul>
     </div>
   </div>
 
   <div data-role="main" class="ui-content">
-    <div data-role="panel" id="optionsPanel">
-      <h2>Options</h2>
-      <p>Some text..</p>
-    </div>
-	<h1>Deploy...</h1>
+    <?php include 'installer_options.include.php'; ?>
     <p>Review and finalize deployment to chip</p>
-    <form method="post" action="deploy.php">
+    <form method="post" action="deploy1.php">
 		<input type="hidden" name="hiddenSSID" id="hiddenSSID" value="">
 		<p> SSID: <span id="visibleSSID"></span> </p>
 		<input type="hidden" name="hiddenPassword" id="hiddenPassword" value="">
