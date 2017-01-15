@@ -15,22 +15,30 @@
 
 <div data-role="page" id="page_home" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
-	<a href="#optionsPanel" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-left">Options</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
+	<a href="#page_home_info" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_setup" data-transition="slide">Choose Setup</a></li>
-        <li><a href="#page_configure" data-transition="slide" onclick="loadConfigure();">Configure</a></li>
-        <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
+        <li><a href="#page_configure" class="ui-disabled" data-transition="slide">Configure</a></li>
+        <li><a href="#page_deploy" class="ui-disabled" data-transition="slide">Deploy</a></li>
       </ul>
     </div>
   </div>
 
   <div data-role="main" class="ui-content">
-    <?php include 'installer_options.include.php'; ?>
-
-	<p> Info about the micro mesh and router... </p>
+	<p>
+		<h2> Welcome to the Micro Mesh installer! </h2>
+	</p>
+	<div style="text-align: center;"/>
+		<img src="images/wifi.png" style="background: #bbbbbb;"/>
+	</div>
+	<p>
+		The following steps will allow you to complete the conversion of a $9 C.H.I.P. 
+		microcomputer into a fully functional mesh node and WiFi access point to allow direct connection to 
+		the mesh from your personal wireless devices (phones, tablets, laptops, etc...). 
+	</p>
 
 	<a href="#page_setup" class="ui-btn">Begin</a>
   </div>
@@ -41,52 +49,21 @@
 </div> 
 
 
-<div data-role="page" id="page_microtype" data-theme="<?php echo $theme; ?>">
-  <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
-    <a href="#optionsPanel" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-left">Options</a>
-    <h1>Micro Mesh Installer</h1>
-    <div data-role="navbar">
-      <ul>
-        <li><a href="#page_setup" data-transition="slide">Choose Setup</a></li>
-        <li><a href="#page_configure" data-transition="slide" onclick="loadConfigure();">Configure</a></li>
-        <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <div data-role="main" class="ui-content">
-    <?php include 'installer_options.include.php'; ?>
-
-    <p> Blank Page </p>
-
-    <a href="#page_setup" class="ui-btn">Begin</a>
-  </div>
-
-  <div data-role="footer">
-    <h1>Valley Digital Network (VDN)</h1>
-  </div>
-</div>
-
-
-
 <div data-role="page" id="page_setup" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="">Home</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_setup_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_setup" class="ui-btn-active">Choose Setup</a></li>
         <li><a href="#page_configure" data-transition="slide" onclick="loadConfigure();">Configure</a></li>
-        <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
+        <li><a href="#page_deploy" class="ui-disabled" data-transition="slide">Deploy</a></li>
       </ul>
     </div>
   </div>
 
   <div data-role="main" class="ui-content">
-    <?php include 'installer_options.include.php'; ?>
-
     <fieldset data-role="controlgroup">
         <legend> 
 			Installation Type:
@@ -141,28 +118,26 @@
 
 <div data-role="page" id="page_configure" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_configure_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_setup" data-transition="slide" data-direction="reverse">Choose Setup</a></li>
         <li><a href="#page_configure" class="ui-btn-active" onclick="loadConfigure();">Configure</a></li>
-        <li><a href="#page_deploy" data-transition="slide">Deploy</a></li>
+        <li><a href="#page_deploy" data-transition="slide" onclick="loadDeploy();">Deploy</a></li>
       </ul>
     </div>
   </div>
 
   <div data-role="main" class="ui-content">
-    <?php include 'installer_options.include.php'; ?>
-	
 	<div id="divConfigureMesh">
 		<h2> Mesh Node Configuration </h2>
 		<div class="ui-field-contain">
 			<label for="callsign">Callsign:</label>
-	    	<input type="text" name="callsign" id="callsign" value="nocall" placeholder="Please enter your callsign">
+	    	<input type="text" name="callsign" id="callsign" placeholder="Please enter your callsign">
 			<label for="meshhostname">Node name:</label>
-	    	<input type="text" name="meshhostname" id="meshhostname" value="nocall-micromesh-01" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
+	    	<input type="text" name="meshhostname" id="meshhostname" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
 	        <label for="meshpassword">Admin Password:</label>
 	        <input type="text" name="meshpassword" id="meshpassword" value="micromesh" placeholder="This is the password used to access this micro mesh node's mangement features">
 			<label for="nodechannel">Select Channel</label>
@@ -280,7 +255,7 @@
 	</div>
 
 
-	<a href="#page_deploy" class="ui-btn" data-transition="slide" onclick="populateForm();">Continue</a>
+	<a href="#page_deploy" class="ui-btn" data-transition="slide" onclick="loadDeploy();">Continue</a>
   </div>
 
   <div data-role="footer">
@@ -313,8 +288,8 @@
 
 <div data-role="page" id="page_deploy" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left" onclick="reset();">Home</a>
-    <a href="#optionsPanel" class="ui-btn ui-corner-all ui-shadow ui-icon-grid ui-btn-icon-left">Options</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="#page_deploy_help" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
       <ul>
@@ -326,14 +301,64 @@
   </div>
 
   <div data-role="main" class="ui-content">
-    <?php include 'installer_options.include.php'; ?>
     <p>Review and finalize deployment to chip</p>
-    <form method="post" action="deploy1.php">
-		<input type="hidden" name="hiddenSSID" id="hiddenSSID" value="">
-		<p> SSID: <span id="visibleSSID"></span> </p>
-		<input type="hidden" name="hiddenPassword" id="hiddenPassword" value="">
-		<input type="hidden" name="hiddenInstallType" id="hiddenInstallType" value="">
-    	<input type="submit" data-inline="true" value="Continue" onclick="populateForm();">
+    <form method="post" action="deploy.php">
+		<div class="ui-field-contain" data-type="vertical">
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_microtype">Installation Type:</label>
+			        <input type="text" readonly="readonly" name="final_microtype" id="final_microtype" placeholder="Installation Type">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_callsign">Callsign:</label>
+			        <input type="text" readonly="readonly" name="final_callsign" id="final_callsign" placeholder="Your callsign">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_meshhostname">Node:</label>
+			        <input type="text" readonly="readonly" name="final_meshhostname" id="final_meshhostname" placeholder="Node name">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_meshpassword">Admin Password:</label>
+			        <input type="text" readonly="readonly" name="final_meshpassword" id="final_meshpassword" placeholder="Node password">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_nodechannel">Node Channel:</label>
+			        <input type="text" readonly="readonly" name="final_nodechannel" id="final_nodechannel" placeholder="Node channel">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_meshEthernetType">Ethernet:</label>
+			        <input type="text" readonly="readonly" name="final_meshEthernetType" id="final_meshEthernetType" placeholder="Ethernet use">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_routerhostname">Router Name:</label>
+			        <input type="text" readonly="readonly" name="final_routerhostname" id="final_routerhostname" placeholder="Router hostname">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_ssid">WiFi SSID:</label>
+			        <input type="text" readonly="readonly" name="final_ssid" id="final_ssid" placeholder="">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_password">WiFi Password:</label>
+			        <input type="text" readonly="readonly" name="final_password" id="final_password" placeholder="">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_routerEthernetType">Ethernet:</label>
+			        <input type="text" readonly="readonly" name="final_routerEthernetType" id="final_routerEthernetType" placeholder="">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_accesspointssid">AccessPoint SSID:</label>
+			        <input type="text" readonly="readonly" name="final_accesspointssid" id="final_accesspointssid" placeholder="">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_accesspointpassword">AccessPoint Password:</label>
+			        <input type="text" readonly="readonly" name="final_accesspointpassword" id="final_accesspointpassword" placeholder="">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_accesspointchannel">AccessPoint Channel:</label>
+			        <input type="text" readonly="readonly" name="final_accesspointchannel" id="final_accesspointchannel" placeholder="">
+				</div>
+	    		<input type="submit" data-inline="true" value="Install">
+			</div>
+		</div>
     </form>
   </div>
 

@@ -9,12 +9,52 @@
 </head>
 <body>
 
-	SSID: <?php echo $_POST["hiddenSSID"]; ?> <br />
-	<!--Password: <?php echo $_POST["hiddenPassword"]; ?> <br />-->
+    Installation Type: <?php echo $_POST["final_microtype"]; ?> <br />
+    Callsign: <?php echo $_POST["final_callsign"]; ?> <br />
+    Node Name: <?php echo $_POST["final_meshhostname"]; ?> <br />
+    Node Password: <?php echo $_POST["final_meshpassword"]; ?> <br />
+    Node Channel: <?php echo $_POST["final_nodechannel"]; ?> <br />
+    Mesh Ethernet Type: <?php echo $_POST["final_meshEthernetType"]; ?> <br />
+    Router Hostname: <?php echo $_POST["final_routerhostname"]; ?> <br />
+    SSID: <?php echo $_POST["final_ssid"]; ?> <br />
+    Password: <?php echo $_POST["final_password"]; ?> <br />
+    Router Ethernet Type: <?php echo $_POST["final_routerEthernetType"]; ?> <br />
+    AP SSID: <?php echo $_POST["final_accesspointssid"]; ?> <br />
+    AP Password: <?php echo $_POST["final_accesspointpassword"]; ?> <br />
+    AP Channel: <?php echo $_POST["final_accesspointchannel"]; ?> <br />
+
+
+	<h1> Installation Results </h1>
+
+	<h3> Installation command: </h3>
+	<?php
+		$command = "mmconfig ";
+		$command .= $_POST["final_microtype"] . " ";
+		$command .= $_POST["final_callsign"] . " ";
+		$command .= $_POST["final_meshhostname"] . " ";
+		$command .= $_POST["final_meshpassword"] . " ";
+		$command .= $_POST["final_nodechannel"] . " ";
+		$command .= $_POST["final_meshEthernetType"] . " ";
+		$command .= $_POST["final_routerhostname"] . " ";
+		$command .= $_POST["final_ssid"] . " ";
+		$command .= $_POST["final_password"] . " ";
+		$command .= $_POST["final_routerEthernetType"] . " ";
+		$command .= $_POST["final_accesspointssid"] . " ";
+		$command .= $_POST["final_accesspointpassword"] . " ";
+		$command .= $_POST["final_accesspointchannel"];
+		echo $command;
+	?>
+
+
+
+
+
+
 
 	<?php
-		echo shell_exec("sudo nmcli dev disconnect wlan0");
-		echo shell_exec("sudo nmcli device wifi connect '" . $_POST["hiddenSSID"] . "' password '" . $_POST["hiddenPassword"] . "' ifname wlan0 2>&1");
+		echo shell_exec("#sudo $command");
+		echo shell_exec("#sudo nmcli dev disconnect wlan0");
+		echo shell_exec("#sudo nmcli device wifi connect '" . $_POST["hiddenSSID"] . "' password '" . $_POST["hiddenPassword"] . "' ifname wlan0 2>&1");
 		echo "<br />";
 
 	?>
