@@ -28,10 +28,27 @@ function populateForm() {
     } else {
         document.getElementById("final_microtype").value = "unknown";
 	}
-	document.getElementById("final_callsign").value = document.getElementById("callsign").value;
-	document.getElementById("final_meshhostname").value = document.getElementById("meshhostname").value;
-	document.getElementById("final_meshpassword").value = document.getElementById("meshpassword").value;
-	document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").value;
+
+    if (document.getElementById("final_callsign").length > 0) {
+        document.getElementById("final_callsign").value = document.getElementById("callsign").value;
+    } else {
+        document.getElementById("final_callsign").value = "nocall";
+    }
+ 
+    if (document.getElementById("final_meshhostname").length > 0) {
+		document.getElementById("final_meshhostname").value = document.getElementById("meshhostname").value;
+    } else {
+        document.getElementById("final_meshhostname").value = "nocall-micromesh-01";
+    }
+
+    if (document.getElementById("final_meshpassword").length > 0) {
+		document.getElementById("final_meshpassword").value = document.getElementById("meshpassword").value;
+    } else {
+        document.getElementById("final_meshpassword").value = "micromesh"; 
+    }
+    
+    document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").value;
+
     if (document.getElementById("meshLan").checked) {
         document.getElementById("final_meshEthernetType").value = "LAN";
     } else if (document.getElementById("meshWan").checked) {
@@ -39,9 +56,25 @@ function populateForm() {
     } else {
         document.getElementById("final_meshEthernetType").value = "unknown";
     }
-	document.getElementById("final_routerhostname").value = document.getElementById("routerhostname").value;
-	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
-	document.getElementById("final_password").value = document.getElementById("password").value;
+    
+    if (document.getElementById("final_routerhostname").length > 0) {
+     	document.getElementById("final_routerhostname").value = document.getElementById("routerhostname").value;
+    } else {
+        document.getElementById("final_routerhostname").value = "micromesh-01"; 
+    }
+    
+    if (document.getElementById("final_ssid").length > 0) {
+     	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
+    } else {
+        document.getElementById("final_ssid").value = "none"; 
+    }
+    
+    if (document.getElementById("final_password").length > 0) {
+     	document.getElementById("final_password").value = document.getElementById("password").value;
+    } else {
+        document.getElementById("final_password").value = "none"; 
+    }
+    
     if (document.getElementById("routerLan").checked) {
         document.getElementById("final_routerEthernetType").value = "LAN";
     } else if (document.getElementById("routerWan").checked) {
@@ -49,9 +82,21 @@ function populateForm() {
     } else {
         document.getElementById("final_routerEthernetType").value = "unknown";
     }
-	document.getElementById("final_accesspointssid").value = document.getElementById("accesspointssid").value;
-	document.getElementById("final_accesspointpassword").value = document.getElementById("accesspointpassword").value;
-	document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").value;
+    
+    if (document.getElementById("final_accesspointssid").length > 0) {
+     	document.getElementById("final_accesspointssid").value = document.getElementById("accesspointssid").value;
+    } else {
+        document.getElementById("final_accesspointssid").value = "vdn-micro-AP"; 
+    }
+    
+    if (document.getElementById("final_accesspointpassword").length > 0) {
+     	document.getElementById("final_accesspointpassword").value = document.getElementById("accesspointpassword").value;
+    } else {
+        document.getElementById("final_accesspointpassword").value = "micromesh"; 
+    }
+    
+    document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").value;
+    
 }
 
 function loadConfigure() {

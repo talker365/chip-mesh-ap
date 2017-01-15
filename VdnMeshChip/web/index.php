@@ -163,7 +163,7 @@
 
         <h2> Ethernet Connection </h2>
         <?php
-            $eth0present = shell_exec("/var/www/html/./mmconfig 2>&1");
+            $eth0present = shell_exec("/var/www/html/chip/./mmconfig 2>&1");
             #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 
             if (trim($eth0present) == "TRUE") {
@@ -191,7 +191,7 @@
 	    <span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
 
         <h2> WiFi Connection </h2>
-        <?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");    ?>
+        <?php echo shell_exec("/var/www/html/chip/./wifiscan AP HTML 2>&1");    ?>
 
         <br /><br />
         <div class="ui-field-contain">
@@ -203,7 +203,7 @@
 
 		<h2> Ethernet Connection </h2>
 	    <?php
-	        $eth0present = shell_exec("/var/www/html/./mmconfig 2>&1");
+	        $eth0present = shell_exec("/var/www/html/chip/./mmconfig 2>&1");
 	        #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 	
 	        if (trim($eth0present) == "TRUE") {
@@ -306,55 +306,55 @@
 		<div class="ui-field-contain" data-type="vertical">
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_microtype">Installation Type:</label>
-			        <input type="text" readonly="readonly" name="final_microtype" id="final_microtype" placeholder="Installation Type">
+			        <input type="text" readonly="readonly" required name="final_microtype" id="final_microtype" placeholder="Installation Type">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_callsign">Callsign:</label>
-			        <input type="text" readonly="readonly" name="final_callsign" id="final_callsign" placeholder="Your callsign">
+			        <input type="text" readonly="readonly" required name="final_callsign" id="final_callsign" placeholder="Your callsign">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_meshhostname">Node:</label>
-			        <input type="text" readonly="readonly" name="final_meshhostname" id="final_meshhostname" placeholder="Node name">
+			        <input type="text" readonly="readonly" required name="final_meshhostname" id="final_meshhostname" placeholder="Node name">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_meshpassword">Admin Password:</label>
-			        <input type="text" readonly="readonly" name="final_meshpassword" id="final_meshpassword" placeholder="Node password">
+			        <input type="text" readonly="readonly" required name="final_meshpassword" id="final_meshpassword" placeholder="Node password">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_nodechannel">Node Channel:</label>
-			        <input type="text" readonly="readonly" name="final_nodechannel" id="final_nodechannel" placeholder="Node channel">
+			        <input type="text" readonly="readonly" required name="final_nodechannel" id="final_nodechannel" placeholder="Node channel">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_meshEthernetType">Ethernet:</label>
-			        <input type="text" readonly="readonly" name="final_meshEthernetType" id="final_meshEthernetType" placeholder="Ethernet use">
+			        <input type="text" readonly="readonly" required name="final_meshEthernetType" id="final_meshEthernetType" placeholder="Ethernet use">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_routerhostname">Router Name:</label>
-			        <input type="text" readonly="readonly" name="final_routerhostname" id="final_routerhostname" placeholder="Router hostname">
+			        <input type="text" readonly="readonly" required name="final_routerhostname" id="final_routerhostname" placeholder="Router hostname">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_ssid">WiFi SSID:</label>
-			        <input type="text" readonly="readonly" name="final_ssid" id="final_ssid" placeholder="">
+			        <input type="text" readonly="readonly" required name="final_ssid" id="final_ssid" placeholder="">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_password">WiFi Password:</label>
-			        <input type="text" readonly="readonly" name="final_password" id="final_password" placeholder="">
+			        <input type="text" readonly="readonly" required name="final_password" id="final_password" placeholder="">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_routerEthernetType">Ethernet:</label>
-			        <input type="text" readonly="readonly" name="final_routerEthernetType" id="final_routerEthernetType" placeholder="">
+			        <input type="text" readonly="readonly" required name="final_routerEthernetType" id="final_routerEthernetType" placeholder="">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_accesspointssid">AccessPoint SSID:</label>
-			        <input type="text" readonly="readonly" name="final_accesspointssid" id="final_accesspointssid" placeholder="">
+			        <input type="text" readonly="readonly" required name="final_accesspointssid" id="final_accesspointssid" placeholder="">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_accesspointpassword">AccessPoint Password:</label>
-			        <input type="text" readonly="readonly" name="final_accesspointpassword" id="final_accesspointpassword" placeholder="">
+			        <input type="text" readonly="readonly" required name="final_accesspointpassword" id="final_accesspointpassword" placeholder="">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_accesspointchannel">AccessPoint Channel:</label>
-			        <input type="text" readonly="readonly" name="final_accesspointchannel" id="final_accesspointchannel" placeholder="">
+			        <input type="text" readonly="readonly" required name="final_accesspointchannel" id="final_accesspointchannel" placeholder="">
 				</div>
 	    		<input type="submit" data-inline="true" value="Install">
 			</div>
