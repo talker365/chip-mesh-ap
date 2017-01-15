@@ -4,27 +4,9 @@
 
  Interface: wlan1 = AP for all modes.
 
- ROUTER MODE:
-
- Access Point    (wlan1)
- Wifi Connection (wlan0)
- ETH0 = LAN "Provide a wired ethernet connection"
- ETH0 = WAN "Provide WAN Access to Connected Device"
-
- MESH MODE:
- Access Point    (wlan1)
-
- MESH Connection 
-   (Wlan0 "RF"  : (Eth0 "N/A")
-   (Wlan0 "RF") : (Eth0 "LAN")
-   (Wlan0 "RF") : (Eth0 "WAN")
-   (Wlan0 "WAN" : (Eth0 "DTD Link")
+ Parameters: type, Callsign, NodeId, AdminPassword, NodeCH, Eth0Mode, RouterName, WifiSSID, WifiPassword, Eth0Use, apSSID, apPASS, apCH
 
 Interface_Modes
-
-# Example Use:
-# mmconfig NODEID ROUTER (LAN or WAN)
-# mmconfig NODEID MESH (LAN, WAN, DTD)
 
 checkInterfaces()
 {
@@ -35,37 +17,91 @@ else
 fi
 }
 
+connectWifi()
+{
+# Connect to Wifi
+sudo nmcli dev disconnect wlan0 2>&1
+sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
+}
+
+createAP()
+{
+# Build /etc/hostapd.conf file
+newfile="/etc/hostapd.conf"
+echo "interface=wlan1" > $newfile
+echo "driver=nl80211" >> $newfile
+echo "ssid=$apSSID" >> $newfile
+echo "channel=$apCH" >> $newfile
+echo "auth_algs=3" >> $newfile
+echo "max_num_sta=10" >> $newfile
+echo "wpa=2" >> $newfile
+echo "wpa_passphrase=$apPASS" >> $newfile
+echo "wpa_pairwise=TKIP CCMP" >> $newfile
+echo "rsn_pairwise=CCMP" >> $newfile
+echo "ctrl_interface=/var/run/hostapd" >> $newfile
+
+# Restart Services
+[ -f "/var/run/hostapd/wlan1" ] && rm -r "/var/run/hostapd/wlan1"
+sudo update-rc.d hostapd disable
+sudo systemctl daemon-reload
+sudo systemctl enable hostapd-systemd
+sudo systemctl restart hostapd-systemd
+}
+
+# Start of Script
+clear
 if [[ $# -eq 0 ]]; then checkInterfaces; exit 0; fi
 
-echo "Change hostname to $1"
+nodeType=$1
+
+# Get all Parameter Values
+  callsign=$2
+  nodeID=$3
+  adminPASS=$4
+  nodeCH=$5
+  nodeEthMode=$6
+  shift; shift; shift; shift; shift; shift;
+  routerName=$1
+  wifiSSID=$2
+  wifiPASS=$3
+  routeEthMode=$4
+  apSSID=$5
+  apPASS=$6
+  apCH=$7
 
 # Router Mode
-if [[ $2 == "ROUTER" ]]; then 
+if [[ $nodeType == "meshrouter" ]]; then  
 
-   if [[ $3 == "LAN" ]]; then
-     echo "Router with Wired Lan"
-   fi
+  echo "Router [$routerName]"
+  echo "Wifi [$wifiSSID]"
+  echo "WifiPassword [$wifiPASS]"
+  echo "Eth Mode [$routeEthMode]"
+  echo "AP [$apSSID]"
+  echo "AP-Pass [$apPASS]"
+  echo "AP-CH [$apCH]"
+  echo
 
-   if [[ $3 == "WAN" ]]; then
-      echo "Router with WAN Feed"
-   fi
+connectWifi
+createAP
+
 fi
 
 # Mesh Mode
-if [[ $2 == "MESH" ]]; then 
+if [[ $nodeType == "micromesh" ]]; then 
 
-   if [[ $3 == "LAN" ]]; then 
-     echo "Mesh Node with Wired Lan"
-   fi
+  echo "Callsign [$callsign]"
+  echo "NodeID [$nodeID]"
+  echo "Admin Password [$adminPASS]"
+  echo "Node Channel [$nodeCH]"
+  echo "Node Ethernet Mode [$nodeEthMode]"
+  echo
+  echo "Router [$routerName]"
+  echo "Wifi [$wifiSSID]"
+  echo "WifiPassword [$wifiPASS]"
+  echo "Eth Mode [$routeEthMode]"
+  echo "AP [$apSSID]"
+  echo "AP-Pass [$apPASS]"
+  echo "AP-CH [$apCH]"
+  echo
 
-   if [[ $3 == "WAN" ]]; then
-      echo "Mesh Node with Eth0=WAN input"
-   fi
-
-   if [[ $3 == "DTD" ]]; then
-      echo "Mesh Node with Wlan1(WAN) with Eth0= DTD Link" 
-   fi
 fi
-
-
-
