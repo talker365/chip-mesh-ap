@@ -81,6 +81,11 @@ if [[ $nodeType == "meshrouter" ]]; then
   echo "AP-CH [$apCH]"
   echo
 
+wlanIP=`ifconfig wlan1 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
+echo -e "127.0.0.1\tlocalhost" > /etc/hosts
+echo -e "$wlanIP\t$routerName" >> /etc/hosts
+hostname $routerName
+sudo /etc/init.d/dnsmasq restart
 connectWifi
 createAP
 
