@@ -49,13 +49,17 @@ function populateForm() {
     
     document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").value;
 
-    if (document.getElementById("meshLan").checked) {
-        document.getElementById("final_meshEthernetType").value = "LAN";
-    } else if (document.getElementById("meshWan").checked) {
-        document.getElementById("final_meshEthernetType").value = "WAN";
-    } else {
-        document.getElementById("final_meshEthernetType").value = "unknown";
-    }
+    if (document.getElementById("meshLan") != null) {
+	    if (document.getElementById("meshLan").checked) {
+	        document.getElementById("final_meshEthernetType").value = "LAN";
+	    } else if (document.getElementById("meshWan").checked) {
+	        document.getElementById("final_meshEthernetType").value = "WAN";
+	    } else {
+	        document.getElementById("final_meshEthernetType").value = "unknown";
+	    }
+	} else {
+	    document.getElementById("final_meshEthernetType").value = "none";
+	}
     
     if (document.getElementById("final_routerhostname").length > 0) {
      	document.getElementById("final_routerhostname").value = document.getElementById("routerhostname").value;
@@ -75,14 +79,18 @@ function populateForm() {
         document.getElementById("final_password").value = "none"; 
     }
     
-    if (document.getElementById("routerLan").checked) {
-        document.getElementById("final_routerEthernetType").value = "LAN";
-    } else if (document.getElementById("routerWan").checked) {
-        document.getElementById("final_routerEthernetType").value = "WAN";
-    } else {
-        document.getElementById("final_routerEthernetType").value = "unknown";
-    }
-    
+    if (document.getElementById("routerLan") != null) {
+    	if (document.getElementById("routerLan").checked) {
+	        document.getElementById("final_routerEthernetType").value = "LAN";
+	    } else if (document.getElementById("routerWan").checked) {
+	        document.getElementById("final_routerEthernetType").value = "WAN";
+	    } else {
+	        document.getElementById("final_routerEthernetType").value = "unknown";
+	    }
+	} else {
+	    document.getElementById("final_routerEthernetType").value = "none";
+	}
+ 
     if (document.getElementById("final_accesspointssid").length > 0) {
      	document.getElementById("final_accesspointssid").value = document.getElementById("accesspointssid").value;
     } else {
