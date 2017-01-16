@@ -70,7 +70,7 @@ nodeType=$1
   apCH=$7
 
 # Router Mode
-if [[ $nodeType == "meshrouter" ]]; then  
+if [[ $nodeType == "microrouter" ]]; then  
 
   echo "Router [$routerName]"
   echo "Wifi [$wifiSSID]"
@@ -111,5 +111,25 @@ if [[ $nodeType == "micromesh" ]]; then
   echo "AP-Pass [$apPASS]"
   echo "AP-CH [$apCH]"
   echo
+
+if [ -L /etc/resolv.conf ]; then
+    rm -f /etc/resolv.conf
+    touch /etc/resolv.conf
+fi
+
+sudo bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
+
+#auto wlan0
+#iface wlan1 inet static
+#    address 10.94.125.176
+#    netmask 255.0.0.0
+#    wireless-channel 6
+#    wireless-essid AREDN-VDN-20-v3
+#    wireless-mode ad-hoc
+
+# Lets Calculate the IP Address via Mac Address
+
+macID=`ifconfig wlan0 | grep HWaddr | awk '{ print $5}'`
+nodeIP=${macID10:8}
 
 fi
