@@ -42,7 +42,6 @@
 		$command .= $_POST["final_accesspointssid"] . " ";
 		$command .= $_POST["final_accesspointpassword"] . " ";
 		$command .= $_POST["final_accesspointchannel"] . " ";
-		$command .= " >2&1";
 		echo $command;
 	?>
 

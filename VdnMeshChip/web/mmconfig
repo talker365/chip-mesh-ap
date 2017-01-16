@@ -48,6 +48,25 @@ sudo systemctl enable hostapd-systemd
 sudo systemctl restart hostapd-systemd
 }
 
+createADHOC()
+{
+# Lets Calculate the IP Address via Mac Address
+macID=`ifconfig wlan0 | grep HWaddr | awk '{ print $5}'`
+oct1="0x0a"
+oct2="0x${macID:9:2}"
+oct3="0x${macID:12:2}"
+oct4="0x${macID:15:2}"
+nodeIP=`printf "%d.%d.%d.%d\n" $oct1 $oct2 $oct3 $oct4`
+
+echo "auto wlan0" >> /etc/network/interfaces
+echo "iface wlan0 inet static" >> /etc/network/interfaces
+echo "address $nodeIP" >> /etc/network/interfaces
+echo "netmask 255.0.0.0" >> /etc/network/interfaces
+echo "wireless-channel $nodeCH" >> /etc/network/interfaces
+echo "wireless-essid $nodeID" >> /etc/network/interfaces
+echo "wireless-mode ad-hoc" >> /etc/network/interfaces  
+}
+
 # Start of Script
 clear
 if [[ $# -eq 0 ]]; then checkInterfaces; exit 0; fi
@@ -112,6 +131,8 @@ if [[ $nodeType == "micromesh" ]]; then
   echo "AP-CH [$apCH]"
   echo
 
+createADHOC
+
 if [ -L /etc/resolv.conf ]; then
     rm -f /etc/resolv.conf
     touch /etc/resolv.conf
@@ -119,17 +140,5 @@ fi
 
 sudo bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
 
-#auto wlan0
-#iface wlan1 inet static
-#    address 10.94.125.176
-#    netmask 255.0.0.0
-#    wireless-channel 6
-#    wireless-essid AREDN-VDN-20-v3
-#    wireless-mode ad-hoc
-
-# Lets Calculate the IP Address via Mac Address
-
-macID=`ifconfig wlan0 | grep HWaddr | awk '{ print $5}'`
-nodeIP=${macID10:8}
 
 fi
