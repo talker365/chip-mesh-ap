@@ -163,7 +163,7 @@
 
         <h2> Ethernet Connection </h2>
         <?php
-            $eth0present = shell_exec("/var/www/html/chip/./mmconfig 2>&1");
+            $eth0present = shell_exec("/var/www/html/./mmconfig 2>&1");
             #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 
             if (trim($eth0present) == "TRUE") {
@@ -191,7 +191,7 @@
 	    <span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
 
         <h2> WiFi Connection </h2>
-        <?php echo shell_exec("/var/www/html/chip/./wifiscan AP HTML 2>&1");    ?>
+        <?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");    ?>
 
         <br /><br />
         <div class="ui-field-contain">
@@ -203,7 +203,7 @@
 
 		<h2> Ethernet Connection </h2>
 	    <?php
-	        $eth0present = shell_exec("/var/www/html/chip/./mmconfig 2>&1");
+	        $eth0present = shell_exec("/var/www/html/./mmconfig 2>&1");
 	        #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 	
 	        if (trim($eth0present) == "TRUE") {
@@ -370,5 +370,3 @@
 
 </body>
 </html>
-
-
