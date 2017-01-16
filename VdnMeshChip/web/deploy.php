@@ -28,7 +28,7 @@
 
 	<h3> Installation command: </h3>
 	<?php
-		$command = "mmconfig ";
+		$command = "/var/www/html/./mmconfig ";
 		$command .= $_POST["final_microtype"] . " ";
 		$command .= $_POST["final_callsign"] . " ";
 		$command .= $_POST["final_meshhostname"] . " ";
@@ -41,7 +41,8 @@
 		$command .= $_POST["final_routerEthernetType"] . " ";
 		$command .= $_POST["final_accesspointssid"] . " ";
 		$command .= $_POST["final_accesspointpassword"] . " ";
-		$command .= $_POST["final_accesspointchannel"];
+		$command .= $_POST["final_accesspointchannel"] . " ";
+		$command .= " >2&1";
 		echo $command;
 	?>
 
@@ -52,7 +53,7 @@
 
 
 	<?php
-		echo shell_exec("sudo ./$command");
+		echo shell_exec("sudo $command");
 		echo "<br />";
 
 	?>
