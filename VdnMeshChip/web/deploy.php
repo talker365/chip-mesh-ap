@@ -52,9 +52,7 @@
 
 
 	<?php
-		echo shell_exec("#sudo $command");
-		echo shell_exec("#sudo nmcli dev disconnect wlan0");
-		echo shell_exec("#sudo nmcli device wifi connect '" . $_POST["hiddenSSID"] . "' password '" . $_POST["hiddenPassword"] . "' ifname wlan0 2>&1");
+		echo shell_exec("sudo ./$command");
 		echo "<br />";
 
 	?>

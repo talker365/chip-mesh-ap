@@ -29,19 +29,19 @@ function populateForm() {
         document.getElementById("final_microtype").value = "unknown";
 	}
 
-    if (document.getElementById("final_callsign").length > 0) {
+    if (document.getElementById("callsign").value.length > 0) {
         document.getElementById("final_callsign").value = document.getElementById("callsign").value;
     } else {
         document.getElementById("final_callsign").value = "nocall";
     }
  
-    if (document.getElementById("final_meshhostname").length > 0) {
+    if (document.getElementById("meshhostname").value.length > 0) {
 		document.getElementById("final_meshhostname").value = document.getElementById("meshhostname").value;
     } else {
         document.getElementById("final_meshhostname").value = "nocall-micromesh-01";
     }
 
-    if (document.getElementById("final_meshpassword").length > 0) {
+    if (document.getElementById("meshpassword").value.length > 0) {
 		document.getElementById("final_meshpassword").value = document.getElementById("meshpassword").value;
     } else {
         document.getElementById("final_meshpassword").value = "micromesh"; 
@@ -61,19 +61,19 @@ function populateForm() {
 	    document.getElementById("final_meshEthernetType").value = "none";
 	}
     
-    if (document.getElementById("final_routerhostname").length > 0) {
+    if (document.getElementById("routerhostname").value.length > 0) {
      	document.getElementById("final_routerhostname").value = document.getElementById("routerhostname").value;
     } else {
         document.getElementById("final_routerhostname").value = "micromesh-01"; 
     }
     
-    if (document.getElementById("final_ssid").length > 0) {
+    if (document.getElementById("ssid").value.length > 0) {
      	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
     } else {
         document.getElementById("final_ssid").value = "none"; 
     }
     
-    if (document.getElementById("final_password").length > 0) {
+    if (document.getElementById("password").value.length > 0) {
      	document.getElementById("final_password").value = document.getElementById("password").value;
     } else {
         document.getElementById("final_password").value = "none"; 
@@ -91,13 +91,13 @@ function populateForm() {
 	    document.getElementById("final_routerEthernetType").value = "none";
 	}
  
-    if (document.getElementById("final_accesspointssid").length > 0) {
+    if (document.getElementById("accesspointssid").value.length > 0) {
      	document.getElementById("final_accesspointssid").value = document.getElementById("accesspointssid").value;
     } else {
         document.getElementById("final_accesspointssid").value = "vdn-micro-AP"; 
     }
     
-    if (document.getElementById("final_accesspointpassword").length > 0) {
+    if (document.getElementById("accesspointpassword").value.length > 0) {
      	document.getElementById("final_accesspointpassword").value = document.getElementById("accesspointpassword").value;
     } else {
         document.getElementById("final_accesspointpassword").value = "micromesh"; 
@@ -105,6 +105,17 @@ function populateForm() {
     
     document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").value;
     
+}
+
+function populateDefaults() {
+    document.getElementById("callsign").value = "";
+    document.getElementById("meshhostname").value = "nocall-micromesh-01";
+    document.getElementById("meshpassword").value = "micromesh";
+    document.getElementById("routerhostname").value = "micromesh-01";
+    document.getElementById("ssid").value = "";
+    document.getElementById("password").value = "";
+    document.getElementById("accesspointssid").value = "vdn-micro-AP";
+    document.getElementById("accesspointpassword").value = "micromesh";
 }
 
 function loadConfigure() {
@@ -115,13 +126,9 @@ function loadConfigure() {
 		document.getElementById("divConfigureMesh").style.display = "none";
 		document.getElementById("divConfigureRouter").style.display = "inline";
 	}
-
-
 }
 
 function loadDeploy() {
 	populateForm();
-
 }
-
 

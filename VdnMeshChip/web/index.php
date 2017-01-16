@@ -11,7 +11,7 @@
 	$theme = "b";
 ?>
 </head>
-<body>
+<body onload="populateDefaults();">
 
 <div data-role="page" id="page_home" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
@@ -139,7 +139,7 @@
 			<label for="meshhostname">Node name:</label>
 	    	<input type="text" name="meshhostname" id="meshhostname" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
 	        <label for="meshpassword">Admin Password:</label>
-	        <input type="text" name="meshpassword" id="meshpassword" value="micromesh" placeholder="This is the password used to access this micro mesh node's mangement features">
+	        <input type="text" name="meshpassword" id="meshpassword" placeholder="This is the password used to access this micro mesh node's mangement features">
 			<label for="nodechannel">Select Channel</label>
 			<select name="nodechannel" id="nodechannel">
 				<optgroup label="Ham Band and ISM/WiFi">
@@ -187,7 +187,7 @@
     <div id="divConfigureRouter" style="display:none;">
 		<h2> Router Name </h2>
 	    <label id="label_routerhostname" for="routerhostname"> Router name:</label>
-	    <input type="text" name="routerhostname" id="routerhostname" value="MicroRouter01">
+	    <input type="text" name="routerhostname" id="routerhostname">
 	    <span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
 
         <h2> WiFi Connection </h2>
@@ -228,9 +228,9 @@
 		<h2> Access Point </h2>
         <div class="ui-field-contain">
             <label for="accesspointssid">SSID:</label>
-            <input type="text" name="accesspointssid" id="accesspointssid" value="vdn-micro-AP" placeholder="SSID used by the access point">
+            <input type="text" name="accesspointssid" id="accesspointssid" placeholder="SSID used by the access point">
             <label for="accesspointpassword">Password:</label>
-            <input type="text" name="accesspointpassword" id="accesspointpassword" value="micromesh" placeholder="This is the password used to access the access point">
+            <input type="text" name="accesspointpassword" id="accesspointpassword" placeholder="This is the password used to access the access point">
             <label for="accesspointchannel">Select Channel</label>
             <select name="accesspointchannel" id="accesspointchannel">
                 <optgroup label="Ham Band and ISM/WiFi">
