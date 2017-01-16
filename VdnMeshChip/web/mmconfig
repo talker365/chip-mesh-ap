@@ -84,6 +84,9 @@ if [[ $nodeType == "meshrouter" ]]; then
 wlanIP=`ifconfig wlan1 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
 echo -e "127.0.0.1\tlocalhost" > /etc/hosts
 echo -e "$wlanIP\t$routerName" >> /etc/hosts
+echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+echo "ff02::1   ip6-allnodes" >> /etc/hosts
+echo "ff02::2   ip6-allrouters" >> /etc/hosts
 hostname $routerName
 sudo /etc/init.d/dnsmasq restart
 connectWifi
