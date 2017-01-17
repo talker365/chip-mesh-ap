@@ -4,6 +4,39 @@
 if [[ $# -eq 0 ]]; then echo -e "Available Parameters are AP or MESH\n\n"; exit 1; fi
 if [[ $1 == "AP" ]]; then mode="Infra"; fi
 if [[ $1 == "MESH" ]]; then mode="Ad-Hoc"; fi
+if [[ $1 == "CH" ]]; then
+	nmcli -f CHAN d wifi list | grep -v CHAN | sort | uniq | grep -v -e '^$' > /tmp/wifilist
+
+	echo -e "<optgroup label=\"Ham Band and ISM/WiFi\">"
+
+
+	CHANNEL=1
+    while [  $CHANNEL -lt 12 ]; do
+
+		if [[ $CHANNEL == 7 ]]
+		then
+			echo -e "</optgroup>"
+			echo -e "<optgroup label=\"WiFi Only\">"
+		fi
+
+        echo -e "<option value\"$CHANNEL\">$CHANNEL" 
+
+		if grep -Fq "$CHANNEL" /tmp/wifilist
+		then
+    		# code if found
+			echo -e " - in use nearby"
+		fi
+
+		echo -e "</option>"
+
+        let CHANNEL=CHANNEL+1 
+    done
+	echo -e "</optgroup>"
+
+	#rm /tmp/wifilist
+	exit 0
+fi
+
 if [[ $2 != "HTML" ]]; then 
    nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq 
    exit 0

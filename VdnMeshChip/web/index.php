@@ -142,21 +142,7 @@
 	        <input type="text" name="meshpassword" id="meshpassword" placeholder="This is the password used to access this micro mesh node's mangement features">
 			<label for="nodechannel">Select Channel</label>
 			<select name="nodechannel" id="nodechannel">
-				<optgroup label="Ham Band and ISM/WiFi">
-					<option value="1" selected>1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-					<option value="4">4</option>
-					<option value="5">5</option>
-					<option value="6">6</option>
-				</optgroup>
-				<optgroup label="WiFi Only">
-					<option value="7">7</option>
-					<option value="8">8</option>
-					<option value="9">9</option>
-					<option value="10">10</option>
-					<option value="11">11</option>
-				</optgroup>
+				<?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
 			</select>
 		</div>
 
@@ -233,21 +219,7 @@
             <input type="text" name="accesspointpassword" id="accesspointpassword" placeholder="This is the password used to access the access point">
             <label for="accesspointchannel">Select Channel</label>
             <select name="accesspointchannel" id="accesspointchannel">
-                <optgroup label="Ham Band and ISM/WiFi">
-                    <option value="1" selected>1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                </optgroup>
-                <optgroup label="WiFi Only">
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11" selected>11</option>
-                </optgroup>
+				<?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
             </select>
         </div>
 
