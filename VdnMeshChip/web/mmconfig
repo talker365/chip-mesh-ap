@@ -8,6 +8,9 @@
 
 Interface_Modes
 
+#PS4='$LINENO: '
+#set -x
+
 checkInterfaces()
 {
 if [ -d "/sys/class/net/eth0" ]; then 
@@ -106,7 +109,7 @@ echo -e "$wlanIP\t$routerName" >> /etc/hosts
 echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
 echo "ff02::1   ip6-allnodes" >> /etc/hosts
 echo "ff02::2   ip6-allrouters" >> /etc/hosts
-hostname $routerName
+sudo hostname $routerName
 sudo /etc/init.d/dnsmasq restart
 connectWifi
 createAP
