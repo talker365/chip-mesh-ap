@@ -45,10 +45,10 @@ echo "ctrl_interface=/var/run/hostapd" >> $newfile
 
 # Restart Services
 [ -f "/var/run/hostapd/wlan1" ] && rm -r "/var/run/hostapd/wlan1"
-sudo update-rc.d hostapd disable
-sudo systemctl daemon-reload
-sudo systemctl enable hostapd-systemd
-sudo systemctl restart hostapd-systemd
+/usr/sbin/update-rc.d hostapd disable
+/bin/systemctl daemon-reload
+/bin/systemctl enable hostapd-systemd
+/bin/systemctl restart hostapd-systemd
 }
 
 createADHOC()
@@ -109,8 +109,9 @@ echo -e "$wlanIP\t$routerName" >> /etc/hosts
 echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
 echo "ff02::1   ip6-allnodes" >> /etc/hosts
 echo "ff02::2   ip6-allrouters" >> /etc/hosts
-sudo hostname $routerName
-sudo /etc/init.d/dnsmasq restart
+
+echo $routerName > /etc/hostname
+/etc/init.d/dnsmasq restart
 connectWifi
 createAP
 
