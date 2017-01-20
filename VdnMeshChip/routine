@@ -186,10 +186,10 @@ cd /tmp/vdn
 
 echo "# Apache" >> /etc/sudoers
 echo "www-data ALL=(ALL:ALL) NOPASSWD: /sbin/iwlist, /usr/bin/nmcli, /sbin/ifup, /sbin/ifdown" >> /etc/sudoers
-echo "www-data ALL= NOPASSWD: /usr/bin/update-rc.d hostapd disable"
-echo "www-data ALL= NOPASSWD: /bin/systemctl daemon-reload"
-echo "www-data ALL= NOPASSWD: /bin/systemctl enable hostapd-systemd"
-echo "www-data ALL= NOPASSWD: /bin/systemctl restart hostapd-systemd"
+echo "www-data ALL= NOPASSWD: /usr/bin/update-rc.d hostapd disable" >> /etc/sudoers
+echo "www-data ALL= NOPASSWD: /bin/systemctl daemon-reload" >> /etc/sudoers
+echo "www-data ALL= NOPASSWD: /bin/systemctl enable hostapd-systemd" >> /etc/sudoers
+echo "www-data ALL= NOPASSWD: /bin/systemctl restart hostapd-systemd" >> /etc/sudoers
 
 # 19) Setup apache group permissions
 for file in /etc/hosts /etc/hostname /etc/hostapd.conf /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
