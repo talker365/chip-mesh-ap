@@ -52,7 +52,7 @@
 
 
 	<?php
-		echo shell_exec("$command");
+		echo shell_exec("sudo $command");
 		echo "<br />";
 
 	?>

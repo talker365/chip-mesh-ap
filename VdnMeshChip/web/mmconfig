@@ -45,10 +45,10 @@ echo "ctrl_interface=/var/run/hostapd" >> $newfile
 
 # Restart Services
 [ -f "/var/run/hostapd/wlan1" ] && rm -r "/var/run/hostapd/wlan1"
-/usr/sbin/update-rc.d hostapd disable
-/bin/systemctl daemon-reload
-/bin/systemctl enable hostapd-systemd
-/bin/systemctl restart hostapd-systemd
+sudo /usr/sbin/update-rc.d hostapd disable
+sudo /bin/systemctl daemon-reload
+sudo /bin/systemctl enable hostapd-systemd
+sudo /bin/systemctl restart hostapd-systemd
 }
 
 createADHOC()
