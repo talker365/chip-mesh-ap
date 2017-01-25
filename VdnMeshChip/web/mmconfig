@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 <<Interface_Modes
 
@@ -8,16 +8,9 @@
 
 Interface_Modes
 
-#PS4='$LINENO: '
-#set -x
-
 checkInterfaces()
 {
-if [ -d "/sys/class/net/eth0" ]; then 
-  echo "TRUE" 
-else
-  echo "FALSE"
-fi
+[ -d "/sys/class/net/eth0" ] && echo "TRUE" || echo "FALSE"
 }
 
 connectWifi()
@@ -72,7 +65,7 @@ echo "wireless-mode ad-hoc" >> /etc/network/interfaces
 
 # Start of Script
 clear
-if [[ $# -eq 0 ]]; then checkInterfaces; exit 0; fi
+if [[ $# -eq 0 ]]; then checkInterfaces; fi
 
 nodeType=$1
 
