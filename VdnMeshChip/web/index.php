@@ -189,7 +189,7 @@
 
 		<h2> Ethernet Connection </h2>
 	    <?php
-	        $eth0present = shell_exec("/var/www/html/./mmconfig 2>&1");
+	        $eth0present = shell_exec("/var/www/html/./mmconfig");
 	        #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 	
 	        if (trim($eth0present) == "TRUE") {

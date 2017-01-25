@@ -54,6 +54,7 @@ oct3="0x${macID:12:2}"
 oct4="0x${macID:15:2}"
 nodeIP=`printf "%d.%d.%d.%d\n" $oct1 $oct2 $oct3 $oct4`
 
+echo "" >> /etc/network/interfaces
 echo "auto wlan0" >> /etc/network/interfaces
 echo "iface wlan0 inet static" >> /etc/network/interfaces
 echo "address $nodeIP" >> /etc/network/interfaces
@@ -63,6 +64,91 @@ echo "wireless-essid $nodeID" >> /etc/network/interfaces
 echo "wireless-mode ad-hoc" >> /etc/network/interfaces  
 }
 
+createOLSR()
+{
+# Create the OLSRD Config File
+echo 'DebugLevel 0' > /etc/olsrd.conf
+echo 'AllowNoInt yes' >> /etc/olsrd.conf
+echo 'IpVersion 4' >> /etc/olsrd.conf
+echo 'MainIp' $nodeIP >> /etc/olsrd.conf
+echo 'RtTable 30' >> /etc/olsrd.conf
+echo 'RtTableDefault 31' >> /etc/olsrd.conf
+echo 'LinkQualityAlgorithm "etx_ffeth"' >> /etc/olsrd.conf
+echo 'ClearScreen     yes' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'Hna4' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+#echo -e '\t10.138.61.176 255.255.255.240' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_arprefresh.so.0.1"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_httpinfo.so.0.1"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '  PlParam "Net" "0.0.0.0 0.0.0.0"' >> /etc/olsrd.conf
+echo '  PlParam "port" "1978"' >> /etc/olsrd.conf
+echo '  PlParam "Resolve" "true"' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_txtinfo.so.0.1"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '  PlParam "accept" "0.0.0.0"' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_jsoninfo.so.0.0"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '  PlParam "accept" "0.0.0.0"' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_dot_draw.so.0.3"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '  PlParam "port" "2003"' >> /etc/olsrd.conf
+echo '  PlParam "accept" "127.0.0.1"' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_watchdog.so.0.1"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '  PlParam "file" "/tmp/olsrd.watchdog"' >> /etc/olsrd.conf
+echo '  PlParam "interval" "5"' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_dyn_gw.so.0.5"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '  PlParam "Ping" "71.42.236.91"' >> /etc/olsrd.conf
+echo '  PlParam "Ping" "71.42.236.90"' >> /etc/olsrd.conf
+echo '  PlParam "Ping" "8.8.8.8"' >> /etc/olsrd.conf
+echo '  PlParam "Ping" "8.8.4.4"' >> /etc/olsrd.conf
+echo '  PlParam "Interval" "60"' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+echo 'Interface "wlan0"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+#echo 'Interface "eth0.2"' >> /etc/olsrd.conf
+#echo '{' >> /etc/olsrd.conf
+#echo '  Mode "ether"' >> /etc/olsrd.conf
+#echo '}' >> /etc/olsrd.conf
+echo 'LoadPlugin "olsrd_nameservice.so.0.3"' >> /etc/olsrd.conf
+echo '{' >> /etc/olsrd.conf
+echo '    PlParam "sighup-pid-file" "/var/run/dnsmasq.pid"' >> /etc/olsrd.conf
+echo '    PlParam "interval" "30"' >> /etc/olsrd.conf
+echo '    PlParam "timeout" "300"' >> /etc/olsrd.conf
+echo '    PlParam "name-change-script" "touch /tmp/namechange"' >> /etc/olsrd.conf
+echo '    PlParam "name"  "'$nodeID'"' >> /etc/olsrd.conf
+echo '}' >> /etc/olsrd.conf
+echo -e '\n' >> /etc/olsrd.conf
+#echo 'Interface "tun50" "tun51" "tun60"' >> /etc/olsrd.conf 
+#echo '{' >> /etc/olsrd.conf
+#echo '     Ip4Broadcast 255.255.255.255' >> /etc/olsrd.conf
+#echo '}' >> /etc/olsrd.conf
+
+sudo ifconfig wlan0 up $nodeIP
+sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid AREDN-VDN-20-v3
+
+}
 # Start of Script
 clear
 if [[ $# -eq 0 ]]; then checkInterfaces; fi
@@ -96,18 +182,17 @@ if [[ $nodeType == "microrouter" ]]; then
   echo "AP-CH [$apCH]"
   echo
 
-wlanIP=`ifconfig wlan1 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
-echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-echo -e "$wlanIP\t$routerName" >> /etc/hosts
-echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-echo "ff02::1   ip6-allnodes" >> /etc/hosts
-echo "ff02::2   ip6-allrouters" >> /etc/hosts
+  wlanIP=`ifconfig wlan1 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
+  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
+  echo -e "$wlanIP\t$routerName" >> /etc/hosts
+  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+  echo "ff02::1   ip6-allnodes" >> /etc/hosts
+  echo "ff02::2   ip6-allrouters" >> /etc/hosts
+  echo $routerName > /etc/hostname
 
-echo $routerName > /etc/hostname
-/etc/init.d/dnsmasq restart
-connectWifi
-createAP
-
+  /etc/init.d/dnsmasq restart
+  connectWifi
+  createAP
 fi
 
 # Mesh Mode
@@ -128,14 +213,19 @@ if [[ $nodeType == "micromesh" ]]; then
   echo "AP-CH [$apCH]"
   echo
 
-createADHOC
+  createAP
+  createADHOC
+  createOLSR
+
+  sudo chgrp -R www-data /etc/olsrd.conf
+  sudo chmod g+w -R /etc/olsrd.conf
 
 if [ -L /etc/resolv.conf ]; then
     rm -f /etc/resolv.conf
     touch /etc/resolv.conf
 fi
 
-sudo bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
+  sudo bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
 
 
 fi

@@ -52,9 +52,13 @@ dpkg -G -E -i vim-common_2%3a7.4.488-7+deb8u1_armhf.deb
 dpkg -G -E -i vim-tiny_2%3a7.4.488-7+deb8u1_armhf.deb
 dpkg -G -E -i vim-runtime_2%3a7.4.488-7+deb8u1_all.deb
 dpkg -G -E -i vim_2%3a7.4.488-7+deb8u1_armhf.deb
+# olsr
+dpkg -G -E -i olsrd_0.6.6.2-1_armhf.deb
+dpkg -G -E -i olsrd-plugins_0.6.6.2-1_armhf.deb
 
-
-
+#wireless tools (iwconfig)
+dpkg -G -E -i libc6_2.19-18+deb8u7_armhf.deb
+dpkg -G -E -i libiw30_30~pre9-8_armhf.deb
 
 # 4) Download the kernel mods for enabling NAT
 cd /lib/modules/4.4.13-ntc-mlc/kernel/net/ipv4/netfilter
@@ -188,7 +192,7 @@ echo "# Apache" >> /etc/sudoers
 echo "www-data ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # 19) Setup apache group permissions
-for file in /etc/hosts /etc/hostname /etc/hostapd.conf /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
+for file in /etc/hosts /etc/hostname /etc/hostapd.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
     sudo chgrp www-data ${file}
     sudo chmod g+w ${file}
 done
