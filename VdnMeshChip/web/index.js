@@ -130,6 +130,10 @@ function loadConfigure() {
 	}
 }
 
+function updateNodeName() {
+	document.getElementById("meshhostname").value = document.getElementById("callsign").value + "-micromesh-01";
+}
+
 function loadDeploy() {
 	populateForm();
 }

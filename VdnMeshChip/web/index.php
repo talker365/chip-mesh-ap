@@ -135,7 +135,7 @@
 		<h2> Mesh Node Configuration </h2>
 		<div class="ui-field-contain">
 			<label for="callsign">Callsign:</label>
-	    	<input type="text" name="callsign" id="callsign" placeholder="Please enter your callsign">
+	    	<input type="text" name="callsign" id="callsign" onkeyup="updateNodeName();" placeholder="Please enter your callsign">
 			<label for="meshhostname">Node name:</label>
 	    	<input type="text" name="meshhostname" id="meshhostname" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
 	        <label for="meshpassword">Admin Password:</label>
