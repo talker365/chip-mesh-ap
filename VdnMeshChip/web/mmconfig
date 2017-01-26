@@ -146,7 +146,7 @@ echo -e '\n' >> /etc/olsrd.conf
 #echo '}' >> /etc/olsrd.conf
 
 sudo ifconfig wlan0 up $nodeIP
-sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid AREDN-VDN-20-v3
+sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid VDN-MESH-20-v3
 
 }
 # Start of Script
