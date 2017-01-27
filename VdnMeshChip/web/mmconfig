@@ -155,8 +155,8 @@ if [[ $# -eq 0 ]]; then checkInterfaces; fi
 
 request=$1
 
-if [[ $request == "status" ]]; then [ -e "/var/www/html/.installed" ] && echo "TRUE" || echo "FALSE"; fi
-  
+if [[ $request == "installed" ]]; then [ -e "/var/www/html/.installed" ] && echo "TRUE" || echo "FALSE"; fi
+
 # Get all Parameter Values
   callsign=$2
   nodeID=$3

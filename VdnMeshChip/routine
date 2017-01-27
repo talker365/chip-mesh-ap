@@ -62,9 +62,6 @@ dpkg -G -E -i libiw30_30~pre9-8_armhf.deb
 dpkg -G -E -i wireless-tools_30~pre9-8_armhf.deb
 
 #vtunnel
-dpkg -G -E -i libc6_2.19-18+deb8u7_armhf.deb
-dpkg -G -E -i liblzo2-2_2.08-1.2_armhf.deb
-dpkg -G -E -i libssl1.0.0_1.0.1t-1+deb8u5_armhf.deb
 dpkg -G -E -i makedev_2.3.1-93_all.deb
 dpkg -G -E -i zlib1g_1.2.8.dfsg-2+b1_armhf.deb
 dpkg -G -E -i vtun_3.0.3-2_armhf.deb
