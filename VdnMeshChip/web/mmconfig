@@ -42,12 +42,15 @@ sudo /bin/systemctl restart hostapd-systemd
 createADHOC()
 {
 # Lets Calculate the IP Address via Mac Address
-macID=`ifconfig wlan0 | grep HWaddr | awk '{ print $5}'`
-oct1="0x0a"
-oct2="0x${macID:9:2}"
-oct3="0x${macID:12:2}"
-oct4="0x${macID:15:2}"
-nodeIP=`printf "%d.%d.%d.%d\n" $oct1 $oct2 $oct3 $oct4`
+MACID=`ifconfig | grep wlan0 | sed 's|.*HWaddr ||'`
+MAC4=`echo $MACID | cut -d : -f 4`
+MAC5=`echo $MACID | cut -d : -f 5`
+MAC6=`echo $MACID | cut -d : -f 6`
+ip2=`printf %d 0x$MAC4`
+ip3=`printf %d 0x$MAC5`
+ip4=`printf %d 0x$MAC6`
+net=10
+nodeIP=$net.$ip2.$ip3.$ip4
 
 echo "" >> /etc/network/interfaces
 echo "auto wlan0" >> /etc/network/interfaces
