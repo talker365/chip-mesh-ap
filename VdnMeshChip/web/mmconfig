@@ -8,11 +8,6 @@
 
 Interface_Modes
 
-checkInterfaces()
-{
-[ -d "/sys/class/net/eth0" ] && echo "TRUE" || echo "FALSE"
-}
-
 connectWifi()
 {
 # Connect to Wifi
@@ -151,11 +146,14 @@ sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid AREDN-VDN-20-v3
 }
 # Start of Script
 clear
-if [[ $# -eq 0 ]]; then checkInterfaces; fi
+#if [[ $# -eq 0 ]]; then checkInterfaces; fi
 
 request=$1
 
-if [[ $request == "installed" ]]; then [ -e "/var/www/html/.installed" ] && echo "TRUE" || echo "FALSE"; fi
+if [[ $request == "check" ]]; then 
+   if [[ $2 == "installed" ]]; then [ -e "/var/www/html/.installed" ] && echo "TRUE" || echo "FALSE"; fi
+   if [[ $2 == "ethernet" ]]; then [ -d "/sys/class/net/eth0" ] && echo "TRUE" || echo "FALSE"; fi
+fi
 
 # Get all Parameter Values
   callsign=$2
