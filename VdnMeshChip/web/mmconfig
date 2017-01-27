@@ -146,15 +146,17 @@ echo -e '\n' >> /etc/olsrd.conf
 #echo '}' >> /etc/olsrd.conf
 
 sudo ifconfig wlan0 up $nodeIP
-sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid VDN-MESH-20-v3
+sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid AREDN-VDN-20-v3
 
 }
 # Start of Script
 clear
 if [[ $# -eq 0 ]]; then checkInterfaces; fi
 
-nodeType=$1
+request=$1
 
+if [[ $request == "status" ]]; then [ -e "/var/www/html/.installed" ] && echo "TRUE" || echo "FALSE"; fi
+  
 # Get all Parameter Values
   callsign=$2
   nodeID=$3
@@ -171,7 +173,7 @@ nodeType=$1
   apCH=$7
 
 # Router Mode
-if [[ $nodeType == "microrouter" ]]; then  
+if [[ $request == "microrouter" ]]; then  
 
   echo "Router [$routerName]"
   echo "Wifi [$wifiSSID]"
@@ -196,7 +198,7 @@ if [[ $nodeType == "microrouter" ]]; then
 fi
 
 # Mesh Mode
-if [[ $nodeType == "micromesh" ]]; then 
+if [[ $request == "micromesh" ]]; then 
 
   echo "Callsign [$callsign]"
   echo "NodeID [$nodeID]"
