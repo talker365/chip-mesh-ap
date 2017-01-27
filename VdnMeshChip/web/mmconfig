@@ -4,7 +4,7 @@
 
  Interface: wlan1 = AP for all modes.
 
- Parameters: type, Callsign, NodeId, AdminPassword, NodeCH, Eth0Mode, RouterName, WifiSSID, WifiPassword, Eth0Use, apSSID, apPASS, apCH
+ Parameters: type, Callsign, NodeId, AdminPassword, NodeCH, Eth0Mode, RouterName, WifiSSID, WifiPassword, Eth0Use, apSSID, apPASS, apCH, nodeSSID
 
 Interface_Modes
 
@@ -58,7 +58,7 @@ echo "iface wlan0 inet static" >> /etc/network/interfaces
 echo "address $nodeIP" >> /etc/network/interfaces
 echo "netmask 255.0.0.0" >> /etc/network/interfaces
 echo "wireless-channel $nodeCH" >> /etc/network/interfaces
-echo "wireless-essid $nodeID" >> /etc/network/interfaces
+echo "wireless-essid $nodeSSID" >> /etc/network/interfaces
 echo "wireless-mode ad-hoc" >> /etc/network/interfaces  
 }
 
@@ -143,9 +143,9 @@ echo -e '\n' >> /etc/olsrd.conf
 #echo '     Ip4Broadcast 255.255.255.255' >> /etc/olsrd.conf
 #echo '}' >> /etc/olsrd.conf
 
+sudo ifconfig wlan0 down 
+sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid $nodeSSID
 sudo ifconfig wlan0 up $nodeIP
-sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid AREDN-VDN-20-v3
-
 }
 # Start of Script
 clear
@@ -172,6 +172,7 @@ fi
   apSSID=$5
   apPASS=$6
   apCH=$7
+  nodeSSID=$8
 
 # Router Mode
 if [[ $request == "microrouter" ]]; then  
@@ -206,6 +207,7 @@ if [[ $request == "micromesh" ]]; then
   echo "Admin Password [$adminPASS]"
   echo "Node Channel [$nodeCH]"
   echo "Node Ethernet Mode [$nodeEthMode]"
+  echo "Node SSID [$nodeSSID]"
   echo
   echo "Router [$routerName]"
   echo "Wifi [$wifiSSID]"
