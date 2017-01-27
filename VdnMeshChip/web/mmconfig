@@ -8,6 +8,8 @@
 
 Interface_Modes
 
+#---[ FUNCTIONS ]---------------------------------------------------------------------
+
 connectWifi()
 {
 # Connect to Wifi
@@ -147,7 +149,9 @@ sudo ifconfig wlan0 down
 sudo iwconfig wlan0 mode ad-hoc channel $nodeCH essid $nodeSSID
 sudo ifconfig wlan0 up $nodeIP
 }
-# Start of Script
+
+#---[ MAIN ]----------------------------------------------------------------------------------
+
 clear
 #if [[ $# -eq 0 ]]; then checkInterfaces; fi
 
@@ -193,6 +197,10 @@ if [[ $request == "microrouter" ]]; then
   echo "ff02::1   ip6-allnodes" >> /etc/hosts
   echo "ff02::2   ip6-allrouters" >> /etc/hosts
   echo $routerName > /etc/hostname
+
+if [[ $routeEthMode == "WAN" ]]; then 
+  echo "SETUP IP Forwarding for ETH0"
+fi
 
   /etc/init.d/dnsmasq restart
   connectWifi
