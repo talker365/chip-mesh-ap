@@ -14,6 +14,7 @@
     Node Name: <?php echo $_POST["final_meshhostname"]; ?> <br />
     Node Password: <?php echo $_POST["final_meshpassword"]; ?> <br />
     Node Channel: <?php echo $_POST["final_nodechannel"]; ?> <br />
+    Node SSID: <?php echo $_POST["final_nodessid"]; ?> <br />
     Mesh Ethernet Type: <?php echo $_POST["final_meshEthernetType"]; ?> <br />
     Router Hostname: <?php echo $_POST["final_routerhostname"]; ?> <br />
     SSID: <?php echo $_POST["final_ssid"]; ?> <br />
@@ -42,6 +43,7 @@
 		$command .= $_POST["final_accesspointssid"] . " ";
 		$command .= $_POST["final_accesspointpassword"] . " ";
 		$command .= $_POST["final_accesspointchannel"] . " ";
+		$command .= $_POST["final_nodessid"] . " ";
 		echo $command;
 	?>
 

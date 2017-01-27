@@ -144,12 +144,16 @@
 			<select name="nodechannel" id="nodechannel">
 				<?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
 			</select>
+			<label for="nodessid">Select Mesh SSID</label>
+			<select name="nodessid" id="nodessid">
+				<?php echo shell_exec("/var/www/html/./wifiscan SSID 2>&1"); ?>
+			</select>
 		</div>
 
 
         <h2> Ethernet Connection </h2>
         <?php
-            $eth0present = shell_exec("/var/www/html/./mmconfig");
+            $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
             #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 
             if (trim($eth0present) == "TRUE") {
@@ -189,7 +193,7 @@
 
 		<h2> Ethernet Connection </h2>
 	    <?php
-	        $eth0present = shell_exec("/var/www/html/./mmconfig");
+	        $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
 	        #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 	
 	        if (trim($eth0present) == "TRUE") {
@@ -287,6 +291,10 @@
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_meshhostname">Node:</label>
 			        <input type="text" readonly="readonly" required name="final_meshhostname" id="final_meshhostname" placeholder="Node name">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_nodessid">Node SSID:</label>
+			        <input type="text" readonly="readonly" required name="final_nodessid" id="final_nodessid" placeholder="">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_meshpassword">Admin Password:</label>

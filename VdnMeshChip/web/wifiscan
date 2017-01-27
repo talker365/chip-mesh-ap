@@ -33,8 +33,21 @@ if [[ $1 == "CH" ]]; then
     done
 	echo -e "</optgroup>"
 
-	#rm /tmp/wifilist
+	rm /tmp/wifilist
 	exit 0
+fi
+
+if [[ $1 == "SSID" ]]; then
+	echo -e "AREDN-VDN-20-V3" > /tmp/wifilist
+	nmcli -f SSID,MODE d wifi list | grep -v SSID | grep -v -e '--' | grep -e 'Ad-Hoc' | sort | uniq | grep -v -e '^$' >> /tmp/wifilist
+	while read NAME
+	do
+    	echo -e "<option value\"$NAME\">$NAME</option>"
+	done < /tmp/wifilist
+
+    rm /tmp/wifilist
+    exit 0
+
 fi
 
 if [[ $2 != "HTML" ]]; then 

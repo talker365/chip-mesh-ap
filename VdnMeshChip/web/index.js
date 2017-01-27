@@ -19,6 +19,7 @@ function populateForm() {
 	  - accesspointssid
 	  - accesspointpassword
 	  - accesspointchannel
+	  - nodessid
 	*/
 
 	if (document.getElementById("micromesh").checked) {
@@ -106,6 +107,8 @@ function populateForm() {
     
     /*document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").value;*/
     document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").selectedIndex + 1;
+
+    document.getElementById("final_nodessid").value = document.getElementById("nodessid").value;
     
 }
 
