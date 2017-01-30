@@ -84,7 +84,7 @@ echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 createOLSR()
 {
 # Create the OLSRD Config File
-
+echo 
 
 }
 
