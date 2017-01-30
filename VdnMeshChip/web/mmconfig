@@ -43,18 +43,23 @@ sudo /bin/systemctl restart hostapd-systemd
 
 createADHOC()
 {
-echo "Setting up mesh network on wlan0 to channel $channel:"
-echo -n "Setting up ad-hoc networking: "
 echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
 echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/iwconfig wlan0 mode ad-hoc " >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/iwconfig wlan0 channel $nodeCH " >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/iwconfig wlan0 essid $nodeSSID " >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/iwconfig wlan0 key off " >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/iwconfig wlan0 txpower auto " >> /usr/sbin/olsrd-adhoc-setup
-echo "sleep 1 " >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/iw dev wlan0 connect $nodeSSID " >> /usr/sbin/olsrd-adhoc-setup
-echo "done"
+echo "/sbin/ifconfig wlan0 down" >> /usr/sbin/olsrd-adhoc-setup
+echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
+echo "/sbin/iwconfig wlan0 mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
+echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
+echo "/sbin/ifconfig wlan0 up" >> /usr/sbin/olsrd-adhoc-setup
+echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
+
+#echo "/sbin/iwconfig wlan0 mode ad-hoc " >> /usr/sbin/olsrd-adhoc-setup
+#echo "/sbin/iwconfig wlan0 channel $nodeCH " >> /usr/sbin/olsrd-adhoc-setup
+#echo "/sbin/iwconfig wlan0 essid $nodeSSID " >> /usr/sbin/olsrd-adhoc-setup
+#echo "/sbin/iwconfig wlan0 key off " >> /usr/sbin/olsrd-adhoc-setup
+#echo "/sbin/iwconfig wlan0 txpower auto " >> /usr/sbin/olsrd-adhoc-setup
+#echo "sleep 1 " >> /usr/sbin/olsrd-adhoc-setup
+#echo "/sbin/iw dev wlan0 connect $nodeSSID " >> /usr/sbin/olsrd-adhoc-setup
+#echo "done"
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
 
 # Lets Calculate the IP Address via Mac Address
@@ -164,13 +169,13 @@ if [[ $request == "micromesh" ]]; then
 fi
 
 # Set host file and hostname
-  wlanIP=`ifconfig wlan1 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
+#  wlanIP=`ifconfig wlan1 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
   echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-  echo -e "$wlanIP\t$routerName" >> /etc/hosts
+  echo -e "$nodeIP\t$nodeID" >> /etc/hosts
   echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
   echo "ff02::1   ip6-allnodes" >> /etc/hosts
   echo "ff02::2   ip6-allrouters" >> /etc/hosts
-  echo $routerName > /etc/hostname
+  echo $nodeID > /etc/hostname
 
   sudo chgrp -R www-data /etc/olsrd/olsrd.conf
   sudo chmod g+w -R /etc/olsrd/olsrd.conf
