@@ -25,11 +25,16 @@ tar -cf $orig/deploy/packages.tar *
 cd $orig/VdnMeshChip/web
 tar -cf $orig/deploy/web.tar *
 
+# tar olsrd files...
+cd $orig/VdnMeshChip/olsr
+tar -cf $orig/deploy/olsr.tar *
+
 # move packages to main tar...
 cd $orig/deploy
 tar -cf VdnMeshChip.tar packages.tar
 tar -rf VdnMeshChip.tar web.tar
-rm packages.tar web.tar
+tar -rf VdnMeshChip.tar olsr.tar
+rm packages.tar web.tar olsr.tar
 
 # include installation support files in main tar...
 cd $orig/VdnMeshChip

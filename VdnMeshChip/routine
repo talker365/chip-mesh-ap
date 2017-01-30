@@ -193,12 +193,12 @@ tar -xf web.tar
 rm index.html
 cd /tmp/vdn
 
-
 echo "# Apache" >> /etc/sudoers
 echo "www-data ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # 19) Setup apache group permissions
-for file in /etc/hosts /etc/hostname /etc/hostapd.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
+touch /etc/resolv.conf
+for file in /etc/hosts /etc/hostname /etc/hostapd.conf /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
     sudo chgrp www-data ${file}
     sudo chmod g+w ${file}
 done
