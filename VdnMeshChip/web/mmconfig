@@ -45,12 +45,12 @@ createADHOC()
 {
 echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
 echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/ifconfig wlan0 down" >> /usr/sbin/olsrd-adhoc-setup
-echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
+#echo "/sbin/ifconfig wlan0 down" >> /usr/sbin/olsrd-adhoc-setup
+#echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
 echo "/sbin/iwconfig wlan0 mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
 echo "/sbin/ifconfig wlan0 up" >> /usr/sbin/olsrd-adhoc-setup
-echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
+#echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
 
 #echo "/sbin/iwconfig wlan0 mode ad-hoc " >> /usr/sbin/olsrd-adhoc-setup
 #echo "/sbin/iwconfig wlan0 channel $nodeCH " >> /usr/sbin/olsrd-adhoc-setup
