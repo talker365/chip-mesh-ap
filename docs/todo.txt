@@ -1,0 +1,12 @@
+todo
+
+Goals:
+1- Edit Installation / Routine Scripts:
+	No Setup of Mesh or AP in Installation Script.  
+	Handle those processes in the mmconfig scripting.
+
+2- Edit Installation / Routine / Build Scripts:
+	tar OLSR Folder to un-tar the files in their parent directories.
+
+3- Switch Use of WLAN1 for (AP Router or MESH node modes) and concentrate on use ethernet port for both router and mesh uses.
+
