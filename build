@@ -27,7 +27,7 @@ tar -cf $orig/deploy/web.tar *
 
 # tar olsrd files...
 cd $orig/VdnMeshChip/olsr
-tar -cf $orig/deploy/olsr.tar *
+tar -cf $orig/deploy/olsr.tar etc/
 
 # move packages to main tar...
 cd $orig/deploy
