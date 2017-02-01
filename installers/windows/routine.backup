@@ -76,7 +76,7 @@ cd /tmp/vdn
 # 5) Create a configure file . With this eth0 becomes a way to connect to a network, and wlan1 becomes CHIPs access point.
 # Add some lines in order to transfer ethernet to wlan1
 # We also want to set the range and time of leases:
-<<REMARKED
+
 echo "#If you want dnsmasq to listen for DHCP and DNS requests only on" > /etc/dnsmasq.d/access_point.conf
 echo "#specified interfaces (and the loopback) give the name of the" >> /etc/dnsmasq.d/access_point.conf
 echo "#interface (eg eth0) here." >> /etc/dnsmasq.d/access_point.conf
@@ -169,7 +169,7 @@ systemctl enable hostapd-systemd
 # 17) Start AP:
 systemctl start hostapd-systemd 
 
-REMARKED
+
 
 # setting up terminal preferences
 echo "alias ls='ls --color=auto'" >> /root/.profile
@@ -193,17 +193,12 @@ tar -xf web.tar
 rm index.html
 cd /tmp/vdn
 
-#19) Deploy OLSR files:
-echo -e "\nDeploying olsr files..."
-tar -xf olsr.tar -C /
-
 echo "# Apache" >> /etc/sudoers
 echo "www-data ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
-# 20) Setup apache group permissions
+# 19) Setup apache group permissions
 touch /etc/resolv.conf
-
-for file in /etc/hosts /etc/hostname /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
+for file in /etc/hosts /etc/hostname /etc/hostapd.conf /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
     sudo chgrp www-data ${file}
     sudo chmod g+w ${file}
 done
