@@ -16,21 +16,31 @@ mkdir $orig/deploy/mac
 mkdir $orig/deploy/linux
 mkdir $orig/deploy/windows
 
-echo "Archiving chip root files..."
-# tar all folders/files
-cd $orig/
-tar -cf $orig/deploy/root.tar chip/
+echo "Archiving installation files..."
+# tar all packages...
+cd $orig/VdnMeshChip/packages
+tar -cf $orig/deploy/packages.tar *
+
+# tar web pages...
+cd $orig/VdnMeshChip/web
+tar -cf $orig/deploy/web.tar *
+
+# tar olsrd files...
+cd $orig/VdnMeshChip/olsr
+tar -cf $orig/deploy/olsr.tar etc/
 
 # move packages to main tar...
 cd $orig/deploy
-tar -cf VdnMeshChip.tar root.tar
-rm root.tar
+tar -cf VdnMeshChip.tar packages.tar
+tar -rf VdnMeshChip.tar web.tar
+tar -rf VdnMeshChip.tar olsr.tar
+rm packages.tar web.tar olsr.tar
 
 # include installation support files in main tar...
-cd $orig/installers/mac
+cd $orig/VdnMeshChip
 tar -rf $orig/deploy/VdnMeshChip.tar push.exp
 tar -rf $orig/deploy/VdnMeshChip.tar run.exp
-cd $orig/installers/common
+tar -rf $orig/deploy/VdnMeshChip.tar routine
 tar -rf $orig/deploy/VdnMeshChip.tar vdn_rsa.pub
 tar -rf $orig/deploy/VdnMeshChip.tar vdn_rsa
 
@@ -38,7 +48,7 @@ tar -rf $orig/deploy/VdnMeshChip.tar vdn_rsa
 cp $orig/installers/mac/install $orig/deploy/mac/install
 cat $orig/deploy/VdnMeshChip.tar >> $orig/deploy/mac/install
 
-#remove build files
+# remove build files
 rm $orig/deploy/VdnMeshChip.tar
 cd $orig
 

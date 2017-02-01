@@ -42,10 +42,10 @@ echo -e "Setting date on the chip to `date`"
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa chip.local "date `date '+%m%d%H%M%Y.%S'`" >/dev/null 2>&1
 
 # Push files to CHIP...
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa packages.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa olsr.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa web.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
-scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa routine root@chip.local:/tmp/vdn/. >/dev/null 2>&1
+scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa root.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
+#scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa olsr.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
+#scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa web.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
+#scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa routine root@chip.local:/tmp/vdn/. >/dev/null 2>&1
 
 # Begin installation on the CHIP...
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "chmod +x /tmp/vdn/routine" >/dev/null 2>&1
