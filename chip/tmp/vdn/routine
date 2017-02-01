@@ -4,8 +4,7 @@
 # remotely as root.
 
 # 1) Untar installation packages
-cd /tmp/vdn
-tar -xf packages.tar
+cd /tmp/vdn/packages
 
 # 2) Install dnsmasq:
 dpkg -G -E -i dnsmasq_2.72-3+deb8u1_all.deb
@@ -68,8 +67,8 @@ dpkg -G -E -i vtun_3.0.3-2_armhf.deb
 
 # 4) Download the kernel mods for enabling NAT
 cd /lib/modules/4.4.13-ntc-mlc/kernel/net/ipv4/netfilter
-cp /tmp/vdn/ipt_MASQUERADE.ko .
-cp /tmp/vdn/nf_nat_masquerade_ipv4.ko .
+cp /tmp/vdn/packages/ipt_MASQUERADE.ko .
+cp /tmp/vdn/packages/nf_nat_masquerade_ipv4.ko .
 depmod
 cd /tmp/vdn
 
@@ -85,18 +84,6 @@ echo "syntax on" > /root/.vimrc
 echo "colorscheme desert" >> /root/.vimrc
 echo "set ts=4" >> /root/.vimrc
 echo "set number" >> /root/.vimrc
-
-# 18) Deploy web files:
-echo -e "\nDeploying web installer..."
-cp /tmp/vdn/web.tar /var/www/html/.
-cd /var/www/html
-tar -xf web.tar
-rm index.html
-cd /tmp/vdn
-
-#19) Deploy OLSR files:
-echo -e "\nDeploying olsr files..."
-tar -xf olsr.tar -C /
 
 echo "# Apache" >> /etc/sudoers
 echo "www-data ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers

@@ -18,8 +18,8 @@ mkdir $orig/deploy/windows
 
 echo "Archiving chip root files..."
 # tar all folders/files
-cd $orig/
-tar -cf $orig/deploy/root.tar chip/
+cd $orig/chip/
+tar -cf $orig/deploy/root.tar ./
 
 # move packages to main tar...
 cd $orig/deploy

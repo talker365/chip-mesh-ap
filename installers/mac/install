@@ -26,7 +26,7 @@ mkdir /tmp/chip.install
 
 # Untar installation files...
 cd /tmp/chip.install
-tail -n +71 $orig/$0 | tar xf -
+tail -n +68 $orig/$0 | tar xf -
 chmod 600 /tmp/chip.install/vdn_rsa
 
 echo -e "Copying installation files to chip..."
@@ -43,19 +43,16 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuth
 
 # Push files to CHIP...
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa root.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
-#scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa olsr.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
-#scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa web.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
-#scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa routine root@chip.local:/tmp/vdn/. >/dev/null 2>&1
 
 # Begin installation on the CHIP...
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "tar -xf /tmp/vdn/root.tar -C /" >/dev/null 2>&1
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "chmod +x /tmp/vdn/routine" >/dev/null 2>&1
 echo -e "Starting Micro Mesh installation on chip..."
 echo -e "=============================================================="
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "/tmp/vdn/./routine"
 
 echo -e "\n\nMicro Mesh Installation Complete!"
-echo -e "\nYour browser is now launching to http://chip.local.  You may also connect a device to \nthe new access point (SSID:  aredn-vdn-AP) and navigate its browser to http://chip.local \nto complete the setup.\n"
-echo -e "(AccessPoint password is:  micromesh)"
+echo -e "\nYour browser is now launching to http://chip.local.\n"
 
 # Auto Launch the Default Browser to http://chip.local
 OS=`uname`
