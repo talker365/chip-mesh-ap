@@ -116,7 +116,7 @@ function populateDefaults() {
     document.getElementById("callsign").value = "";
     document.getElementById("meshhostname").value = "nocall-micromesh-01";
     document.getElementById("meshpassword").value = "micromesh";
-    document.getElementById("routerhostname").value = "micromesh-01";
+    document.getElementById("routerhostname").value = "microrouter01";
     document.getElementById("ssid").value = "";
     document.getElementById("password").value = "";
     document.getElementById("accesspointssid").value = "vdn-micro-AP";

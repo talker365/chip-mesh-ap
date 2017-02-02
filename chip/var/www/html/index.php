@@ -180,11 +180,11 @@
 	    <input type="text" name="routerhostname" id="routerhostname">
 	    <span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
 
-        <h2> WiFi Connection </h2>
-        <?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");    ?>
+        <!--<h2> WiFi Connection </h2>-->
+        <?php /*echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");*/    ?>
 
-        <br /><br />
-        <div class="ui-field-contain">
+        <!--<br /><br />-->
+        <div class="ui-field-contain" style="display:none;">
             <label for="ssid">SSID:</label>
             <input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true">
             <label for="password">Password:</label>
