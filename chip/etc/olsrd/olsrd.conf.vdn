@@ -1,14 +1,17 @@
 DebugLevel 0
 AllowNoInt yes
 IpVersion 4
-MainIp 10.94.150.249
 RtTable 30
 RtTableDefault 31
 LinkQualityAlgorithm "etx_ffeth"
+MainIp 10.94.150.249
 
 Hna4
 {
-	10.138.61.176 255.255.255.240
+#   Internet gateway:
+#   0.0.0.0      0.0.0.0
+#   more entries can be added:
+#   192.168.1.0  255.255.255.0
 }
 
 LoadPlugin "olsrd_arprefresh.so.0.1"
@@ -53,7 +56,7 @@ LoadPlugin "olsrd_dyn_gw.so.0.5"
 	PlParam "Interval" "60"
 }
 
-Interface "wlan0"
+Interface "wlan1"
 {
 }
 
