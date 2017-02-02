@@ -1,0 +1,12 @@
+#!/bin/bash
+
+myip="10.20.30.40"
+gateway="1.2.3.4"
+subnet="255.255.255.123"
+
+#sed -i '/TEXT_TO_BE_REPLACED/c\This line is removed by the admin.' /tmp/foo
+sed -i.bak 's/.*MainIp.*/MainIP $myip/' /etc/olsrd/olsrd.conf
+sed -i.bak '/Hna4/c\Hna4 \n { \n \t $gateway $subnet \n } \n /' /etc/olsrd/olsrd.conf
+
+
+

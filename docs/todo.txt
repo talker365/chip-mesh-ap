@@ -25,3 +25,10 @@ Goals:
 
 		- Admin: Typical Network & Password Changes.
 			VTUNNEL Setup
+
+
+
+
+Idea's 
+
+Add a Build# with each execution of build script and Displayed During Installation.
