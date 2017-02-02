@@ -67,26 +67,8 @@ dpkg -G -E -i vtun_3.0.3-2_armhf.deb
 
 # 4) Download the kernel mods for enabling NAT
 cd /lib/modules/4.4.13-ntc-mlc/kernel/net/ipv4/netfilter
-cp /tmp/vdn/packages/ipt_MASQUERADE.ko .
-cp /tmp/vdn/packages/nf_nat_masquerade_ipv4.ko .
 depmod
 cd /tmp/vdn
-
-# setting up terminal preferences
-echo "alias ls='ls --color=auto'" >> /root/.profile
-echo "alias ll='ls -la'" >> /root/.profile
-echo "alias l='ls -l'" >> /root/.profile
-echo "PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;36m\]\w\[\033[00m\]\$ '"  >> /root/.profile
-LS_COLORS=$LS_COLORS:'di=0;36:' ; export LS_COLORS
-
-# setting up vim
-echo "syntax on" > /root/.vimrc
-echo "colorscheme desert" >> /root/.vimrc
-echo "set ts=4" >> /root/.vimrc
-echo "set number" >> /root/.vimrc
-
-echo "# Apache" >> /etc/sudoers
-echo "www-data ALL=(ALL:ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # 20) Setup apache group permissions
 touch /etc/resolv.conf
