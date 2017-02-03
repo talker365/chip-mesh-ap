@@ -26,7 +26,7 @@ mkdir /tmp/chip.install
 
 # Untar installation files...
 cd /tmp/chip.install
-tail -n +68 $orig/$0 | tar xf -
+tail -n +69 $orig/$0 | tar xf -
 chmod 600 /tmp/chip.install/vdn_rsa
 
 echo -e "Copying installation files to chip..."
@@ -45,7 +45,8 @@ ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuth
 scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -i vdn_rsa root.tar root@chip.local:/tmp/vdn/. >/dev/null 2>&1
 
 # Begin installation on the CHIP...
-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "tar -oxf /tmp/vdn/root.tar -C / ; chown root -RP /root ; chown www-data -RP /var/wwww" >/dev/null 2>&1
+echo -e "Expanding files on the chip"
+ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "tar -oxf /tmp/vdn/root.tar -C /" >/dev/null 2>&1
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "chmod +x /tmp/vdn/routine" >/dev/null 2>&1
 echo -e "Starting Micro Mesh installation on chip..."
 echo -e "=============================================================="
