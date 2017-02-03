@@ -38,12 +38,12 @@ if [[ $1 == "CH" ]]; then
 fi
 
 if [[ $1 == "SSID" ]]; then
-	echo -e "AREDN-VDN-20-V3" > /tmp/wifilist
-	nmcli -f SSID,MODE d wifi list | grep -v SSID | grep -v -e '--' | grep -e 'Ad-Hoc' | sort | uniq | grep -v -e '^$' >> /tmp/wifilist
-	while read NAME
+	echo -e "AREDN-VDN-20-v3  Ad-Hoc  1" > /tmp/wifilist
+	nmcli -f SSID,MODE,CHAN d wifi list | grep -v SSID | grep -v -e '--' | grep -e 'Ad-Hoc' | sort | uniq | grep -v -e '^$' >> /tmp/wifilist
+	while read NAME MODE CHAN
 	do
-    	echo -e "<option value\"$NAME\">$NAME</option>"
-	done < /tmp/wifilist
+    	echo -e "<option value\"$NAME|||$CHAN\">$NAME (ch $CHAN)</option>"
+	done < /tmp/wifilist | uniq -
 
     rm /tmp/wifilist
     exit 0

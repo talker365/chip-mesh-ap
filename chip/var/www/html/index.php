@@ -140,14 +140,14 @@
 	    	<input type="text" name="meshhostname" id="meshhostname" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
 	        <label for="meshpassword">Admin Password:</label>
 	        <input type="text" name="meshpassword" id="meshpassword" placeholder="This is the password used to access this micro mesh node's mangement features">
-			<label for="nodechannel">Select Channel</label>
-			<select name="nodechannel" id="nodechannel">
-				<?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
-			</select>
 			<label for="nodessid">Select Mesh SSID</label>
 			<select name="nodessid" id="nodessid">
 				<?php echo shell_exec("/var/www/html/./wifiscan SSID 2>&1"); ?>
 			</select>
+            <label for="nodechannel">Select Channel</label>
+            <select name="nodechannel" id="nodechannel">
+                <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
+            </select>
 		</div>
 
 
@@ -168,7 +168,7 @@
         <?php
             } else {
         ?>
-            <p> No wired connection found </p>
+            <p> No wired connection found!  You must have a wired connection for the micro router to function properly. </p>
         <?php
             }
         ?>
@@ -201,14 +201,14 @@
 	        <fieldset data-role="controlgroup">
 	            <legend>A wired connection was identified, please select how to use it:</legend>
 	            <label for="routerLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
-	            <input type="radio" name="routerEthernetType" id="routerLan" value="routerLan">
+	            <input type="radio" name="routerEthernetType" id="routerLan" value="routerLan" disabled="disabled">
 	            <label for="routerWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
 	            <input type="radio" name="routerEthernetType" id="routerWan" value="routerWan" checked="checked">
 	        </fieldset>
 	    <?php
 	        } else {
 	    ?>
-	        <p> No wired connection found </p>
+            <p> No wired connection found!  You must have a wired connection for the micro router to function properly. </p>
 	    <?php
 	        }
 	    ?>

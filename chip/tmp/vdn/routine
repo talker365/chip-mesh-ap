@@ -78,3 +78,6 @@ for file in /etc/hosts /etc/hostname /etc/resolv.conf /etc/network/interfaces /v
     sudo chmod g+w ${file}
 done
 
+# updating permissions...
+chown www-data -RP /var/www
+
