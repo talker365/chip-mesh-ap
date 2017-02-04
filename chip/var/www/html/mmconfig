@@ -10,28 +10,36 @@ Interface_Modes
 
 #---[ FUNCTIONS ]---------------------------------------------------------------------
 
-connectWifi()
-{
-# Connect to Wifi
-sudo nmcli dev disconnect wlan1 2>&1
-sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
-}
-
 createAP()
 {
-# Build /etc/hostapd.conf file
-newfile="/etc/hostapd.conf"
-echo "interface=wlan1" > $newfile
-echo "driver=nl80211" >> $newfile
-echo "ssid=$apSSID" >> $newfile
-echo "channel=$apCH" >> $newfile
-echo "auth_algs=3" >> $newfile
-echo "max_num_sta=10" >> $newfile
-echo "wpa=2" >> $newfile
-echo "wpa_passphrase=$apPASS" >> $newfile
-echo "wpa_pairwise=TKIP CCMP" >> $newfile
-echo "rsn_pairwise=CCMP" >> $newfile
-echo "ctrl_interface=/var/run/hostapd" >> $newfile
+# Create access point configuration file
+echo "#If you want dnsmasq to listen for DHCP and DNS requests only on" > /etc/dnsmasq.d/access_point.conf
+echo "#specified interfaces (and the loopback) give the name of the" >> /etc/dnsmasq.d/access_point.conf
+echo "#interface (eg eth0) here." >> /etc/dnsmasq.d/access_point.conf
+echo "#Repeat the line for more than one interface." >> /etc/dnsmasq.d/access_point.conf
+echo "interface=wlan1" >> /etc/dnsmasq.d/access_point.conf
+echo "#Or you can specify which interface not to listen on" >> /etc/dnsmasq.d/access_point.conf
+echo "except-interface=eth0 " >> /etc/dnsmasq.d/access_point.conf
+echo "" >> /etc/dnsmasq.d/access_point.conf
+echo "#Uncomment this to enable the integrated DHCP server, you need" >> /etc/dnsmasq.d/access_point.conf
+echo "#to supply the range of addresses available for lease and optionally" >> /etc/dnsmasq.d/access_point.conf
+echo "#a lease time. If you have more than one network, you will need to" >> /etc/dnsmasq.d/access_point.conf
+echo "#repeat this for each network on which you want to supply DHCP" >> /etc/dnsmasq.d/access_point.conf
+echo "#service." >> /etc/dnsmasq.d/access_point.conf
+echo "dhcp-range=172.20.0.100,172.20.0.250,1h " >> /etc/dnsmasq.d/access_point.conf
+
+# Configure the WiFi access point on wlan1
+echo "interface=wlan1" > /etc/hostapd.conf
+echo "driver=nl80211" >> /etc/hostapd.conf
+echo "ssid=$apSSID" >> /etc/hostapd.conf
+echo "channel=$apCH" >> /etc/hostapd.conf
+echo "auth_algs=3" >> /etc/hostapd.conf
+echo "max_num_sta=10" >> /etc/hostapd.conf
+echo "wpa=2" >> /etc/hostapd.conf
+echo "wpa_passphrase=$apPASS" >> /etc/hostapd.conf
+echo "wpa_pairwise=TKIP CCMP" >> /etc/hostapd.conf
+echo "rsn_pairwise=CCMP" >> /etc/hostapd.conf
+echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
 
 # Restart Services
 [ -f "/var/run/hostapd/wlan1" ] && rm -r "/var/run/hostapd/wlan1"
@@ -39,7 +47,67 @@ sudo /usr/sbin/update-rc.d hostapd disable
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable hostapd-systemd
 sudo /bin/systemctl restart hostapd-systemd
+
+# Create script for handling service spin up
+echo "#!/bin/bash" > /usr/sbin/vdn-router
+echo "" >> /usr/sbin/vdn-router
+echo "# Make sure interface is up" >> /usr/sbin/vdn-router
+echo "ifdown wlan1" >> /usr/sbin/vdn-router
+echo "ifup wlan1" >> /usr/sbin/vdn-router
+echo "" >> /usr/sbin/vdn-router
+echo "# Enable DNS forwarding" >> /usr/sbin/vdn-router
+echo "#sysctl -w net.ipv4.ip_forward=1" >> /usr/sbin/vdn-router
+echo "" >> /usr/sbin/vdn-router
+echo "# Enable NAT" >> /usr/sbin/vdn-router
+echo "#iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE" >> /usr/sbin/vdn-router
+echo "" >> /usr/sbin/vdn-router
+echo "# Start the Access Point" >> /usr/sbin/vdn-router
+echo "/usr/sbin/hostapd /etc/hostapd.conf" >> /usr/sbin/vdn-router
+
+# Make the spin up script executable
+chmod +x /usr/sbin/vdn-router
+
+# Configure it to create AP on boot.
+echo "[Unit]" > /lib/systemd/system/hostapd-systemd.service
+echo "Description=hostapd service" >> /lib/systemd/system/hostapd-systemd.service
+echo "Wants=network-manager.service" >> /lib/systemd/system/hostapd-systemd.service
+echo "After=network-manager.service" >> /lib/systemd/system/hostapd-systemd.service
+echo "Wants=module-init-tools.service" >> /lib/systemd/system/hostapd-systemd.service
+echo "After=module-init-tools.service" >> /lib/systemd/system/hostapd-systemd.service
+echo "ConditionPathExists=/etc/hostapd.conf" >> /lib/systemd/system/hostapd-systemd.service
+echo "" >> /lib/systemd/system/hostapd-systemd.service
+echo "[Service]" >> /lib/systemd/system/hostapd-systemd.service
+echo "ExecStart=/usr/sbin/vdn-router" >> /lib/systemd/system/hostapd-systemd.service
+echo "" >> /lib/systemd/system/hostapd-systemd.service
+echo "[Install]" >> /lib/systemd/system/hostapd-systemd.service
+echo "WantedBy=multi-user.target" >> /lib/systemd/system/hostapd-systemd.service
+
+# Disable the existing systemV script for booting hostapd:
+update-rc.d hostapd disable
+
+# Restart Services
+[ -f "/var/run/hostapd/wlan1" ] && rm -r "/var/run/hostapd/wlan1"
+/usr/sbin/update-rc.d hostapd disable
+/bin/systemctl daemon-reload
+/bin/systemctl enable hostapd-systemd
+/bin/systemctl restart hostapd-systemd
+
+# Setup the systemd service
+systemctl daemon-reload
+systemctl enable hostapd-systemd
+
+# Start AP:
+systemctl start hostapd-systemd
+
 }
+
+connectWifi()
+{
+# Connect to Wifi
+sudo nmcli dev disconnect wlan1 2>&1
+sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
+}
+
 
 createADHOC()
 {
@@ -73,6 +141,24 @@ echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
 echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 }
 
+createDNS()
+{
+echo "#If you want dnsmasq to listen for DHCP and DNS requests only on" > /etc/dnsmasq.d/access_point.conf
+echo "#specified interfaces (and the loopback) give the name of the" >> /etc/dnsmasq.d/access_point.conf
+echo "#interface (eg eth0) here." >> /etc/dnsmasq.d/access_point.conf
+echo "#Repeat the line for more than one interface." >> /etc/dnsmasq.d/access_point.conf
+echo "interface=wlan1" >> /etc/dnsmasq.d/access_point.conf
+echo "#Or you can specify which interface not to listen on" >> /etc/dnsmasq.d/access_point.conf
+echo "except-interface=eth0 " >> /etc/dnsmasq.d/access_point.conf
+echo "" >> /etc/dnsmasq.d/access_point.conf
+echo "#Uncomment this to enable the integrated DHCP server, you need" >> /etc/dnsmasq.d/access_point.conf
+echo "#to supply the range of addresses available for lease and optionally" >> /etc/dnsmasq.d/access_point.conf
+echo "#a lease time. If you have more than one network, you will need to" >> /etc/dnsmasq.d/access_point.conf
+echo "#repeat this for each network on which you want to supply DHCP" >> /etc/dnsmasq.d/access_point.conf
+echo "#service." >> /etc/dnsmasq.d/access_point.conf
+echo "dhcp-range=172.20.0.100,172.20.0.250,1h " >> /etc/dnsmasq.d/access_point.conf
+}
+
 createOLSR()
 {
 # Create the OLSRD Config File
@@ -91,8 +177,17 @@ sed -i.bak "s/.*bssid=.*/#bssid=/" /etc/defaults/olsrd
 
 /usr/sbin/olsrd-adhoc-setup
 ifconfig wlan1 inet $nodeIP broadcast $net.255.255.255
-
 }
+
+enableNAT()
+{
+# Download the kernel mods for enabling NAT
+cd /lib/modules/4.4.13-ntc-mlc/kernel/net/ipv4/netfilter
+cp /tmp/vdn/ipt_MASQUERADE.ko .
+cp /tmp/vdn/nf_nat_masquerade_ipv4.ko .
+depmod
+}
+
 
 #---[ MAIN ]----------------------------------------------------------------------------------
 
@@ -138,9 +233,9 @@ if [[ $routeEthMode == "WAN" ]]; then
   echo "SETUP IP Forwarding for ETH0"
 fi
 
-  /etc/init.d/dnsmasq restart
-  connectWifi
+  enableNAT
   createAP
+  connectWifi
 
 fi
 
@@ -163,7 +258,6 @@ if [[ $request == "micromesh" ]]; then
   echo "AP-CH [$apCH]"
   echo
 
-  createAP
   createADHOC
   createOLSR
 
