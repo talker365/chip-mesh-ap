@@ -11,8 +11,7 @@ echo -e "batmon test            # Perform battery charge/discharge rate & log."
 echo -e "batmon check           # Monitor battery voltage & current, shutdown chip when low.\n"
 }
 
-displayValues() {
-if [ "$STATUS" == "TRUE" ]; then
+display() {
 echo -e "Battery Voltage = $BAT_VOLT_FLOAT"
 echo -ne "Battery Charge  = "
 
@@ -25,7 +24,6 @@ fi
 echo "Battery Gauge   = "$BAT_GAUGE_DEC"%"
 echo "Internal Temp.  = "$TEMP_C"c / "$TEMP_F"f"
 echo
-fi
 }
 
 readBattery() {
@@ -72,7 +70,7 @@ batteryTest()
 
 # get updated values
 readBattery
-displayValues
+display
 
 # check to see if we need to shutdown.
 if [ $BAT_VOLT -le $MINVOLTAGELEVEL ]; then
@@ -93,8 +91,7 @@ log() {
 
 checkBattery()
 {
-
-displayValues
+if [ "$STATUS" == "TRUE" ]; then display; fi
 
     # CHECK BATTERY LEVEL AGAINST MINVOLTAGELEVEL
     if [ $BAT_VOLT -le $MINVOLTAGELEVEL ]; then
