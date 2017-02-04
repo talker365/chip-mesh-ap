@@ -26,6 +26,11 @@ readBattery() {
     BAT_ICHG_BIN=$(( $(($BAT_ICHG_MSB << 4)) | $(($(($BAT_ICHG_LSB & 0x0F)) )) ))
     BAT_ICHG_FLOAT=$(echo "($BAT_ICHG_BIN*0.5)"|bc)
     BAT_ICHG=${BAT_ICHG_FLOAT%.*}
+    BAT_IDISCHG_MSB=$(i2cget -y -f 0 0x34 0x7C)
+    BAT_IDISCHG_LSB=$(i2cget -y -f 0 0x34 0x7D)
+    BAT_IDISCHG_BIN=$(( $(($BAT_IDISCHG_MSB << 5)) | $(($(($BAT_IDISCHG_LSB & 0x1F)) )) ))
+    BAT_IDISCHG=$(echo "($BAT_IDISCHG_BIN*0.5)"|bc)
+
 #read fuel gauge B9h
     BAT_GAUGE_HEX=$(i2cget -y -f 0 0x34 0xb9)
     BAT_GAUGE_DEC=$(($BAT_GAUGE_HEX))
@@ -72,8 +77,15 @@ checkBattery()
 {
 
 if [ "$STATUS" == "TRUE" ]; then
-echo "Battery Voltage = $BAT_VOLT_FLOAT"
-echo "Battery Charge  = $BAT_ICHG_FLOAT"
+echo -e "Battery Voltage = $BAT_VOLT_FLOAT"
+echo -ne "Battery Charge  = "
+
+if [ "$BAT_ICHG_FLOAT" == "0" ]; then
+    echo -ne "\033[31m-"$BAT_IDISCHG"\033[0m mA\n"
+else
+    echo -ne "\033[32m"$BAT_ICHG_FLOAT"\033[0m mA\n" 
+fi
+
 echo "Battery Gauge   = "$BAT_GAUGE_DEC"%"
 echo "Internal Temp.  = "$TEMP_C"c / "$TEMP_F"f"
 echo
@@ -118,5 +130,8 @@ readBattery
    if [[ $@ == "test" ]]; then batteryTest; fi
    if [[ $@ == "check" ]]; then checkBattery; fi
 
+else
+
+echo -e "\033[5m \033[31m No Battery was Detected ! \033[0m\n"
 fi
 
