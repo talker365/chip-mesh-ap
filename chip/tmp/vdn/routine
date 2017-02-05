@@ -73,7 +73,9 @@ cd /tmp/vdn
 # 20) Setup apache group permissions
 touch /etc/resolv.conf
 
-for file in /etc/hosts /etc/hostname /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig; do
+mkdir /tmp/www
+
+for file in /etc/hosts /etc/hostname /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig /tmp/www; do
     sudo chgrp www-data ${file}
     sudo chmod g+w ${file}
 done
