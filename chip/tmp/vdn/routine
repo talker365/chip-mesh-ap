@@ -75,7 +75,7 @@ touch /etc/resolv.conf
 
 mkdir /tmp/www
 
-for file in /etc/hosts /etc/hostname /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig /tmp/www; do
+for file in /etc/hosts /etc/hostname /etc/resolv.conf /etc/network/interfaces /var/www/html/wifiscan /var/www/html/mmconfig /tmp/www /etc/default /etc/olsrd /etc/usr/sbin; do
     sudo chgrp www-data ${file}
     sudo chmod g+w ${file}
 done

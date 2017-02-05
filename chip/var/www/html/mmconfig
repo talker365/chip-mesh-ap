@@ -111,11 +111,11 @@ sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
 
 createADHOC()
 {
-echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
-echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/iwconfig wlan1 mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
-echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
-echo "/sbin/ifconfig wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
+sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "/sbin/iwconfig wlan1 mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "/sbin/ifconfig wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
 
 # Lets Calculate the IP Address via Mac Address
@@ -131,14 +131,14 @@ net=10
 nodeIP=$net.$ip2.$ip3.$ip4
 
 # add to /etc/network/interfaces
-echo >> /etc/network/interfaces
-echo "auto wlan1 " >> /etc/network/interfaces
-echo "iface wlan1 inet static " >> /etc/network/interfaces
-echo -e "\taddress $nodeIP" >> /etc/network/interfaces
-echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
-echo -e "\twireless-channel $nodeCH " >> /etc/network/interfaces
-echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
-echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
+sudo echo >> /etc/network/interfaces
+sudo echo "auto wlan1 " >> /etc/network/interfaces
+sudo echo "iface wlan1 inet static " >> /etc/network/interfaces
+sudo echo -e "\taddress $nodeIP" >> /etc/network/interfaces
+sudo echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
+sudo echo -e "\twireless-channel $nodeCH " >> /etc/network/interfaces
+sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
+sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 }
 
 createDNS()
