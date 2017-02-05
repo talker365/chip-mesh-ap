@@ -19,7 +19,11 @@ if [[ $1 == "CH" ]]; then
 			echo -e "<optgroup label=\"WiFi Only\">"
 		fi
 
-        echo -e "<option value\"$CHANNEL\">$CHANNEL" 
+        if [[ $CHANNEL == 11 ]]; then
+			echo -e "<option value\"$CHANNEL\" selected='selected'>$CHANNEL" 
+		else
+			echo -e "<option value\"$CHANNEL\">$CHANNEL" 
+		fi
 
 		if grep -Fq "$CHANNEL" /tmp/wifilist
 		then
@@ -38,12 +42,20 @@ if [[ $1 == "CH" ]]; then
 fi
 
 if [[ $1 == "SSID" ]]; then
-	echo -e "AREDN-VDN-20-v3  Ad-Hoc  1" > /tmp/wifilist
-	nmcli -f SSID,MODE,CHAN d wifi list | grep -v SSID | grep -v -e '--' | grep -e 'Ad-Hoc' | sort | uniq | grep -v -e '^$' >> /tmp/wifilist
+	nmcli -f SSID,MODE,CHAN d wifi list | grep -v SSID | grep -v -e '--' | grep -e 'Ad-Hoc' | sort | uniq | grep -v -e '^$' > /tmp/wifilist
+	if grep -Fq "AREDN-VDN-20-v3  Ad-Hoc  1" /tmp/wifilist; then
+		echo "nothing" >> /dev/null
+	else
+		echo -e "AREDN-VDN-20-v3  default  1" >> /tmp/wifilist
+	fi
 	while read NAME MODE CHAN
 	do
-    	echo -e "<option value\"$NAME|||$CHAN\">$NAME (ch $CHAN)</option>"
-	done < /tmp/wifilist | uniq -
+		if [[ $MODE == "Ad-Hoc" ]]; then
+    		echo -e "<option value\"$NAME|||$CHAN\">$NAME (ch $CHAN)</option>"
+		else
+    		echo -e "<option value\"$NAME|||$CHAN\">$NAME (ch $CHAN - NEW)</option>"
+		fi
+	done < /tmp/wifilist | uniq - | sort
 
     rm /tmp/wifilist
     exit 0
