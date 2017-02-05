@@ -157,9 +157,9 @@
             <fieldset data-role="controlgroup">
                 <legend>A wired connection was identified, please select how to use it:</legend>
                 <label for="meshLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
-                <input type="radio" name="meshEthernetType" id="meshLan" value="meshLan">
+                <input type="radio" name="meshEthernetType" id="meshLan" value="meshLan" checked="checked">
                 <label for="meshWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
-                <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan" checked="checked">
+                <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan" disabled="disabled">
             </fieldset>
         <?php
             }

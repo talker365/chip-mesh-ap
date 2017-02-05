@@ -48,8 +48,10 @@ function populateForm() {
         document.getElementById("final_meshpassword").value = "micromesh"; 
     }
     
-    /*document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").value;*/
-    document.getElementById("final_nodechannel").value = document.getElementById("nodessid").selectedIndex + 1;
+	var data = document.getElementById("nodessid").value;
+	var nodeData = data.split("|||");
+    document.getElementById("final_nodessid").value = nodeData[0];
+    document.getElementById("final_nodechannel").value = nodeData[1];
 
     if (document.getElementById("meshLan") != null) {
 	    if (document.getElementById("meshLan").checked) {
@@ -108,7 +110,6 @@ function populateForm() {
     /*document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").value;*/
     document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").selectedIndex + 1;
 
-    document.getElementById("final_nodessid").value = document.getElementById("nodessid").value;
     
 }
 

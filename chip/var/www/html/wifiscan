@@ -5,7 +5,7 @@ if [[ $# -eq 0 ]]; then echo -e "Available Parameters are AP or MESH\n\n"; exit 
 if [[ $1 == "AP" ]]; then mode="Infra"; fi
 if [[ $1 == "MESH" ]]; then mode="Ad-Hoc"; fi
 if [[ $1 == "CH" ]]; then
-	nmcli -f CHAN d wifi list | grep -v CHAN | sort | uniq | grep -v -e '^$' > /tmp/wifilist
+	nmcli -f CHAN d wifi list | grep -v CHAN | sort | uniq | grep -v -e '^$' > ./wifilist
 
 	echo -e "<optgroup label=\"Ham Band and ISM/WiFi\">"
 
@@ -25,7 +25,7 @@ if [[ $1 == "CH" ]]; then
 			echo -e "<option value\"$CHANNEL\">$CHANNEL" 
 		fi
 
-		if grep -Fq "$CHANNEL" /tmp/wifilist
+		if grep -Fq "$CHANNEL" ./wifilist
 		then
     		# code if found
 			echo -e " - in use nearby"
@@ -37,27 +37,27 @@ if [[ $1 == "CH" ]]; then
     done
 	echo -e "</optgroup>"
 
-	rm /tmp/wifilist
+	rm ./wifilist
 	exit 0
 fi
 
 if [[ $1 == "SSID" ]]; then
-	nmcli -f SSID,MODE,CHAN d wifi list | grep -v SSID | grep -v -e '--' | grep -e 'Ad-Hoc' | sort | uniq | grep -v -e '^$' > /tmp/wifilist
-	if grep -Fq "AREDN-VDN-20-v3  Ad-Hoc  1" /tmp/wifilist; then
+	nmcli -f SSID,MODE,CHAN d wifi list | grep -v SSID | grep -v -e '--' | grep -e 'Ad-Hoc' | sort | uniq | grep -v -e '^$' > ./wifilist
+	if grep -Fq "AREDN-VDN-20-v3  Ad-Hoc  1" ./wifilist; then
 		echo "nothing" >> /dev/null
 	else
-		echo -e "AREDN-VDN-20-v3  default  1" >> /tmp/wifilist
+		echo -e "AREDN-VDN-20-v3  default  1" >> ./wifilist
 	fi
 	while read NAME MODE CHAN
 	do
 		if [[ $MODE == "Ad-Hoc" ]]; then
-    		echo -e "<option value\"$NAME|||$CHAN\">$NAME (ch $CHAN)</option>"
+    		echo -e "<option value=\"$NAME|||$CHAN\">$NAME (ch $CHAN)</option>"
 		else
-    		echo -e "<option value\"$NAME|||$CHAN\">$NAME (ch $CHAN - NEW)</option>"
+    		echo -e "<option value=\"$NAME|||$CHAN\">$NAME (ch $CHAN - NEW)</option>"
 		fi
-	done < /tmp/wifilist | uniq - | sort
+	done < ./wifilist | uniq - | sort
 
-    rm /tmp/wifilist
+    rm ./wifilist
     exit 0
 
 fi
@@ -66,7 +66,7 @@ if [[ $2 != "HTML" ]]; then
    nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq 
    exit 0
 else
-   nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > /tmp/wifilist
+   nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > ./wifilist
 fi
 
 
@@ -89,8 +89,8 @@ while read SSID MODE CHAN SIG BARS ; do
   		printf "</tr>\n\n"
 	fi
 
-done < /tmp/wifilist
+done < ./wifilist
 
 printf "</table>"
 
-rm /tmp/wifilist
+rm ./wifilist
