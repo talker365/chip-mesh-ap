@@ -144,20 +144,16 @@
 			<select name="nodessid" id="nodessid">
 				<?php echo shell_exec("/var/www/html/./wifiscan SSID 2>&1"); ?>
 			</select>
-            <label for="nodechannel">Select Channel</label>
-            <select name="nodechannel" id="nodechannel">
-                <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
-            </select>
 		</div>
 
 
-        <h2> Ethernet Connection </h2>
         <?php
             $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
             #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 
             if (trim($eth0present) == "TRUE") {
         ?>
+        	<h2> Ethernet Connection </h2>
             <fieldset data-role="controlgroup">
                 <legend>A wired connection was identified, please select how to use it:</legend>
                 <label for="meshLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
@@ -165,10 +161,6 @@
                 <label for="meshWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
                 <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan" checked="checked">
             </fieldset>
-        <?php
-            } else {
-        ?>
-            <p> No wired connection found!  You must have a wired connection for the micro router to function properly. </p>
         <?php
             }
         ?>

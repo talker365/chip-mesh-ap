@@ -49,7 +49,7 @@ function populateForm() {
     }
     
     /*document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").value;*/
-    document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").selectedIndex + 1;
+    document.getElementById("final_nodechannel").value = document.getElementById("nodessid").selectedIndex + 1;
 
     if (document.getElementById("meshLan") != null) {
 	    if (document.getElementById("meshLan").checked) {
