@@ -35,7 +35,7 @@ sudo echo "iface wlan0 inet static" >> /etc/network/interfaces
 sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
-# Restart the wlan1 interface:
+# Restart the wlan0 interface:
 sudo ifdown wlan0
 sudo ifup wlan0
 
@@ -122,7 +122,6 @@ sudo sleep 2
 # Lets Calculate the IP Address via Mac Address
 echo -ne "Setting up IP address: "
 MACID=`sudo cat /sys/class/net/wlan1/address`
-#MACID=`sudo ifconfig | grep wlan1 | sed 's|.*HWaddr ||'`
 MAC4=`echo $MACID | cut -d : -f 4`
 MAC5=`echo $MACID | cut -d : -f 5`
 MAC6=`echo $MACID | cut -d : -f 6`
@@ -166,8 +165,8 @@ sudo echo "dhcp-range=172.20.0.100,172.20.0.250,1h " >> /etc/dnsmasq.d/access_po
 createOLSR()
 {
 # Set host file and hostname
-sudo  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-sudo  echo -e "$nodeIP\t$nodeID" >> /etc/hosts
+sudo echo -e "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
+sudo  echo -e "127.0.0.1\t$nodeID\tlocalhost" >> /etc/hosts
 sudo  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
 sudo  echo "ff02::1   ip6-allnodes" >> /etc/hosts
 sudo  echo "ff02::2   ip6-allrouters" >> /etc/hosts
