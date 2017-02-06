@@ -141,6 +141,7 @@ sudo echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
 sudo echo -e "\twireless-channel $nodeCH " >> /etc/network/interfaces
 sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
 sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
+
 }
 
 createDNS()
@@ -175,9 +176,8 @@ sudo sed -i.bak "s/.*MESH_IF=.*/MESH_IF=wlan1/" /etc/default/olsrd
 sudo sed -i.bak "s/.*channel=.*/channel=$nodeCH/" /etc/default/olsrd
 sudo sed -i.bak "s/.*ssid=.*/ssid=$nodeSSID/" /etc/default/olsrd
 sudo sed -i.bak "s/.*bssid=.*/#bssid=/" /etc/default/olsrd
-
-sudo /usr/sbin/olsrd-adhoc-setup
 sudo ifconfig wlan1 inet $nodeIP broadcast $net.255.255.255
+sudo /usr/sbin/olsrd-adhoc-setup
 }
 
 enableNAT()
@@ -238,6 +238,14 @@ fi
   createAP
   connectWifi
 
+# Set host file and hostname
+  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
+  echo -e "$nodeIP\t$routerName" >> /etc/hosts
+  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+  echo "ff02::1   ip6-allnodes" >> /etc/hosts
+  echo "ff02::2   ip6-allrouters" >> /etc/hosts
+  echo $routerName > /etc/hostname
+
 fi
 
 # Mesh Mode
@@ -263,8 +271,6 @@ if [[ $request == "micromesh" ]]; then
   createOLSR
   createAP
 
-fi
-
 # Set host file and hostname
   echo -e "127.0.0.1\tlocalhost" > /etc/hosts
   echo -e "$nodeIP\t$nodeID" >> /etc/hosts
@@ -281,5 +287,9 @@ if [ -L /etc/resolv.conf ]; then
     rm -f /etc/resolv.conf
     touch /etc/resolv.conf
 fi
+
   sudo bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
+
+fi
+
 
