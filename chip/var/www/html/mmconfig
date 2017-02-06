@@ -17,7 +17,7 @@ echo "#If you want dnsmasq to listen for DHCP and DNS requests only on" > /etc/d
 echo "#specified interfaces (and the loopback) give the name of the" >> /etc/dnsmasq.d/access_point.conf
 echo "#interface (eg eth0) here." >> /etc/dnsmasq.d/access_point.conf
 echo "#Repeat the line for more than one interface." >> /etc/dnsmasq.d/access_point.conf
-echo "interface=wlan1" >> /etc/dnsmasq.d/access_point.conf
+echo "interface=wlan0" >> /etc/dnsmasq.d/access_point.conf
 echo "#Or you can specify which interface not to listen on" >> /etc/dnsmasq.d/access_point.conf
 echo "except-interface=eth0 " >> /etc/dnsmasq.d/access_point.conf
 echo "" >> /etc/dnsmasq.d/access_point.conf
@@ -28,8 +28,22 @@ echo "#repeat this for each network on which you want to supply DHCP" >> /etc/dn
 echo "#service." >> /etc/dnsmasq.d/access_point.conf
 echo "dhcp-range=172.20.0.100,172.20.0.250,1h " >> /etc/dnsmasq.d/access_point.conf
 
-# Configure the WiFi access point on wlan1
-echo "interface=wlan1" > /etc/hostapd.conf
+# Set up a static IP for the AP(accesspoint)
+echo "" >> /etc/network/interfaces
+echo "auto wlan0" >> /etc/network/interfaces
+echo "iface wlan0 inet static" >> /etc/network/interfaces
+echo "    address 172.20.0.1" >> /etc/network/interfaces
+echo "    netmask 255.255.255.0" >> /etc/network/interfaces
+
+# Restart the wlan1 interface:
+ifdown wlan0
+ifup wlan0
+
+# Restart the DHCP server
+/etc/init.d/dnsmasq restart 
+
+# Configure the WiFi access point on wlan0
+echo "interface=wlan0" > /etc/hostapd.conf
 echo "driver=nl80211" >> /etc/hostapd.conf
 echo "ssid=$apSSID" >> /etc/hostapd.conf
 echo "channel=$apCH" >> /etc/hostapd.conf
@@ -41,19 +55,12 @@ echo "wpa_pairwise=TKIP CCMP" >> /etc/hostapd.conf
 echo "rsn_pairwise=CCMP" >> /etc/hostapd.conf
 echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
 
-# Restart Services
-[ -f "/var/run/hostapd/wlan1" ] && rm -r "/var/run/hostapd/wlan1"
-sudo /usr/sbin/update-rc.d hostapd disable
-sudo /bin/systemctl daemon-reload
-sudo /bin/systemctl enable hostapd-systemd
-sudo /bin/systemctl restart hostapd-systemd
-
 # Create script for handling service spin up
 echo "#!/bin/bash" > /usr/sbin/vdn-router
 echo "" >> /usr/sbin/vdn-router
 echo "# Make sure interface is up" >> /usr/sbin/vdn-router
-echo "ifdown wlan1" >> /usr/sbin/vdn-router
-echo "ifup wlan1" >> /usr/sbin/vdn-router
+echo "ifdown wlan0" >> /usr/sbin/vdn-router
+echo "ifup wlan0" >> /usr/sbin/vdn-router
 echo "" >> /usr/sbin/vdn-router
 echo "# Enable DNS forwarding" >> /usr/sbin/vdn-router
 echo "#sysctl -w net.ipv4.ip_forward=1" >> /usr/sbin/vdn-router
@@ -82,22 +89,12 @@ echo "" >> /lib/systemd/system/hostapd-systemd.service
 echo "[Install]" >> /lib/systemd/system/hostapd-systemd.service
 echo "WantedBy=multi-user.target" >> /lib/systemd/system/hostapd-systemd.service
 
-# Disable the existing systemV script for booting hostapd:
-update-rc.d hostapd disable
-
 # Restart Services
-[ -f "/var/run/hostapd/wlan1" ] && rm -r "/var/run/hostapd/wlan1"
 /usr/sbin/update-rc.d hostapd disable
 /bin/systemctl daemon-reload
 /bin/systemctl enable hostapd-systemd
-/bin/systemctl restart hostapd-systemd
+/bin/systemctl start hostapd-systemd
 
-# Setup the systemd service
-systemctl daemon-reload
-systemctl enable hostapd-systemd
-
-# Start AP:
-systemctl start hostapd-systemd
 
 }
 
