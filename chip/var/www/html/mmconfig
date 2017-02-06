@@ -117,11 +117,14 @@ sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/ols
 sudo echo "sudo /sbin/iwconfig wlan1 mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo sleep 1" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "sleep 2" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "olsrd -f /etc/olsrd/olsrd.conf" >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
 
 # Lets Calculate the IP Address via Mac Address
 echo -ne "Setting up IP address: "
 MACID=`sudo ifconfig | grep wlan1 | sed 's|.*HWaddr ||'`
+sleep 1
 MAC4=`echo $MACID | cut -d : -f 4`
 MAC5=`echo $MACID | cut -d : -f 5`
 MAC6=`echo $MACID | cut -d : -f 6`
@@ -168,7 +171,6 @@ sudo cp /etc/olsrd/olsrd.conf.vdn /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*Interface.*/Interface \"wlan1\"/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
-
 # edit OLSRD boot options
 sudo sed -i.bak "s/.*#START_OLSRD=.*/START_OLSRD=\"YES\"/" /etc/default/olsrd
 sudo sed -i.bak "s/.*#SETUP_ADHOC=.*/SETUP_ADHOC=\"YES\"/" /etc/default/olsrd
@@ -266,13 +268,12 @@ if [[ $request == "micromesh" ]]; then
 fi
 
 # Set host file and hostname
-###  wlanIP=`ifconfig wlan1 | grep "inet addr" | cut -d ':' -f 2 | cut -d ' ' -f 1`
-#  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-#  echo -e "$nodeIP\t$nodeID" >> /etc/hosts
-#  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-#  echo "ff02::1   ip6-allnodes" >> /etc/hosts
-#  echo "ff02::2   ip6-allrouters" >> /etc/hosts
-#  echo $nodeID > /etc/hostname
+  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
+  echo -e "$nodeIP\t$nodeID" >> /etc/hosts
+  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+  echo "ff02::1   ip6-allnodes" >> /etc/hosts
+  echo "ff02::2   ip6-allrouters" >> /etc/hosts
+  echo $nodeID > /etc/hostname
 
   sudo chgrp -R www-data /etc/olsrd/olsrd.conf
   sudo chmod g+w -R /etc/olsrd/olsrd.conf
@@ -284,5 +285,3 @@ if [ -L /etc/resolv.conf ]; then
 fi
   sudo bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
 
-# start OLSRD
-sudo olsrd -f /etc/olsrd/olsrd.conf
