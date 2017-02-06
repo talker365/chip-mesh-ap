@@ -117,11 +117,11 @@ sudo echo "sudo /sbin/ifconfig wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sleep 2" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "olsrd -f /etc/olsrd/olsrd.conf" >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
+sudo sleep 2
 
 # Lets Calculate the IP Address via Mac Address
 echo -ne "Setting up IP address: "
 MACID=`sudo ifconfig | grep wlan1 | sed 's|.*HWaddr ||'`
-sleep 1
 MAC4=`echo $MACID | cut -d : -f 4`
 MAC5=`echo $MACID | cut -d : -f 5`
 MAC6=`echo $MACID | cut -d : -f 6`
@@ -261,6 +261,7 @@ if [[ $request == "micromesh" ]]; then
 
   createADHOC
   createOLSR
+  createAP
 
 fi
 
