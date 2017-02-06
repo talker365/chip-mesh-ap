@@ -166,17 +166,19 @@ createOLSR()
 {
 # Set host file and hostname
 sudo echo -e "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
-sudo  echo -e "127.0.0.1\t$nodeID\tlocalhost" >> /etc/hosts
-sudo  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-sudo  echo "ff02::1   ip6-allnodes" >> /etc/hosts
-sudo  echo "ff02::2   ip6-allrouters" >> /etc/hosts
-sudo  echo $nodeID > /etc/hostname
+sudo echo -e "127.0.0.1   localhost" >> /etc/hosts
+sudo echo -e "$nodeIP\t$nodeID" >> /etc/hosts
+sudo echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+sudo echo "ff02::1   ip6-allnodes" >> /etc/hosts
+sudo echo "ff02::2   ip6-allrouters" >> /etc/hosts
+sudo echo $nodeID > /etc/hostname
 
 # Create the OLSRD Config File
 sudo cp /etc/olsrd/olsrd.conf.vdn /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*Interface.*/Interface \"wlan1\"/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
+
 # edit OLSRD boot options
 sudo sed -i.bak "s/.*#START_OLSRD=.*/START_OLSRD=\"YES\"/" /etc/default/olsrd
 sudo sed -i.bak "s/.*#SETUP_ADHOC=.*/SETUP_ADHOC=\"YES\"/" /etc/default/olsrd
