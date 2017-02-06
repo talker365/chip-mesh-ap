@@ -121,7 +121,8 @@ sudo sleep 2
 
 # Lets Calculate the IP Address via Mac Address
 echo -ne "Setting up IP address: "
-MACID=`sudo ifconfig | grep wlan1 | sed 's|.*HWaddr ||'`
+MACID=`sudo cat /sys/class/net/wlan1/address`
+#MACID=`sudo ifconfig | grep wlan1 | sed 's|.*HWaddr ||'`
 MAC4=`echo $MACID | cut -d : -f 4`
 MAC5=`echo $MACID | cut -d : -f 5`
 MAC6=`echo $MACID | cut -d : -f 6`
