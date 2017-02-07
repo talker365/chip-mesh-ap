@@ -6,6 +6,9 @@
 #   2.  VdnMeshChip.tar - this archive contains all remaining installation files
 # =======================================================================================
 
+echo "Removing .DS_Store files"
+find . -name '.DS_Store' -type f -delete
+
 echo "Building installation files to ./deploy/"
 # Capture current path...
 orig=`pwd`
