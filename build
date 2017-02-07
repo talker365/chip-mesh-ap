@@ -11,7 +11,7 @@ echo "Building installation files to ./deploy/"
 orig=`pwd`
 
 # Update build#
-lfs=$(ls /chip/etc/build* | tail -1 | cut -c 7-9); nfs=$(($lfs+1)); mv /chip/etc/build#$lfs /chip/etc/build#$nfs
+lfs=$(ls chip/etc/build* | tail -1 | cut -c 16-18); nfs=$(($lfs+1)); mv chip/etc/build#$lfs chip/etc/build#$nfs
 
 # Clear the deployment folder for the new build...
 rm -r $orig/deploy/*
