@@ -80,6 +80,11 @@ for file in /etc/hosts /etc/hostname /etc/resolv.conf /etc/network/interfaces /v
     sudo chmod g+w ${file}
 done
 
+# enable port 8080 on the Apache server
+if ! grep "Listen 8080" /etc/apache2/ports.conf; then
+    sudo bash -c "echo 'Listen 8080' >> /etc/apache2/ports.conf"
+fi
+
 # updating permissions...
 chown www-data -RP /var/www
 echo "banner" >> ~/.bashrc
