@@ -83,6 +83,7 @@ done
 # enable port 8080 on the Apache server
 if ! grep "Listen 8080" /etc/apache2/ports.conf; then
     sudo bash -c "echo 'Listen 8080' >> /etc/apache2/ports.conf"
+    sudo /etc/init.d/apache2 restart
 fi
 
 # updating permissions...

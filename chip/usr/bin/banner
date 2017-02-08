@@ -1,4 +1,6 @@
 #!/bin/bash
+#adapter=(eth0 wlan0 wlan1)
+adapter=($(ifconfig -s | head -5 | tail -3 | awk '{ print $1 }'))
 clear
 echo
 echo "Welcome"
@@ -16,3 +18,21 @@ echo    "------------------------------------"
 echo    "      Valley Digital Networking     "
 echo    "===================================="
 echo -e "\033[0m"
+for i in "${adapter[@]}"
+do 
+  status=$(ifconfig $i | grep UP | awk '{ print $1 }' )
+
+  if [ "$status" == "UP" ]; then 
+     ip=$(ifconfig $i 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://')
+     enabled=$(ifconfig $i | grep MULTICAST | awk '{print $3}')
+     if [ "$i" == "usb0" ]; then echo -en " "; fi
+     echo -en "\033[36m$i: \033[33m[$ip] "
+
+     if [[ "$enabled" == "RUNNING" ]]; then 
+        echo -e "\033[32m$enabled\033[0m"
+     else
+        echo -e "\033[31mDOWN\033[0m"
+     fi
+
+  fi
+done

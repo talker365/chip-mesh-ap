@@ -114,6 +114,7 @@ sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/ols
 sudo echo "sudo /sbin/iwconfig wlan1 mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo sleep 1" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
+#sudo echo "sudo iw wlan1 connect $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sleep 2" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "olsrd -f /etc/olsrd/olsrd.conf" >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
