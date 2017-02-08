@@ -111,8 +111,9 @@ createADHOC()
 sudo chmod 777 /usr/sbin/olsrd-adhoc-setup
 sudo echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
 sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "sudo /sbin/ifconfig wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/iwconfig wlan1 mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "sudo sleep 1" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "sudo /sbin/ifconfig wlan1 $nodeIP broadcast 10.255.255.255 netmask 255.0.0.0" >> /usr/sbin/olsrd-adhoc-setup 
 sudo echo "sudo /sbin/ifconfig wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
 #sudo echo "sudo iw wlan1 connect $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sleep 2" >> /usr/sbin/olsrd-adhoc-setup
@@ -169,9 +170,9 @@ createOLSR()
 sudo echo -e "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
 sudo echo -e "127.0.0.1   localhost" >> /etc/hosts
 sudo echo -e "$nodeIP\t$nodeID" >> /etc/hosts
-sudo echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-sudo echo "ff02::1   ip6-allnodes" >> /etc/hosts
-sudo echo "ff02::2   ip6-allrouters" >> /etc/hosts
+#sudo echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+#sudo echo "ff02::1   ip6-allnodes" >> /etc/hosts
+#sudo echo "ff02::2   ip6-allrouters" >> /etc/hosts
 sudo echo $nodeID > /etc/hostname
 
 # Create the OLSRD Config File
@@ -280,7 +281,7 @@ if [[ $request == "micromesh" ]]; then
 
   createADHOC
   createOLSR
-  createAP
+#  createAP
 
   sudo chgrp -R www-data /etc/olsrd/olsrd.conf
   sudo chmod g+w -R /etc/olsrd/olsrd.conf

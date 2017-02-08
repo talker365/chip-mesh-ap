@@ -4,6 +4,7 @@
 # the package files from VdnMeshChip.tar and move them to the chip.  After moving
 # the files, the installation routine will be started remotely on the chip.
 
+start=$(date +'%s')
 echo -e '\nInstalling Micro Mesh...'
 echo -e '\nLooking for chip.local (Please use <CTRL> + c  to cancel)'
 
@@ -15,7 +16,6 @@ do
 done
 
 echo -e '\nFound chip.local!'
-
 
 echo -e "Extracting installation files locally..."
 # Capture current path...
@@ -52,7 +52,7 @@ echo -e "Starting Micro Mesh installation on chip..."
 echo -e "=============================================================="
 ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o HostbasedAuthentication=no -q -i vdn_rsa root@chip.local "/tmp/vdn/./routine"
 
-echo -e "\n\nMicro Mesh Installation Complete!"
+echo -e "\n\nMicro Mesh Installation Completed! in $(($(date +'%s') - $start)) seconds."
 echo -e "\nYour browser is now launching to http://chip.local.\n"
 
 # Auto Launch the Default Browser to http://chip.local
