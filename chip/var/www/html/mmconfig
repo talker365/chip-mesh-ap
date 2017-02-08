@@ -114,7 +114,7 @@ sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/ols
 sudo echo "sudo /sbin/ifconfig $nodeiface down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/iwconfig $nodeiface mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig $nodeiface up" >> /usr/sbin/olsrd-adhoc-setup
-#sudo echo "sudo iw $nodeiface connect $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "sudo systemctl daemon-reload" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sleep 2" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "olsrd -f /etc/olsrd/olsrd.conf" >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
@@ -278,7 +278,7 @@ if [[ $request == "micromesh" ]]; then
   echo "AP-Pass [$apPASS]"
   echo "AP-CH [$apCH]"
   echo
-  nodeiface="wlan0"
+  nodeiface="wlan1"
   createADHOC
   createOLSR
 #  createAP

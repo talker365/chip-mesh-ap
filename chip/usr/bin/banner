@@ -21,12 +21,9 @@ echo -e "\033[0m"
 for i in "${adapter[@]}"
 do
   status=$(ifconfig $i | grep UP | awk '{ print $1 }' )
-
   if [ "$status" == "UP" ]; then ip=$(ifconfig $i 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'); enabled=$(ifconfig $i | grep MULTICAST | awk '{print $3}');
-  if [ "$i" == "usb0" ]; then echo -en " "; fi; echo -en "  \033[36m$i: \033[33m[$ip] ";
-  if [[ "$enabled" == "RUNNING" ]]; then echo -e "\033[32m$enabled\033[0m"; else echo -e "\033[31mDOWN\033[0m"; fi; fi
+  if [ "$i" == "usb0" ]; then echo -en " "; fi; 
+  if [ "$i" != "lo" ]; then echo -en "  \033[36m$i: \033[33m[$ip] "
+  if [[ "$enabled" == "RUNNING" ]]; then echo -e "\033[32m$enabled\033[0m"; else echo -e "\033[31mDOWN\033[0m"; fi; fi; fi
 done
-
-olsr=$(service olsrd status | grep Active: | awk '{print $2$3}')
-echo -en "\n  \033[36m[OLSR:] "
-if [[ "$olsr" == "active (running)" ]]; then echo -en "\033[31m"; echo -e "$olsr"; else echo -en "\033[31m"; fi; echo -e "DOWN"
+echo
