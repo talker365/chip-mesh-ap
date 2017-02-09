@@ -3,7 +3,10 @@ host=$(hostname | awk '{print toupper($0)}')
 ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
 ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
 pwr=""
-adapter=($(ifconfig -s | head -5 | tail -3 | awk '{ print $1 }'))
+flash=$(df -h | grep rootfs | awk {'print $4'})
+memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2,$3}')
+adapter=($(ifconfig -s | tail -n +2 | awk '{ print $1 }'))
+up=$(/usr/bin/uptime | grep up | cut -d "," -f1)
 clear
 echo
 echo "Welcome"
@@ -20,19 +23,21 @@ echo -e "\033[33m"
 echo    "------------------------------------"
 echo    "      Valley Digital Networking     "
 echo    "===================================="
-echo -en "\033[35m\033[1m"
+echo -en "\033[32m\033[1m"
 echo -e "$host"
 echo -en "\033[0m"
-echo -e "$ssid  CH:$ch @ $pwr" "\033[32m"
-echo -e "Interfaces:"
+#echo -e "$ssid  CH:$ch @ $pwr"
+echo -e "\033[32mInterfaces:"
 for i in "${adapter[@]}"
 do
   status=$(ifconfig $i | grep UP | awk '{ print $1 }' )
   if [ "$status" == "UP" ]; then ip=$(ifconfig $i 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'); enabled=$(ifconfig $i | grep MULTICAST | awk '{print $3}');
-  if [ "$i" == "usb0" ]; then echo -en " "; fi; 
+  if [ "$i" == "usb0" ] || [ "$i" == "eth0" ]; then echo -en " "; fi; 
   if [ "$i" != "lo" ]; then echo -en "  \033[36m$i: \033[33m[$ip] "
   if [[ "$enabled" == "RUNNING" ]]; then echo -e "\033[32m$enabled\033[0m"; else echo -e "\033[31mDOWN\033[0m"; fi; fi; fi
 done
-echo -en "\033[33m"
-echo    "------------------------------------"
-echo
+echo -en "\033[32m"
+echo -e "Free Space:"
+echo -e "\033[36m NAND:\033[33m$flash\033[33m \033[36m Memory:\033[33m$memfree\033[0m"
+echo -e "\033[36m Time:\033[0m$up"
+echo -e "\033[33m------------------------------------"

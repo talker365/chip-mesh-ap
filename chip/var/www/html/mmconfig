@@ -282,7 +282,6 @@ if [[ $request == "micromesh" ]]; then
   nodeiface="wlan1"
   createADHOC
   createOLSR
-#  createAP
 
   sudo chgrp -R www-data /etc/olsrd/olsrd.conf
   sudo chmod g+w -R /etc/olsrd/olsrd.conf
