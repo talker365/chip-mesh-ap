@@ -111,7 +111,8 @@ createADHOC()
 sudo chmod 777 /usr/sbin/olsrd-adhoc-setup
 sudo echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
 sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "sudo /sbin/ifconfig $nodeiface down" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "sudo /sbin/ifconfig wlan0 down" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "sudo /sbin/ifconfig wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/iwconfig $nodeiface mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig $nodeiface up" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo systemctl daemon-reload" >> /usr/sbin/olsrd-adhoc-setup
