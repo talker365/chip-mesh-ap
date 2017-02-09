@@ -66,9 +66,9 @@ dpkg -G -E -i zlib1g_1.2.8.dfsg-2+b1_armhf.deb
 dpkg -G -E -i vtun_3.0.3-2_armhf.deb
 
 # 4) Download the kernel mods for enabling NAT
-cd /lib/modules/4.4.13-ntc-mlc/kernel/net/ipv4/netfilter
-depmod
-cd /tmp/vdn
+#cd /lib/modules/4.4.13-ntc-mlc/kernel/net/ipv4/netfilter
+#depmod
+#cd /tmp/vdn
 
 # 20) Setup apache group permissions
 touch /etc/resolv.conf

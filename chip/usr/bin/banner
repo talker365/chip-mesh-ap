@@ -1,5 +1,8 @@
 #!/bin/bash
-host=$(hostname)
+host=$(hostname | awk '{print toupper($0)}')
+ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
+ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
+pwr=""
 adapter=($(ifconfig -s | head -5 | tail -3 | awk '{ print $1 }'))
 clear
 echo
@@ -9,7 +12,7 @@ echo    '      ____________________________  '
 echo    '     /                           /\ '
 echo -e '    / \033[35m VDN-CHIP \033[34mMESH NETWORK \033[32m  _/ /\'
 echo    '   /                          / \/  '
-echo    '  /  N4LDR & WD4VA            /\    '
+echo -e   '  /  N4LDR & WD4VA   \033[31m  V 1.0 \033[32m /\    '
 echo    ' /___________________________/ /    '
 echo    ' \___________________________\/     '
 echo    '  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \     '
@@ -17,7 +20,11 @@ echo -e "\033[33m"
 echo    "------------------------------------"
 echo    "      Valley Digital Networking     "
 echo    "===================================="
-echo -e "\033[0m"
+echo -en "\033[35m\033[1m"
+echo -e "$host"
+echo -en "\033[0m"
+echo -e "$ssid  CH:$ch @ $pwr" "\033[32m"
+echo -e "Interfaces:"
 for i in "${adapter[@]}"
 do
   status=$(ifconfig $i | grep UP | awk '{ print $1 }' )
@@ -26,4 +33,6 @@ do
   if [ "$i" != "lo" ]; then echo -en "  \033[36m$i: \033[33m[$ip] "
   if [[ "$enabled" == "RUNNING" ]]; then echo -e "\033[32m$enabled\033[0m"; else echo -e "\033[31mDOWN\033[0m"; fi; fi; fi
 done
+echo -en "\033[33m"
+echo    "------------------------------------"
 echo
