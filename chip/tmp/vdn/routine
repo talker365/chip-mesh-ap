@@ -83,4 +83,4 @@ fi
 
 # updating permissions...
 chown www-data -RP /var/www
-echo "banner" >> ~/.bashrc
+
