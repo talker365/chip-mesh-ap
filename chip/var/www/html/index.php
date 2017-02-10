@@ -183,14 +183,14 @@
             <input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true">
         </div>
 
-		<h2> Ethernet Connection </h2>
 	    <?php
 	        $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
 	        #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 	
-	        if (trim($eth0present) == "TRUE") {
+	        if (trim($eth0present) == "FALSE") {
 	    ?>
-	        <fieldset data-role="controlgroup">
+			<h2 style="display:none;"> Ethernet Connection </h2>
+	        <fieldset data-role="controlgroup" style="display:none;">
 	            <legend>A wired connection was identified, please select how to use it:</legend>
 	            <label for="routerLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
 	            <input type="radio" name="routerEthernetType" id="routerLan" value="routerLan" disabled="disabled">
@@ -200,13 +200,12 @@
 	    <?php
 	        } else {
 	    ?>
+			<h2> Ethernet Connection </h2>
             <p> No wired connection found!  You must have a wired connection for the micro router to function properly. </p>
 	    <?php
 	        }
 	    ?>
-	</div>
 
-	<div id="divConfigureAccessPoint">
 		<h2> Access Point </h2>
         <div class="ui-field-contain">
             <label for="accesspointssid">SSID:</label>
