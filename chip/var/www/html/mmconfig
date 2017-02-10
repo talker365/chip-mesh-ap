@@ -118,6 +118,9 @@ sudo echo "ff02::2   ip6-allrouters" >> /etc/hosts
 sudo echo $nodeID > /etc/hostname
 
 # create link to /etc/hosts > /var/run/hosts_olsr (Prevents hosts & olsr from merging.)
+if [ -L /var/run/hosts_olsr ]; then
+    rm -f /var/run/hosts_olsr
+fi
 sudo ln -s /etc/hosts /var/run/hosts_olsr
 
 # Create the OLSRD Config File
@@ -135,6 +138,7 @@ sudo sed -i.bak "s/.*ssid=.*/ssid=$nodeSSID/" /etc/default/olsrd
 sudo sed -i.bak "s/.*bssid=.*/#bssid=/" /etc/default/olsrd
 sudo /usr/sbin/olsrd-adhoc-setup
 sudo ifconfig $nodeiface inet $nodeIP broadcast $net.255.255.255
+sudo systemctl daemon-reload
 }
 
 enableNAT(){
