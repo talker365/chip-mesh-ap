@@ -9,7 +9,7 @@ MainIp 10.94.150.249
 Hna4
 {
 #   Internet gateway:
-#   0.0.0.0      0.0.0.0
+   0.0.0.0      0.0.0.0
 #   more entries can be added:
 #   192.168.1.0  255.255.255.0
 }
@@ -63,7 +63,8 @@ Interface "wlan1"
 LoadPlugin "olsrd_nameservice.so.0.3"
 {
     PlParam "sighup-pid-file" "/var/run/dnsmasq.pid"
-    PlParam "resolv-file" "/etc/resolv.conf"
+#    PlParam "hosts-file" "/var/run/hosts_olsr"
+#    PlParam "resolv-file" "/etc/resolv.conf"
     PlParam "interval" "30"
     PlParam "timeout" "300"
     PlParam "name-change-script" "touch /tmp/namechange"

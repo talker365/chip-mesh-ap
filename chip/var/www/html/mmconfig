@@ -67,8 +67,6 @@ sudo echo "sudo /sbin/ifconfig wlan0 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/iwconfig $nodeiface mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig $nodeiface up" >> /usr/sbin/olsrd-adhoc-setup
-#sudo echo "sudo systemctl daemon-reload" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "sleep 2" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "olsrd -f /etc/olsrd/olsrd.conf" >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
 
@@ -98,23 +96,6 @@ sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
 sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 }
 
-createDNS(){
-sudo echo "#If you want dnsmasq to listen for DHCP and DNS requests only on" > /etc/dnsmasq.d/access_point.conf
-sudo echo "#specified interfaces (and the loopback) give the name of the" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#interface (eg eth0) here." >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#Repeat the line for more than one interface." >> /etc/dnsmasq.d/access_point.conf
-sudo echo "interface=wlan1" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#Or you can specify which interface not to listen on" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "except-interface=eth0 " >> /etc/dnsmasq.d/access_point.conf
-sudo echo "" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#Uncomment this to enable the integrated DHCP server, you need" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#to supply the range of addresses available for lease and optionally" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#a lease time. If you have more than one network, you will need to" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#repeat this for each network on which you want to supply DHCP" >> /etc/dnsmasq.d/access_point.conf
-sudo echo "#service." >> /etc/dnsmasq.d/access_point.conf
-sudo echo "dhcp-range=172.20.0.100,172.20.0.250,1h " >> /etc/dnsmasq.d/access_point.conf
-}
-
 createOLSR(){
 # Set host file and hostname
 sudo echo -e "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
@@ -124,14 +105,6 @@ sudo echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
 sudo echo "ff02::1   ip6-allnodes" >> /etc/hosts
 sudo echo "ff02::2   ip6-allrouters" >> /etc/hosts
 sudo echo $nodeID > /etc/hostname
-
-# Set host file and hostname
-  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-  echo -e "$nodeIP\t$nodeID" >> /etc/hosts
-  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-  echo "ff02::1   ip6-allnodes" >> /etc/hosts
-  echo "ff02::2   ip6-allrouters" >> /etc/hosts
-  echo $nodeID > /etc/hostname
 
 # create link to /etc/hosts > /var/run/hosts_olsr (Prevents hosts & olsr from merging.)
 if [ -L /var/run/hosts_olsr ]; then
@@ -156,15 +129,6 @@ sudo /usr/sbin/olsrd-adhoc-setup
 sudo ifconfig $nodeiface inet $nodeIP broadcast $net.255.255.255
 sudo systemctl daemon-reload
 }
-
-enableNAT(){
-# Download the kernel mods for enabling NAT
-sudo cd /lib/modules/4.4.13-ntc-mlc/kernel/net/ipv4/netfilter
-sudo cp /tmp/vdn/ipt_MASQUERADE.ko .
-sudo cp /tmp/vdn/nf_nat_masquerade_ipv4.ko .
-sudo depmod
-}
-
 
 #---[ MAIN ]----------------------------------------------------------------------------------
 
@@ -247,7 +211,7 @@ if [ -L /etc/resolv.conf ]; then
     touch /etc/resolv.conf
 fi
 
-  sudo bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf"
+  sudo bash -c "echo -e 'nameserver 127.0.0.1\nnameserver 8.8.8.8' > /etc/resolv.conf"
 
 fi
 
