@@ -18,6 +18,14 @@ sudo echo "iface wlan0 inet static" >> /etc/network/interfaces
 sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
+# Set host file and hostname
+  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
+  echo -e "$nodeIP\t$routerName" >> /etc/hosts
+  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+  echo "ff02::1   ip6-allnodes" >> /etc/hosts
+  echo "ff02::2   ip6-allrouters" >> /etc/hosts
+  echo $routerName > /etc/hostname
+
 # Restart the wlan0 interface:
 sudo ifdown wlan0
 sudo ifup wlan0
@@ -117,6 +125,14 @@ sudo echo "ff02::1   ip6-allnodes" >> /etc/hosts
 sudo echo "ff02::2   ip6-allrouters" >> /etc/hosts
 sudo echo $nodeID > /etc/hostname
 
+# Set host file and hostname
+  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
+  echo -e "$nodeIP\t$nodeID" >> /etc/hosts
+  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
+  echo "ff02::1   ip6-allnodes" >> /etc/hosts
+  echo "ff02::2   ip6-allrouters" >> /etc/hosts
+  echo $nodeID > /etc/hostname
+
 # create link to /etc/hosts > /var/run/hosts_olsr (Prevents hosts & olsr from merging.)
 if [ -L /var/run/hosts_olsr ]; then
     rm -f /var/run/hosts_olsr
@@ -197,14 +213,6 @@ fi
   enableNAT
   createAP
   connectWifi
-
-# Set host file and hostname
-  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-  echo -e "$nodeIP\t$routerName" >> /etc/hosts
-  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-  echo "ff02::1   ip6-allnodes" >> /etc/hosts
-  echo "ff02::2   ip6-allrouters" >> /etc/hosts
-  echo $routerName > /etc/hostname
 
 fi
 
