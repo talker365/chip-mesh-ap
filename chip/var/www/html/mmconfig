@@ -182,6 +182,9 @@ fi
   createAP
   connectWifi
 
+# Set installation type flag for status page.
+sudo touch /var/www/html/.microrouter
+
 fi
 
 # Mesh Mode
@@ -218,7 +221,8 @@ sudo bash -c "echo 'nameserver 8.8.8.8' >> /etc/resolv.conf"
 sudo chgrp www-data /etc/resolv.conf
 sudo chmod g+w /etc/resolv.conf
 
-
+# Set installation type flag for status page.
+sudo touch /var/www/html/.micromesh
 fi
 
 # FINISHED SETUP
