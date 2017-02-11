@@ -36,7 +36,21 @@
 	<p>
 		Status Info Here
 		<br />
-		<?php echo $_SERVER["PHP_SELF"]; ?>
+		<?php echo $_SERVER["HTTP_HOST"]; ?>
+		<?php
+		    switch (1) {
+        		case (file_exists('.micromesh')):
+		            echo 'meshnode';
+					break;
+        		case (file_exists('.microrouter')):
+		            echo 'router';
+					break;
+		        default:
+        		    #echo 'no default tab set, please pick a tab (temp message)';
+            		echo 'no setup detected';
+    		}   
+		?>
+
 	</p>
 
   </div>
