@@ -67,5 +67,5 @@ LoadPlugin "olsrd_nameservice.so.0.3"
     PlParam "interval" "30"
     PlParam "timeout" "300"
     PlParam "name-change-script" "touch /tmp/namechange"
-    PlParam "name" "N4LDR-MICROMESH-01"
+    PlParam "name" "NODENAME"
 }
