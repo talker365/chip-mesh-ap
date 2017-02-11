@@ -1,0 +1,4 @@
+### this /etc/hosts file is overwritten regularly by vdn scripts
+### do not edit
+
+10.130.200.5	vdn-services
