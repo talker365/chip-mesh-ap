@@ -30,28 +30,44 @@
   </div>
 
   <div data-role="main" class="ui-content">
-	<p>
-		<h2> Micro Mesh Status </h2>
-	</p>
-	<p>
-		Status Info Here
-		<br />
-		<?php echo $_SERVER["HTTP_HOST"]; ?>
-		<?php
-		    switch (1) {
-        		case (file_exists('.micromesh')):
-		            echo 'meshnode';
-					break;
-        		case (file_exists('.microrouter')):
-		            echo 'router';
-					break;
-		        default:
-        		    #echo 'no default tab set, please pick a tab (temp message)';
-            		echo 'no setup detected';
-    		}   
-		?>
+	<div id="divDebug" style="display:none;">
+		<?php echo $_SERVER["SERVER_NAME"]; ?> Status <br />
+		PHP_SELF: <?php echo $_SERVER["PHP_SELF"]; ?> <br />
+		SERVER_NAME: <?php echo $_SERVER["SERVER_NAME"]; ?> <br />
+		HTTP_HOST: <?php echo $_SERVER["HTTP_HOST"]; ?> <br />
+		HTTP_REFERER: <?php echo $_SERVER["HTTP_REFERER"]; ?> <br />
+		HTTP_USER_AGENT: <?php echo $_SERVER["HTTP_USER_AGENT"]; ?> <br />
+		SCRIPT_NAME: <?php echo $_SERVER["SCRIPT_NAME"]; ?> <br />
+	</div>
 
-	</p>
+    <div style="text-align: center;"/>
+        <img src="images/micromesh_banner.png" style="background: #bbbbbb;"/>
+    </div>
+
+	<?php
+	    switch (1) {
+       		case (file_exists('.micromesh')):
+				?>
+		        <h3> Status: </h3>
+				<div style="">
+					Operating Mode: Mesh Node <br />
+      				<?php echo shell_exec("./status.sh"); ?>  
+  				</div>
+
+				<?php
+				break;
+       		case (file_exists('.microrouter')):
+				?>
+		        <h2> Micro Router Status </h2>
+
+				<?php
+				break;
+	        default:
+       		    #echo 'no default tab set, please pick a tab (temp message)';
+           		echo 'no setup detected';
+   		}   
+	?>
+
 
   </div>
 
