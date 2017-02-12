@@ -18,7 +18,7 @@
     <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
 	<!--<a href="#page_home_info" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>-->
 	<a href="#page_home_info" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1>Micro Mesh Status Page</h1>
+    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh by VDN</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" data-transition="slide">Status</a></li>
@@ -30,43 +30,57 @@
   </div>
 
   <div data-role="main" class="ui-content">
-	<div id="divDebug" style="display:none;">
-		<?php echo $_SERVER["SERVER_NAME"]; ?> Status <br />
-		PHP_SELF: <?php echo $_SERVER["PHP_SELF"]; ?> <br />
-		SERVER_NAME: <?php echo $_SERVER["SERVER_NAME"]; ?> <br />
-		HTTP_HOST: <?php echo $_SERVER["HTTP_HOST"]; ?> <br />
-		HTTP_REFERER: <?php echo $_SERVER["HTTP_REFERER"]; ?> <br />
-		HTTP_USER_AGENT: <?php echo $_SERVER["HTTP_USER_AGENT"]; ?> <br />
-		SCRIPT_NAME: <?php echo $_SERVER["SCRIPT_NAME"]; ?> <br />
-	</div>
+	<table data-role="table" data-mode="columntoggle:none" class="ui-responsive" id="myTable">
+	  <thead style="display:none;">
+		<tr>
+      	<th>column1</th>
+      	<th data-priority="1">column2</th>
+		</tr>
+	  </thead>
+	  <tbody>
+		<tr>
+		  <td>
+		    <?php
+		        switch (1) {
+		      	    case (file_exists('.micromesh')):
+        		        ?>
+		                <div style="">
+							<h1><?php echo shell_exec("hostname"); ?></h1>
+		                    <h4>Operating Mode: Mesh Node</h4>
+		                    <?php echo shell_exec("./status.sh"); ?>
+		                </div>
 
-    <div style="text-align: center;"/>
-        <img src="images/micromesh_banner.png" style="background: #bbbbbb;"/>
-    </div>
+		                <?php
+		                break;
+		            case (file_exists('.microrouter')):
+		                ?>
+		                <h2> Micro Router Status </h2>
 
-	<?php
-	    switch (1) {
-       		case (file_exists('.micromesh')):
-				?>
-		        <h3> Status: </h3>
-				<div style="">
-					Operating Mode: Mesh Node <br />
-      				<?php echo shell_exec("./status.sh"); ?>  
-  				</div>
-
-				<?php
-				break;
-       		case (file_exists('.microrouter')):
-				?>
-		        <h2> Micro Router Status </h2>
-
-				<?php
-				break;
-	        default:
-       		    #echo 'no default tab set, please pick a tab (temp message)';
-           		echo 'no setup detected';
-   		}   
-	?>
+		                <?php
+		                break;
+		            default:
+		                #echo 'no default tab set, please pick a tab (temp message)';
+		                echo 'no setup detected';
+		        }
+		    ?>
+		  </td>
+		  <td>
+		    <div style="text-align: center;"/>
+	        <img src="images/micromesh_banner.png" style="background: #bbbbbb;"/>
+    		</div>
+		    <div id="divDebug" style="display:none;">
+		        <?php echo $_SERVER["SERVER_NAME"]; ?> Status <br />
+		        PHP_SELF: <?php echo $_SERVER["PHP_SELF"]; ?> <br />
+		        SERVER_NAME: <?php echo $_SERVER["SERVER_NAME"]; ?> <br />
+		        HTTP_HOST: <?php echo $_SERVER["HTTP_HOST"]; ?> <br />
+		        HTTP_REFERER: <?php echo $_SERVER["HTTP_REFERER"]; ?> <br />
+		        HTTP_USER_AGENT: <?php echo $_SERVER["HTTP_USER_AGENT"]; ?> <br />
+		        SCRIPT_NAME: <?php echo $_SERVER["SCRIPT_NAME"]; ?> <br />
+		    </div>
+		  </td>
+		</tr>
+	  </tbody>
+	</table>
 
 
   </div>
@@ -81,7 +95,7 @@
   <div data-role="header">
     <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_setup_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1>Micro Mesh Installer</h1>
+    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh by VDN</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" data-transition="reverse">Status</a></li>

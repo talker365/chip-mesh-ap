@@ -8,11 +8,14 @@ memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2,$3}')
 adapter=($(ifconfig -s | tail -n +2 | awk '{ print $1 }'))
 up=$(/usr/bin/uptime | grep up | cut -d "," -f1)
 clear
-echo -e "Node Name: <b>$host</b><br />"
+echo -e "Hostname:$host<br />"
 echo -e "SSID: $ssid  CH:$ch @ $pwr <br />"
 echo -e "<h3>Interfaces:</h3>"
-echo -e "<table>"
-echo -e "<tr><th>Interface</th><th>IP Address</th><th>MAC Address</th><th>Status</th></tr>"
+echo -e "<table  data-role="table" data-mode="columntoggle:none" class="ui-responsive ui-shadow" id="interfacesTable">"
+echo -e "<thead><tr><th data-priority=\"1\">Interface</th>"
+echo -e "<th data-priority= \"2\">IP Address</th>"
+echo -e "<th data-priority=\"4\">MAC Address</th>"
+echo -e "<th data-priority=\"3\">Status</th></tr></thead><tbody>"
 for i in "${adapter[@]}"
 do
   status=$(ifconfig $i | grep UP | awk '{ print $1 }' )
@@ -21,7 +24,7 @@ do
   if [ "$i" != "lo" ]; then echo -en "  <tr><td>$i</td><td>$ip</td><td>tbd</td> "
   if [[ "$enabled" == "RUNNING" ]]; then echo -e "<td>$enabled</td>"; else echo -e "<td>DOWN</td></tr>"; fi; fi; fi
 done
-echo -e "</table>"
+echo -e "</tbody></table>"
 echo -en "<br />"
 echo -e "<h3> Free Resources: </h3>"
 echo -e "NAND:$flash Memory: $memfree <br />"
