@@ -4,40 +4,6 @@ server="vdn-services"
 # =======================
 # Function buildPatch
 # =======================
-buildPatch()
-{
-
-checkVersion
-                                                                         
-TARNAME=`date +"patch-mesh-utilities-%Y%m%d-%H%M.tgz"`
- 
-# Find & remove old package.
-oldfile=`curl -nl ftp://$server/ | grep "patch"`
-                                                                                                                
-# Delete resulted file                                                                                                 
-curl -ns ftp://$server/ -X 'DELE '$oldfile 
-
-PATCHNAME="files.tar"
-
-cd /tmp
-tar -cf /tmp/$PATCHNAME -C/ -T/etc/vdn/patchlist
-tar -czf /tmp/$TARNAME $PATCHNAME -C /tmp
-chmod 755 $PATCHNAME
-
-# Upload New Archive to ftp server
-copyFTP "/tmp/$TARNAME" "ftp://$server"
-touch /tmp/.updated # Set Flag for Server's to Sync
-copyFTP "/tmp/.updated" "ftp://$server/"
-
-# Cleanup tmp file
-rm /tmp/$TARNAME
-rm /tmp/$PATCHNAME
-rm /tmp/.updated
-
-printf "${GREEN}[ $TARNAME ]${CYAN} has been transferred.${NORMAL}\n\n"
-}
-
-
 
 # =======================                                                         
 # Function cleanNode                                                            
@@ -265,7 +231,7 @@ printf "Testing Server ${CYAN}$line "
 testping=$(ping -c 1 $line 2>&1 | grep -c "time")
 
 if [ $? -eq 0 ]; then 
-   ipAddress=$(ping -c 1 $line | awk -F" |:" '/from/{print $4}' )
+   ipAddress=$(ping -c 1 $line | awk -F" |:" '/from/{print $5}' | cut -d "(" -f2 | cut -d ")" -f1 )
    pingtime=$(ping -c 1 $line | awk -F '/' 'END {print $5}' |  awk '{printf("%d\n",$1 + 0.5)}' )
    printf "${YELLOW}$ipAddress ${GREEN} [ FOUND ]${NORMAL}\n" 
    printf "${BLUE}Ping Time ${NORMAL}= ${CYAN}$pingtime${NORMAL}\n\n"             
@@ -282,23 +248,10 @@ fi
 
 done
 
-# Lets check to see if hosts needs to be updated or not.
-
-bestserver="`cat /tmp/.bestserver`" 
-hostStatus=$(cat /etc/hosts | grep "$ipAddress vdn-services ")
-                                                      
-if [ "$bestserver" != "$hostStatus" ]; then                                 
-                                                                                                 
-echo "Best Server = $bestserver"                                                                  
-                                                                                                  
-   if [ -e /tmp/.bestserver ]; then                                                                  
-      logMessage " Hosts files has been updated with a new server "
       printf "Updating hosts file... \n"                                                                                                  
       echo "# Created by VDN Scripts - Do Not Edit !" > /etc/hosts.user     
-	  echo "$hostStatus" >> /etc/hosts.user
+      cat /tmp/.bestserver >> /etc/hosts.user
       systemctl restart dnsmasq
-    fi                                                                                                
-fi                                                    
 
 }
 
@@ -307,7 +260,7 @@ fi
 # ====================                                                                               
 getMacId()                                                                                           
 {                                                                                                    
-macid=`ifconfig wlan0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'`                       
+macid=`ifconfig wlan1 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'`                       
 printf "$macid\n"                                                                                      
 }                                                                                                    
                                                                                                      
@@ -333,73 +286,6 @@ echo
 lastUpdate=$(date +"%Y-%m-%d %H:%M:%S")                                                       
 nodeName=`uname -n`
 }
-
-# ======================                                                                             
-# Function getTunnels                                                                              
-# ======================                                                                             
-getTunnels() 
-{
-
-macid=$(getMacId)
-
-#### Check for the Tunnel Installation
-installed=$(uci -q show | grep "vtun" | wc -l)   
-
-if [[ $installed -eq 0 ]]; then
-printf "Cannot parse as tunnel Server & Client is NOT installed !\n"
-exit 1
-fi
-
-nc=$(uci show vtun | grep "vtun.*\_."| grep "=client" | wc -l)
-nc=$(($nc - 1))
-ns=$(uci show vtun | grep "vtun.*\_."| grep "=server" | wc -l)
-
-if [[ $ns -ne 0 ]] ; then
-
-### Parse Server Informaion
-servers=$(uci show vtun.server_0 | tail -n +2 )
-
-printf "<tunnels>\n" 
-printf "\t<macid>$macid</macid>\n"
-printf "\t<type>server</type>\n"
-
-for i in ${servers}
-  do
- 
-   field=$(echo $i | grep "vtun.*\_" | cut -d '.' -f3 | cut -d '=' -f1)
-   value=$(echo $i | awk -F[=,] '{print $2}')
-   printf "\t<$field>$value</$field>\n" 
-  done
-printf "</tunnels>\n"
-fi
-
-
-### Parse Client Information
-client=$(uci show vtun | grep "vtun.*\_.")
-
-for c in `seq 0 $nc`   
-  do
-   client=$(uci show vtun | grep "vtun.client\_${c}")
-   printf "<tunnels>\n" 
-
-    for i in ${client}                                                      
-    do              
-     field=$(echo $i | grep "vtun.*\_" | cut -d '.' -f3 | cut -d '=' -f1)
-     value=$(echo $i | awk -F[=,] '{print $2}')
-
-     if [[ "$field" == "" ]]; then
-       printf "\t<macid>$macid</macid>\n"
-       field="type"
-     fi
-
-     printf "\t<$field>$value</$field>\n"
-  done
-  printf "</tunnels>\n"
-
-done
-
-}
-
 
 
 # ====================                                                                              

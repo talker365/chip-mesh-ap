@@ -19,6 +19,7 @@ source /etc/vdn/include/vdn.lib
 
 OPTIND=1 # Reset
 server="vdn-services"
+ver="1.0"
 node_firmware="VDN_CHIP_$ver"
 debugVer="debug-$node_firmware"
 installed_patch_ver=$(cat "/etc/vdn-release")

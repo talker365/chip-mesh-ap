@@ -19,8 +19,8 @@ source /etc/vdn/include/vdn.lib
 
 OPTIND=1 # Reset
 server="vdn-services "
-ver=(`cat /var/www/html/hsmm-pi/Config/bootstrap.php |grep 'App.version' | cut -d "'" -f4`)
-node_firmware="HSMM_CHIP_$ver"
+ver="1.0"
+node_firmware="VDN_CHIP_$ver"
 debugVer="debug-$node_firmware"
 installed_patch_vermware=$(cat "/etc/vdn-release")
 debug=0
@@ -89,10 +89,10 @@ shift "$((OPTIND-1))" # Shift off any remaining switches --.
 checkServer
 
 if [ -f /etc/.debug ]; then
-# Build developer package                                             
+# Build developer package
    printf "Building Development package for firmware=$node_firmware\n" 
-   output_file=$(date +"$debugVer-%Y%m%d_%H%M.bin")                  
-   oldfile=`curl -snl ftp://$server/ | grep "^$debugVer"` 
+   output_file=$(date +"$debugVer-%Y%m%d_%H%M.bin")
+   oldfile=`curl -snl ftp://$server/ | grep "^$debugVer"`
    echo `date +$output_file` > /etc/vdn-release
 else
 
