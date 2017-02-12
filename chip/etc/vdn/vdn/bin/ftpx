@@ -1,0 +1,41 @@
+#!/bin/ash
+souce /etc/vdn/include/vdn.lib
+
+server="vdn-services"
+
+clear
+
+if [ -z "$1" ]; then
+
+  echo "Usage: ftpx [<options>] <filename>"
+  echo "by:N4LDR"
+  echo "Commands:"
+  echo "          -l   [filename] - No argument lists all files" 
+  echo "          -d   [filename] - Deletes filename  (case sensitive)"
+  echo
+  exit
+
+else
+
+ for i in $*; do 
+#   echo $i 
+
+    if [ "$i" == "-l" ]; then   ### LIST FTP FILES ###                                                                       
+      if [ -z "$2" ]; then      ### Look for FileName ###
+        curl -n -l ftp://$server/node-backups/*
+      else
+        curl -n -l ftp://$server/ | grep $2
+      fi
+    fi
+
+    if [ "$i" == "-d" ]; then  ### DELETE FTP FILE ###
+      
+     curl -n -s ftp://vdn-services-02/ -X 'DELE '$2 
+      echo "Deleting "$2
+    fi
+
+ done
+
+fi
+echo
+

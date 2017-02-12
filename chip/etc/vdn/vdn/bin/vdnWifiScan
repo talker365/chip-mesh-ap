@@ -1,0 +1,43 @@
+#!/bin/bash
+
+N="\033[m"    #Normal
+T="\033[36m"  #Blue
+V="\033[33m"  #yellow
+R="\033[31m"  #Red
+
+#Declaring mysql DB connection
+
+MASTER_DB_USER='root'
+MASTER_DB_PASSWD='whiteHat'
+MASTER_DB_PORT=3306
+MASTER_DB_HOST='localhost'
+MASTER_DB_NAME='aredn'
+
+lastUpdate=$(date +"%Y-%m-%d %H:%M:%S")
+nodeName=`uname -n`
+
+
+/usr/local/bin/./wscan -1 | head -n -1 | tail -n +3 > /tmp/vdnScan
+
+ while read SIG CHAN SSID HOSTNAME MACID MODE; do
+if [ "$SSID" == "*" ]; then
+   SSID=$HOSTNAME
+   HOSTNAME=$MACID
+   MACID=$MODE
+   MODE="AP"
+fi
+
+  printf "<wiFi>\n"
+  printf "\t<signal>$SIG</signal>\n"
+  printf "\t<channel>$CHAN\</channel>\n"
+  printf "\t<ssid>$SSID</ssid>\n"
+  printf "\t<host>$HOSTNAME</host>\n"
+  printf "\t<macId>$MACID</macId>\n"
+  printf "\t<mode>$MODE</mode>\n"
+  printf "\t<reportBy>$nodeName</reportBy>\n"
+  printf "\t<lastUpdate>$lastUpdate</lastUpdate>\n"
+  printf "</wiFi>\n\n"
+done </tmp/vdnScan
+rm /tmp/vdnScan
+
+

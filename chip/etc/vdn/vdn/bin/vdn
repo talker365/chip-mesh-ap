@@ -1,0 +1,68 @@
+#!/bin/bash
+source /etc/vdn/include/vdn.lib
+
+
+show_help() {
+printf "\n${CYAN}Usage: ${GREEN}${0##*/}${NORMAL} [commands]\n"
+printf "======================================================================\n"
+printf "${YELLOW}   checkServer${NORMAL} ....| Check server functions (Curl, Ftp & Host Entries\n" 
+printf "${YELLOW}   findServer${NORMAL} .....| Find closest server and update Host Entries\n"
+printf "${YELLOW}   getMacId${NORMAL} .......| Get this Node's Mac Address\n"
+printf "${YELLOW}   getNodeId${NORMAL} ......| Get this Node's Node ID\n"
+printf "${YELLOW}   getPkg${NORMAL} .........| Check server for latest VDN Package\n"
+printf "${YELLOW}   pushSettings${NORMAL} ...| Push Node Status to Server\n"
+printf "${YELLOW}   restoreBackup${NORMAL} ..| Restore Node from stored backup on server\n"
+printf "${YELLOW}   showLog${NORMAL} ........| Show this Node's Activity Log\n\n"
+printf "${YELLOW}   -h, --help${NORMAL} .....| Display this help and exit.\n\n"
+
+}
+
+if [ $# -eq 0 ]; then show_help; fi
+
+while [ $# -gt 0 ]
+
+
+do
+    case $1 in
+
+        checkServer ) checkServer;;
+
+       checkVersion ) checkVersion;;
+
+	 findServer ) findServer;;
+
+	   getMacId ) getMacId;;
+
+	  getNodeId ) getNodeId;;
+
+             getPkg ) shift
+			case $1 in
+				-d ) touch /etc/.debug 
+					echo "Debug Mode Flagged!";; 
+
+				-x ) rm /etc/.debug
+					echo "Debug Mode Cleared!";; 
+			esac
+		      findServer
+		      checkVersion
+		      banner
+		      exit;;
+
+	    pushSettings ) pushSettings;;
+
+      restoreBackup ) restoreBackup;;
+
+         showLog ) macID=$(getMacId)
+	              if [ -f "/tmp/$macID.log" ]; then
+			cat /tmp/$macID.log
+		     else
+			printf "No Log File Found !\n"
+		     fi;;
+
+        -h | --help ) show_help >&2
+            	      exit 1;;
+
+    esac
+  shift
+done
+

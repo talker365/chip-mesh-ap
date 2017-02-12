@@ -1,0 +1,159 @@
+#!/bin/bash -p
+source /etc/vdn/include/vdn.lib
+# ====================================================================================
+# = Filename:  /etc/vdn/bin/pushxml                                                  =
+# =                                                                                  =
+# = Executes perl scripts to fetch settings, interfaces and localhost information.   =
+# =                                                                                  =
+# = Output: XML format                                                               =
+# =     Transfers XML files to all Servers in the Serverlist                         =
+# =                                                                                  =
+# = by: n4ldr & wd4va                                                                =
+# ====================================================================================
+
+
+clear
+
+server="vdn-services"
+
+verifyServer()
+{
+hostStatus=$(cat /etc/hosts | grep -n $server)
+
+if [ $? -eq 1 ]; then
+  echo "The Server was NOT found in hosts"
+  /etc/vdn/bin/./findServer
+  echo
+else
+  echo "The Server was found in hosts"
+  echo
+fi
+}
+
+verifyServer
+
+macid=`/sbin/./ifconfig wlan0 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}'`
+nodeid=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from network_settings" | awk '{split($0,a,"|"); print a[21]}'`)
+mfg="Raspberry Pi"
+ver=(`cat /var/www/html/hsmm-pi/Config/bootstrap.php |grep 'App.version' | cut -d "'" -f4`)
+ssid=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from network_settings" | awk '{split($0,a,"|"); print a[5]}'`)
+model=(`cat /proc/cpuinfo | grep -m 1 'model name' | cut -d ':' -f2 | cut -d ' ' -f2`)
+boardid=(`cat /proc/cpuinfo | grep -m 1 'Hardware' | cut -d ':' -f2 | cut -d ' ' -f2`)
+channel=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from network_settings" | awk '{split($0,a,"|"); print a[7]}'`)
+chanbw="20"
+txpower=`/sbin/./iwconfig wlan0 | grep 'Tx-Power=' | cut -d '=' -f2 `
+sig=(`/sbin/./iwlist wlan0 scan | grep -m 1 "dBm" | cut -d'=' -f3 | cut -d' ' -f1`)
+noise=" --- "
+lat=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from location_settings" | awk '{split($0,a,"|"); print a[4]}'`)
+lon=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from location_settings" | awk '{split($0,a,"|"); print a[5]}'`)
+distance=""
+memfree=(`cat /proc/meminfo | grep MemFree | awk {'print $2'}`)
+tunnel=0
+eth0Ip=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from network_settings" | awk '{split($0,a,"|"); print a[10]}'`)
+eth0Mac=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from network_settings" | awk '{split($0,a,"|"); print a[11]}'`)
+eth00Ip=""
+eth00Mac=""
+eth02Ip=""
+eth02Mac=""
+eth1Ip=""
+eth1Mac=""
+wlan0Ip=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from network_settings" | awk '{split($0,a,"|"); print a[3]}'`)
+wlan0Mac=(`sqlite3 /var/data/hsmm-pi/hsmm-pi.sqlite "select * from network_settings" | awk '{split($0,a,"|"); print a[4]}'`)
+wlan01Ip=""
+wlan01Mac=""
+vdnscript=(`cat /etc/vdn-release | sed -e 's/.bin//g'`) 
+gateway=0
+lastUpdate=(`date +"%Y-%m-%d %H:%M:%S"`)
+
+checkup=`/usr/bin/uptime | cut -d ' ' -f5`
+
+if [ $checkup == "days," ]; then
+#   echo -e "We have been up for days !"
+   up=$(/usr/bin/uptime | grep "," | cut -d ' ' -f4-7 | cut -d ',' -f1,2)
+else
+#   echo -e "We have been up for less then a day"
+   up=$(/usr/bin/uptime | grep "," | cut -d ' ' -f4-7 | cut -d ',' -f1,1)
+fi
+
+# ------- GRID SQUARE
+
+echo $lat > /etc/latlon
+echo $lon >> /etc/latlon
+
+grid=(`perl /etc/vdn/bin/gridsq $lat $lon`)
+
+echo $grid > /etc/gridsquare
+
+  ftpStatus=$(ping -c 2 $server 2>&1 | grep -c "time")
+
+   if [ $ftpStatus != 0 ]; then
+     echo -e "${CYAN}$server${NORMAL} is ${GREEN}ON-LINE !${NORMAL}"
+     echo
+
+#
+# Settings XML
+#
+echo -e "${BOLD}${WHITE} Creating file ${CYAN}/tmp/settings_$macid${NORMAL}"
+echo -e "\t<settings>"  > /tmp/settings_$macid.xml
+echo -e "\t\t<macid>"$macid"</macid>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<mfg>"$mfg"</mfg>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<ver>"$ver"</ver>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<ssid>"$ssid"</ssid>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<nodeid>"$nodeid"</nodeid>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<model>"$model"</model>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<boardid>"$boardid"</boardid>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<channel>"$channel"</channel>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<chanbw>"$chanbw"</chanbw>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<txpower>"$txpower"</txpower>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<lat>"$lat"</lat>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<lon>"$lon"</lon>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<grid>"$grid"</grid>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<distance>"$distance"</distance>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<sig>"$sig"</sig>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<noise>"$noise"</noise>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<tunnel>"$tunnel"</tunnel>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<memfree>"$memfree"</memfree>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<vdnscript>"$vdnscript"</vdnscript>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<lastUpdate>"$lastUpdate"</lastUpdate>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<gateway>"$gateway"</gateway>" >> /tmp/settings_$macid.xml
+echo -e "\t\t<uptime>"$up"</uptime>" >> /tmp/settings_$macid.xml
+echo -e "\t</settings>" >> /tmp/settings_$macid.xml
+
+#
+# Interfaces XML
+#
+echo -e "${BOLD}${WHITE} Creating file ${CYAN}/tmp/interfaces_$macid${NORMAL}"
+echo -e "\t<interfaces>"  > /tmp/interfaces_$macid.xml
+echo -e "\t\t<macid>"$macid"</macid>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth0Ip>"$eth0Ip"</eth0Ip>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth0Mac>"$eth0Mac"</eth0Mac>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth00Ip>"$eth00Ip"</eth00Ip>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth00Mac>"$eth00Mac"</eth00Mac>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth02Ip>"$eth02Ip"</eth02Ip>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth02Mac>"$eth02Mac"</eth02Mac>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth1Ip>"$eth1Ip"</eth1Ip>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<eth1Mac>"$eth1Mac"</eth1Mac>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<wlan0Ip>"$wlan0Ip"</wlan0Ip>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<wlan0Mac>"$wlan0Mac"</wlan0Mac>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<wlan01Ip>"$wlan01Ip"</wlan01Ip>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<wlan01Mac>"$wlan01Mac"</wlan01Mac>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\t<gateway>"$gateway"</gateway>" >> /tmp/interfaces_$macid.xml
+echo -e "\t\tlastUpdate>"$lastUpdate"</lastUpdate>" >> /tmp/interfaces_$macid.xml
+echo -e "\t</interfaces>"  >> /tmp/interfaces_$macid.xml
+
+# Push XML Files to Servers
+     curl -y30 -n#T /tmp/settings_$macid.xml ftp://$server:/nodes/
+     curl -y30 -n#T /tmp/interfaces_$macid.xml ftp://$server:/nodes/
+
+     touch /tmp/.updated # Set Flag for Server's to Sync
+     curl -n#T /tmp/.updated ftp://$server/nodes/
+
+# remove XML files in /tmp directory.
+
+rm /tmp/*.xml
+rm /tmp/.updated
+
+
+  fi
+
+
