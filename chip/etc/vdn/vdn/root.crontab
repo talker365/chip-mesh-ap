@@ -1,4 +1,0 @@
-*/5 * * * * /usr/local/bin/fccid
-*/10 * * * * /etc/vdn/network/./set_routing
-* * * * * /etc/vdn/watchdog/./watchdog
-*/15 * * * * /et/./.check_vdn

@@ -1,6 +1,0 @@
-#!/bin/ash
-sleep 2
-echo whiteHat
-sleep 2
-echo whiteHat
-sleep 1
