@@ -9,7 +9,11 @@ ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
 ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
 pwr=""
 flash=$(df -h | grep rootfs | awk {'print $4'})
-memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2,$3}')
+#memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2,$3}')
+memfree=$(( $(cat /proc/meminfo | awk '/MemFree:/ {print $2}') / 1024 ))
+memtotal=$(( $(cat /proc/meminfo | awk '/MemTotal:/ {print $2}') / 1024))
+memavail=$(( $(cat /proc/meminfo | awk '/MemAvailable:/ {print $2}') / 1024))
+memused=$((${memtotal} - ${memavail}))
 adapter=($(ifconfig -s | tail -n +2 | awk '{ print $1 }'))
 up=$(/usr/bin/uptime | grep up | cut -d "," -f1)
 clear
@@ -30,12 +34,14 @@ echo -e "           <tr><td>SSID:</td><td>$ssid</td></tr>"
 echo -e "    	    <tr><td>Channel:</td><td>$ch</td></tr>"
 echo -e "    	    <tr><td>Power:</td><td>$pwr</td></tr>"
 echo -e "         </table>"
+echo -e "         <br />"
+echo -e "    	  Time: $up"
 echo -e "      </td>"
 echo -e "      <td>"
 echo -e "         <table>"
-echo -e "           <tr><td>NAND:</td><td>$flash</td></tr>"
-echo -e "    	    <tr><td>Memory:</td><td>$memfree</td></tr>"
-echo -e "    	    <tr><td>Time:</td><td>$up</td></tr>"
+echo -e "           <tr><th>&nbsp;</th><th>Total</th><th>Used</th><th>Free</th></tr>"
+echo -e "           <tr><td>NAND:</td>$(df -h | grep rootfs | awk {'print "<td>"$2,"</td><td>"$3,"</td><td>"$4" ("$5")</td>"'})"
+echo -e "    	    <tr><td>Memory:</td><td>$memtotal M</td><td>$memused M</td><td>$memfree M</td></tr>"
 echo -e "         </table>"
 echo -e "      </td>"
 echo -e "    </tr>"
