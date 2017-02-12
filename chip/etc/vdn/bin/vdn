@@ -5,6 +5,7 @@ source /etc/vdn/include/vdn.lib
 show_help() {
 printf "\n${CYAN}Usage: ${GREEN}${0##*/}${NORMAL} [commands]\n"
 printf "======================================================================\n"
+printf "${YELLOW}   buildPkg${NORMAL} .......| Build package and store on the server Check server\n" 
 printf "${YELLOW}   checkServer${NORMAL} ....| Check server functions (Curl, Ftp & Host Entries\n" 
 printf "${YELLOW}   findServer${NORMAL} .....| Find closest server and update Host Entries\n"
 printf "${YELLOW}   getMacId${NORMAL} .......| Get this Node's Mac Address\n"
@@ -24,18 +25,19 @@ while [ $# -gt 0 ]
 
 do
     case $1 in
+           buildPkg | buildpkg ) buildPkg;;
 
-        checkServer ) checkServer;;
+        checkServer | checkserver ) checkServer;;
 
-       checkVersion ) checkVersion;;
+       checkVersion | checkversion ) checkVersion;;
 
-	 findServer ) findServer;;
+	 findServer | findserver ) findServer;;
 
-	   getMacId ) getMacId;;
+	   getMacId | getmacid ) getMacId;;
 
-	  getNodeId ) getNodeId;;
+	  getNodeId | getnodeid ) getNodeId;;
 
-             getPkg ) shift
+             getPkg | getpkg ) shift
 			case $1 in
 				-d ) touch /etc/.debug 
 					echo "Debug Mode Flagged!";; 
@@ -43,16 +45,15 @@ do
 				-x ) rm /etc/.debug
 					echo "Debug Mode Cleared!";; 
 			esac
-		      findServer
-		      checkVersion
+		      getPkg
 		      banner
 		      exit;;
 
-	    pushSettings ) pushSettings;;
+       pushSettings | pushsettings ) pushSettings;;
 
-      restoreBackup ) restoreBackup;;
+      restoreBackup | restorebackup ) restoreBackup;;
 
-         showLog ) macID=$(getMacId)
+            showLog | showlog ) macID=$(getMacId)
 	              if [ -f "/tmp/$macID.log" ]; then
 			cat /tmp/$macID.log
 		     else

@@ -52,4 +52,4 @@ echo -en " Used:$memused kB"
 echo -e " Free:$memfree kB"
 echo -e "\033[36m Time:\033[0m$up"
 echo -e "\033[33m------------------------------------"
-
+echo "Build:$(cat /etc/vdn-release)"

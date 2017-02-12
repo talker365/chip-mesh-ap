@@ -1,9 +1,43 @@
 source /etc/vdn/include/ansi.c
 server="vdn-services"
 
-# =======================
-# Function buildPatch
-# =======================
+backupNode()
+{
+# Create filename for misisng files to prevent backup error msgs.
+[ -f /etc/latlon ] && echo "Lat/Lon file Exists, backing up." || touch /etc/latlon
+[ -f /etc/gridsquare ] && echo "GridSquare file Exists, backing up." || touch /etc/latlon 
+
+### Backup any customized settings  
+tar cf /tmp/$nodeName -C/ -T/etc/vdn/vdnpkglist   
+printf "\nUploading $nodeName to $server\n" 
+curl -y30 -n#T /tmp/$nodeName ftp://$server:/node-backups/ 
+rm /tmp/*.sav
+}
+
+buildPkg()
+{
+# Build normal package
+checkVersion
+
+   printf "Building package for nodes with firmware=$node_firmware\n"
+   output_file=$(date +"$node_firmware-%Y%m%d_%H%M.bin")
+   oldfile=`curl -snl ftp://$server/ | grep "^$node_firmware"`
+   echo `date +$node_firmware-%Y%m%d_%H%M.bin` > /etc/vdn-release
+
+
+   printf "Using VDN Package List\n"
+   tar cf /tmp/$output_file -C/ -T/etc/vdn/vdnpkglist
+   touch /tmp/.updated 
+
+   curl -sn ftp://$server/ -X 'DELE '$oldfile
+   curl -sn#T /tmp/$output_file ftp://$server/
+   curl -sn#T /tmp/.updated ftp://$server/
+
+   rm /tmp/*.bin
+   rm /tmp/.updated
+
+printf "Filename $output_file has been transferred to $server\n" 
+}
 
 # =======================                                                         
 # Function cleanNode                                                            
@@ -152,66 +186,27 @@ fi
 checkVersion()
 {
 logMessage " Request: Compairing installed package with server. "
-debug=0
-input_file="none"   
-node_firmware=$(cat "/etc/mesh-release")
-installed_patch_ver=$(cat "/etc/vdn-release")
-server="vdn-services"
-nodeId=$(getNodeId)
-timeStamp=$(getTimeStamp)
-nodeName=`uname -n`"_"`date +"%Y%m%d_%H%M.sav"`
 
-clear
+OPTIND=1 # Reset
+server="vdn-services"
+ver="1.0"
+node_firmware="VDN_CHIP_$ver"
+debugVer="debug-$node_firmware"
+installed_patch_ver=$(cat "/etc/vdn-release")
+nodeName=`uname -n`"_"`date +"%Y%m%d_%H%M.sav"`
+debug=0
+reries=0
+input_file=""
+
 checkServer
 
-if [ $debug == "1" ] || [ -f /etc/.debug ]; then                                                           
-  debugVer="debug-$node_firmware"
-  input_file="`curl -snl ftp://$server/ | grep "^$debugVer-"`"                           
-else                          
-  input_file="`curl -snl ftp://$server/ | grep "^$node_firmware"`"                       
-fi
-
-if [ "$installed_patch_ver" == "$input_file" ]; then                                     
-   logMessage " Build Package is already up to date "
-   printf "\nLatest Version [%s] is Installed - No need to Update.\n" $input_file                                                                                    
-   return
-else                                                                              
-   printf "\nInstalled Version = $installed_patch_ver\n"                                   
-   printf "Server Version       = $input_file\n\n"                                               
-
-# Create filename for misisng files to prevent backup error msgs.
-[ -f /etc/latlon ] && echo "Lat/Lon file Exists, backing up." || touch /etc/latlon
-[ -f /etc/gridsquare ] && echo "GridSquare file Exists, backing up." || touch /etc/latlon 
-
-
-### Backup any customized settings  
-
-tar cf /tmp/$nodeName -C/ -T/etc/vdn/vdnpkglist   
-printf "\nBacking up $nodeName to $server\n" 
-copyFTP "/tmp/$nodeName" "ftp://$server:/node-backups/"
-rm /tmp/*.sav
-
-
-# Retrieving Server Package
-  logMessage " Updating / Installing latest build package "
-  printf "\nInstalling $input_file\n\n"
-  curl -no /tmp/$input_file ftp://$server/$input_file 
-
-if [ $? -ne 0 ]; then                                                                           
-  logMessage "$? Error retrieving $input_file | checkVersion "                               
-  return 1                                                                                           
+if [ $debug == "1" ] || [ -f /etc/.debug ]; then
+   input_file="`curl -snl ftp://$server/ | grep "^$debugVer-"`"
 else
-
-  tar xf /tmp/$input_file -C /                                                        
-  rm -r /tmp/*.bin                                                              
-                                                                                         
-# UpDate vdn-release version file.                                                        
-                                                                                         
-   echo $input_file > /etc/vdn-release                                                 
-   cleanNode
+   input_file="`curl -snl ftp://$server/ | grep "^$node_firmware"`"
 fi
-fi           
 }
+
 
 
 # ====================
@@ -285,6 +280,16 @@ echo $timeStamp
 echo
 lastUpdate=$(date +"%Y-%m-%d %H:%M:%S")                                                       
 nodeName=`uname -n`
+}
+
+
+# ======================
+# Function getPkg
+# ======================
+getPkg()
+{
+checkVersion
+restoreBuild
 }
 
 
@@ -405,20 +410,35 @@ curl  --header "Content-Type: text/xml;charset=UTF-8" --header "LOADING_NODE_DAT
 
 }
 
+restoreBuild()
+{
+if [ "$installed_patch_ver" == "$input_file" ]; then
+   printf "\nLatest Version [%s] is Installed - No need to Update.\n" $input_file
+   printf "Exiting...\n"
+   exit
+else
+   printf "\nInstalled Version = $installed_patch_ver\n"
+   printf "FTP Version       = $input_file\n\n"
+   backupNode
 
-# =======================
-# Function restoreBackup
-# =======================
+   printf "\nInstalling $input_file\n\n"
+   curl -no /tmp/$input_file ftp://$server/$input_file
+   tar xf /tmp/$input_file -C /
+   rm -r /tmp/*.bin
+
+# Write vdn-release version file.
+
+   echo $input_file > /etc/vdn-release
+  banner
+  exit
+fi
+}
+
+
 restoreBackup()
 {
-
-logMessage " Request: restoreBackup was called "
-dst='/tmp'
 nodeName=`uname -n`
-server="vdn-services"
-
-checkServer
-
+dst='/tmp'
 echo -e "${GREEN}*** Retrieving Available Backup Files for Node: ${RED}$nodeName${NORMAL} ***"
 set -- `curl -snl ftp://$server/node-backups/ | grep "^$nodeName"`
 echo
@@ -445,16 +465,19 @@ echo ""
 echo "File: $file"
 
    printf "\nInstalling $file\n\n"
-   curl -no /tmp/$file ftp://$server/node-backups/$file                                   
+   curl -no /tmp/$file ftp://$server/node-backups/$file
 
-   tar xf /tmp/$file -C /                                                        
-   rm -r /tmp/*.sav                                                              
-                                                                                         
-# Write vdn-release version file.                                                        
-                                                                                         
-   echo $file > /etc/vdn-release                                                 
-  /etc/vdn/bin/./.banner                                                       
+   tar xf /tmp/$file -C /
+   rm -r /tmp/*.sav
+
+# Write vdn-release version file.
+
+   echo $file > /etc/vdn-release
+banner
+
+exit 0
 }
+
 
 
 # =======================                                                                       
