@@ -113,8 +113,12 @@ sudo mv /etc/dnsmasq.vdn /etc/dnsmasq.conf
 if [ -L /var/run/hosts_olsr ]; then
     rm -f /var/run/hosts_olsr
 fi
-
 sudo ln -s /etc/hosts /var/run/hosts_olsr
+
+# Packet masquerading
+sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source $nodeIP/" /etc/rc.local
+sudo echo "exit 0" >> /etc/rc.local
+#iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source 10.46.182.172
 
 # Create the OLSRD Config File
 sudo cp /etc/olsrd/olsrd.conf.vdn /etc/olsrd/olsrd.conf
