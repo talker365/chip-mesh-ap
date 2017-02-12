@@ -1,4 +1,9 @@
 #!/bin/bash
+
+getmac() {
+echo $(ifconfig $1 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}')
+}
+
 host=$(hostname | awk '{print toupper($0)}')
 ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
 ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
@@ -33,7 +38,7 @@ do
   status=$(ifconfig $i | grep UP | awk '{ print $1 }' )
   if [ "$status" == "UP" ]; then ip=$(ifconfig $i 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'); enabled=$(ifconfig $i | grep MULTICAST | awk '{print $3}');
   if [ "$i" == "usb0" ] || [ "$i" == "eth0" ]; then echo -en " "; fi; 
-  if [ "$i" != "lo" ]; then echo -en "  \033[36m$i: \033[33m[$ip] "
+  if [ "$i" != "lo" ]; then echo -en "  \033[36m$i: MAC:\033[33m $(getmac $i) \033[36mIP:\033[33m[$ip] "
   if [[ "$enabled" == "RUNNING" ]]; then echo -e "\033[32m$enabled\033[0m"; else echo -e "\033[31mDOWN\033[0m"; fi; fi; fi
 done
 echo -en "\033[32m"
