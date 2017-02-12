@@ -1,0 +1,6 @@
+#!/bin/ash
+if [ "`uname -n`" == 'wd4va-22840-03' ]
+then
+    #route add -net 0.0.0.0 gw 10.183.210.11 netmask 0.0.0.0 dev eth0
+    route add -net 10.130.240.0 gw 192.168.3.1 netmask 255.255.255.0 dev eth1
+fi

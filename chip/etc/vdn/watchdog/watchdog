@@ -1,0 +1,88 @@
+#!/bin/bash
+# ================================================================================
+# =   /etc/vdn/watchdog/watchdog.sh                                              =
+# =                                                                              =
+# =   This script monitors system performance and sends alerts (email) when the  =
+# =   monitored values exceed specified levels.                                  =
+# =                                                                              =
+# =                                                                              =
+# =   Created:  02-DEC-2015             Jeffrey A. Hensley - WD4VA               =
+# ================================================================================
+
+
+
+# ---------------------------------------------------------------------------------
+#  Cleanup - Prepare files for watchdog iteration
+# ---------------------------------------------------------------------------------
+
+# Clear alert file...
+if test -e /etc/vdn/watchdog/.alert
+then
+	rm /etc/vdn/watchdog/.alert
+fi
+
+
+# ---------------------------------------------------------------------------------
+#  Checking free space
+# ---------------------------------------------------------------------------------
+
+DISK1_FREE=`df -h | grep root | awk {'print $5'} | cut -d'%' -f1`
+DISK_LIMIT="90"
+
+
+if [ "$DISK1_FREE" -gt "$DISK_LIMIT" ]; then
+        echo "debug:  Yikes! Not enough Disk Space! (/ is at $DISK1_FREE% used)"
+	echo "  echo \"Disk Space Warning:  / is at $DISK1_FREE%\"" >> /etc/vdn/watchdog/.alert
+else
+        echo "debug:  Huray! Plenty of Disk Space! (/ is at $DISK1_FREE% used)"a
+fi
+
+
+
+# ---------------------------------------------------------------------------------
+#  Checking free memory
+# ---------------------------------------------------------------------------------
+
+MEM_LIMIT="500"
+MEM_FREE=`cat /proc/meminfo | grep MemFree | awk {'print $2'}`
+
+if [ "$MEM_FREE" -lt "$MEM_LIMIT" ]; then
+	echo "debug:  Yikes! Not enough memory! $MEM_FREE < $MEM_LIMIT"
+	echo "  echo \"Free Memory Warning:  There is only $MEM_FREE KB remaining \"" >> /etc/vdn/watchdog/.alert
+else
+	echo "debug:  Huray! Plenty of memory! $MEM_FREE > $MEM_LIMIT"
+fi
+
+
+
+
+# ---------------------------------------------------------------------------------
+#  Checking reboot status
+# ---------------------------------------------------------------------------------
+
+if [ ! -e /tmp/.reboot ]; then
+	echo "  echo \"Node was rebooted.\"" >> /etc/vdn/watchdog/.alert
+	touch /tmp/.reboot
+fi
+
+
+
+# ---------------------------------------------------------------------------------
+#  Add password crediential file for wget / ftp access if .netrc file is missing
+# ---------------------------------------------------------------------------------
+if [ ! -e ~/.netrc ]; then
+
+         touch ~/.netrc
+         chmod 700 ~/.netrc
+	 server="vdn-services"
+         echo "machine $server login mesh-node password aredn" >> ~/.netrc
+fi
+
+
+# ---------------------------------------------------------------------------------
+#  DNS Updates
+# ---------------------------------------------------------------------------------
+/etc/vdn/bin/./findServer
+
+
+

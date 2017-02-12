@@ -1,0 +1,2 @@
+#!/bin/ash
+/usr/bin/scp -P2222 -i /etc/vdn/.ssh/vdn_dbr $1 $2

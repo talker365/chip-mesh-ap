@@ -1,0 +1,108 @@
+#!/bin/bash
+source /etc/vdn/include/vdn.lib
+# ====================================================================================
+# = Filename:  /bin/buildpkg                                                         =
+# =                                                                                  =
+# = Script to build a vdn package and store on Server for automatic node updates     =
+# =                                                                                  =
+# = Usage: ${0##*/} [-hdv] [FIRMWARE]...                                             =
+# =   -h            Display this help and exit.                                      =
+# =   -d            Build package for nodes in development.                          =
+# =   -v [FIRMWARE] Build package for specified node versions.                       =
+# =                                                                                  =
+# = by: Loren Ristola, N4LDR                                                         =
+# ====================================================================================
+
+#
+# Initialize our own variables:
+#
+
+OPTIND=1 # Reset
+server="vdn-services "
+ver=(`cat /var/www/html/hsmm-pi/Config/bootstrap.php |grep 'App.version' | cut -d "'" -f4`)
+node_firmware="HSMM_CHIP_$ver"
+debugVer="debug-$node_firmware"
+installed_patch_vermware=$(cat "/etc/vdn-release")
+debug=0
+reries=0
+output_file=""
+
+#
+# Sub-Routines
+#
+
+
+transferFiles()
+{
+
+   printf "Using VDN Package List\n"
+   tar cf /tmp/$output_file -C/ -T/etc/vdn/vdnpkglist
+   touch /tmp/.updated 
+
+curl -sn ftp://$server/ -X 'DELE '$oldfile
+curl -sn#T /tmp/$output_file ftp://$server/
+curl -sn#T /tmp/.updated ftp://$server/
+
+rm /tmp/*.bin
+rm /tmp/.updated
+
+printf "Filename $output_file has been transferred to $server\n" 
+}
+
+
+show_help() {
+cat << EOF
+Usage: ${0##*/} [-hdx]
+Build Package and upload to vdn-services.
+    -h            Display this help and exit.
+    -d            Build package for nodes in development.
+    -x            Exit / Remove Developer Flag
+EOF
+}
+
+while getopts "hdv:x" opt; do
+    case "$opt" in
+        h)
+            show_help
+            exit 0
+            ;;
+        d)  debug=$((debug+1))
+            touch /etc/.debug
+            ;;
+        x)  debug=0
+            rm /etc/.debug
+	    ;;
+        '?')
+            show_help >&2
+            exit 1
+            ;;
+    esac
+done
+
+shift "$((OPTIND-1))" # Shift off any remaining switches --.
+
+
+#
+# Beginning of Script
+#
+
+checkServer
+
+if [ -f /etc/.debug ]; then
+# Build developer package                                             
+   printf "Building Development package for firmware=$node_firmware\n" 
+   output_file=$(date +"$debugVer-%Y%m%d_%H%M.bin")                  
+   oldfile=`curl -snl ftp://$server/ | grep "^$debugVer"` 
+   echo `date +$output_file` > /etc/vdn-release
+else
+
+# Build normal package
+   printf "Building package for nodes with firmware=$node_firmware\n"
+   output_file=$(date +"$node_firmware-%Y%m%d_%H%M.bin")
+   oldfile=`curl -snl ftp://$server/ | grep "^$node_firmware"`
+   echo `date +$node_firmware-%Y%m%d_%H%M.bin` > /etc/vdn-release
+fi
+
+transferFiles
+
+

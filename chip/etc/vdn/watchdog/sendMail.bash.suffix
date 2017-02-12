@@ -1,0 +1,10 @@
+  echo "."
+  sleep 1
+  echo "quit"
+}
+ 
+# test
+#mail_input
+ 
+# send
+mail_input | telnet -z ssl smtp.gmail.com 465

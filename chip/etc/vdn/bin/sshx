@@ -1,0 +1,2 @@
+#!/bin/ash
+/usr/bin/ssh -y -y -p2222 -i /etc/vdn/.ssh/vdn_dbr $1
