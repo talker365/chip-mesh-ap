@@ -13,10 +13,44 @@ memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2,$3}')
 adapter=($(ifconfig -s | tail -n +2 | awk '{ print $1 }'))
 up=$(/usr/bin/uptime | grep up | cut -d "," -f1)
 clear
-echo -e "Hostname:$host<br />"
-echo -e "SSID: $ssid  CH:$ch @ $pwr <br />"
+#echo -e "Hostname:$host<br />"
+
+echo -e "<table data-role=\"table\" data-mode=\"columntoggle:none\" class=\"ui-responsive\" id=\"statusTable\">"
+echo -e "  <thead style=\"display:none;\">"
+echo -e "    <tr>"
+echo -e "      <th>column1</th>"
+echo -e "      <th data-priority=\"1\">column2</th>"
+echo -e "    </tr>"
+echo -e "  </thead>"
+echo -e "  <tbody>"
+echo -e "    <tr>"
+echo -e "      <td>"
+echo -e "         <table>"
+echo -e "           <tr><td>SSID:</td><td>$ssid</td></tr>"
+echo -e "    	    <tr><td>Channel:</td><td>$ch</td></tr>"
+echo -e "    	    <tr><td>Power:</td><td>$pwr</td></tr>"
+echo -e "         </table>"
+echo -e "      </td>"
+echo -e "      <td>"
+echo -e "         <table>"
+echo -e "           <tr><td>NAND:</td><td>$flash</td></tr>"
+echo -e "    	    <tr><td>Memory:</td><td>$memfree</td></tr>"
+echo -e "    	    <tr><td>Time:</td><td>$up</td></tr>"
+echo -e "         </table>"
+echo -e "      </td>"
+echo -e "    </tr>"
+echo -e "  <tbody>"
+echo -e "</table>"
+
+
+
+
+
+#===================================
+# Interfaces Table
+#===================================
 echo -e "<h3>Interfaces:</h3>"
-echo -e "<table  data-role="table" data-mode="columntoggle:none" class="ui-responsive ui-shadow" id="interfacesTable">"
+echo -e "<table  data-role=\"table\" data-mode=\"columntoggle:none\" class=\"ui-responsive ui-shadow\" id=\"interfacesTable\">"
 echo -e "<thead><tr><th data-priority=\"1\">Interface</th>"
 echo -e "<th data-priority= \"2\">IP Address</th>"
 echo -e "<th data-priority=\"4\">MAC Address</th>"
@@ -30,8 +64,4 @@ do
   if [[ "$enabled" == "RUNNING" ]]; then echo -e "<td>$enabled</td>"; else echo -e "<td>DOWN</td></tr>"; fi; fi; fi
 done
 echo -e "</tbody></table>"
-echo -en "<br />"
-echo -e "<h3> Free Resources: </h3>"
-echo -e "NAND:$flash Memory: $memfree <br />"
-echo -e "Time:$up <br />"
-echo -e "------------------------------------ <br />"
+

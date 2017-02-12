@@ -18,7 +18,7 @@
     <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
 	<!--<a href="#page_home_info" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>-->
 	<a href="#page_home_info" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh by VDN</h1>
+    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" data-transition="slide">Status</a></li>
@@ -95,7 +95,7 @@
   <div data-role="header">
     <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_setup_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh by VDN</h1>
+    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" data-transition="reverse">Status</a></li>
