@@ -1,4 +1,5 @@
 #!/bin/bash
+source /etc/vdn/include/vdn.lib
 
 getmac() {
 echo $(ifconfig $1 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}')
@@ -9,47 +10,48 @@ ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
 ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
 pwr=""
 flash=$(df -h | grep rootfs | awk {'print $4'})
-memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2}')
-memtotal=$(cat /proc/meminfo | awk '/MemTotal:/ {print $2}')
-memavail=$(cat /proc/meminfo | awk '/MemAvailable:/ {print $2}')
-memused=$((${memtotal} - ${memavail}))
+disktotal=$(df -h | grep rootfs | awk {'print $2'})
+diskused=$(df -h | grep rootfs | awk {'print $3'})
+diskfree=$(df -h | grep rootfs | awk {'print $4'})
+diskpct=$(df -h | grep rootfs | awk {'print "("$5")"'})
+memfree=$(($(cat /proc/meminfo | awk '/MemFree:/ {print $2}') / 1024))
+memtotal=$(($(cat /proc/meminfo | awk '/MemTotal:/ {print $2}') / 1024))
+memavail=$(($(cat /proc/meminfo | awk '/MemAvailable:/ {print $2}') /1024))
+memused=$((${memtotal} - ${memavail})) 
 adapter=($(ifconfig -s | tail -n +2 | awk '{ print $1 }'))
 up=$(/usr/bin/uptime | grep up | cut -d "," -f1)
 clear
 echo
 echo "Welcome"
-echo -e "\033[32m"
+echo -e "${G}"
 echo    '      ____________________________  '
 echo    '     /                           /\ '
 echo -e '    / \033[35m VDN-CHIP \033[34mMESH NETWORK \033[32m  _/ /\'
 echo    '   /                          / \/  '
-echo -e   '  /  N4LDR & WD4VA   \033[31m  V 1.0 \033[32m /\    '
+echo -e '  /  N4LDR & WD4VA   \033[31m  V 1.0 \033[32m /\    '
 echo    ' /___________________________/ /    '
 echo    ' \___________________________\/     '
 echo    '  \ \ \ \ \ \ \ \ \ \ \ \ \ \ \     '
-echo -e "\033[33m"
+echo -e "${Y}"
 echo    "------------------------------------"
 echo    "      Valley Digital Networking     "
 echo    "===================================="
-echo -en "\033[32m\033[1m"
-echo -e "$host"
-echo -en "\033[0m"
-#echo -e "$ssid  CH:$ch @ $pwr"
-echo -e "\033[32mInterfaces:"
+echo -e "${G}${BOLD}$host${N}"
+echo -e "$ssid  CH:$ch @ $pwr"
+echo -e "${G}Interfaces:"
+
 for i in "${adapter[@]}"
 do
   status=$(ifconfig $i | grep UP | awk '{ print $1 }' )
   if [ "$status" == "UP" ]; then ip=$(ifconfig $i 2>/dev/null|awk '/inet addr:/ {print $2}'|sed 's/addr://'); enabled=$(ifconfig $i | grep MULTICAST | awk '{print $3}');
   if [ "$i" == "usb0" ] || [ "$i" == "eth0" ]; then echo -en " "; fi; 
-  if [ "$i" != "lo" ]; then echo -en "  \033[34m$i: \033[36mMAC:\033[33m $(getmac $i) \033[36mIP:\033[33m[$ip] "
-  if [[ "$enabled" == "RUNNING" ]]; then echo -e "\033[32m$enabled\033[0m"; else echo -e "\033[31mDOWN\033[0m"; fi; fi; fi
+  if [ "$i" != "lo" ]; then echo -en "  ${BL}$i: ${C}MAC:${Y} $(getmac $i) ${C}IP:${Y}[$ip] "
+  if [[ "$enabled" == "RUNNING" ]]; then echo -e "${G}$enabled${N}"; else echo -e "${R}DOWN${N}"; fi; fi; fi
 done
-echo -en "\033[32m"
-echo -e "Free Space:"
-echo -e "\033[36m NAND: \033[0m$(df -h | grep rootfs | awk {'print "Total:"$2,"Used:"$3,"Free:"$4" ("$5")"'})"
-echo -en "\033[36m Memory:\033[0mTotal:$memtotal kB"
-echo -en " Used:$memused kB"
-echo -e " Free:$memfree kB"
-echo -e "\033[36m Time:\033[0m$up"
-echo -e "\033[33m------------------------------------"
-echo "Build:$(cat /etc/vdn-release)"
+
+echo -e "${G}Free Space:"
+echo -e "${BL}Storage:${C}Total:${Y}$disktotal ${C}Used:${Y}$diskused ${C}Free:${Y}$diskfree$diskpct ${N}"
+echo -e "${BL} Memory:${C}Total:${Y}"$memtotal"M ${C}Used:${Y}"$memused"M ${C}Free:${Y}"$memfree"M"
+echo -e "${C}   Time:${N}$up"
+echo -e "${Y}------------------------------------"
+echo -e "\033[44m Build:$(cat /etc/vdn-release) ${N}\n"

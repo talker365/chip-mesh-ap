@@ -5,7 +5,7 @@ if [ "$BASH" ]; then
     . ~/.bashrc
   fi
 fi
-
+PATH=/etc/vdn/bin:/usr/bin:/usr/sbin:/bin:/sbin
 mesg n
 alias ls='ls --color=auto'
 alias ll='ls -la'
