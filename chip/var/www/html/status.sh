@@ -34,8 +34,6 @@ echo -e "           <tr><td>SSID:</td><td>$ssid</td></tr>"
 echo -e "    	    <tr><td>Channel:</td><td>$ch</td></tr>"
 echo -e "    	    <tr><td>Power:</td><td>$pwr</td></tr>"
 echo -e "         </table>"
-echo -e "         <br />"
-echo -e "    	  Time: $up"
 echo -e "      </td>"
 echo -e "      <td>"
 echo -e "         <table>"
@@ -55,7 +53,7 @@ echo -e "</table>"
 #===================================
 # Interfaces Table
 #===================================
-echo -e "<h3>Interfaces:</h3>"
+echo -e "<p style=\"font-weight:bold;padding-bottom:0px;margin-bottom:0px;\">Interfaces:</p>"
 echo -e "<table  data-role=\"table\" data-mode=\"columntoggle:none\" class=\"ui-responsive ui-shadow\" id=\"interfacesTable\">"
 echo -e "<thead><tr><th data-priority=\"1\">Interface</th>"
 echo -e "<th data-priority= \"2\">IP Address</th>"

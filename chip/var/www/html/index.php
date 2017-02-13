@@ -1,5 +1,5 @@
 <?php
-	switch (file_exists('.installed')) {
+	switch (file_exists('/var/www/flags/.installed')) {
 		case 1:
 			include 'status.php';
 			break;

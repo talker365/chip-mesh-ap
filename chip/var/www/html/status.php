@@ -42,7 +42,7 @@
 		  <td>
 		    <?php
 		        switch (1) {
-		      	    case (file_exists('.micromesh')):
+		      	    case (file_exists('/var/www/flags/.micromesh')):
         		        ?>
 		                <div style="">
 							<h1><?php echo shell_exec("hostname"); ?></h1>
@@ -52,7 +52,7 @@
 
 		                <?php
 		                break;
-		            case (file_exists('.microrouter')):
+		            case (file_exists('/var/www/flags/.microrouter')):
 		                ?>
 		                <h2> Micro Router Status </h2>
 
@@ -66,7 +66,9 @@
 		  </td>
 		  <td>
 		    <div style="text-align: center;"/>
-	        <img src="images/micromesh_banner.png" style="background: #bbbbbb;"/>
+	        	<img src="images/micromesh_banner.png" style="background: #bbbbbb;"/> <br />
+				<?php echo shell_exec("echo \"`date`\""); ?> <br />
+				<?php echo shell_exec("echo \"`uptime -p`\""); ?>
     		</div>
 		    <div id="divDebug" style="display:none;">
 		        <?php echo $_SERVER["SERVER_NAME"]; ?> Status <br />
