@@ -55,7 +55,12 @@
 							?>
 									<div data-role="collapsible">
 									  <h1>Battery Detected</h1>
-									  <p><?php echo shell_exec("sudo battery.sh");?></p>
+									  <p>
+										Level: <?php echo shell_exec("sudo /etc/vdn/bin/battery level");?> %<br />
+										Voltage: <?php echo shell_exec("sudo /etc/vdn/bin/battery volts");?> mV<br />
+										Battery Temp: <?php echo shell_exec("sudo /etc/vdn/bin/battery tempf");?> F<br />
+										Current: <?php echo shell_exec("sudo /etc/vdn/bin/battery current");?>mA<br />
+									  </p>
 									</div>
 							<?php
 								}
