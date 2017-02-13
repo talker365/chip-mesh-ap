@@ -49,6 +49,17 @@
 		                    <h4>Operating Mode: Mesh Node</h4>
 							<h4><?php echo shell_exec("cat /etc/vdn-release");?></h4>
 		                    <?php echo shell_exec("./status.sh"); ?>
+							<?php
+								$batteryExists = shell_exec("sudo battery.sh|grep BAT_EXIST");
+								if (strpos($batteryExists, "AT_EXIST=1") == 1) {
+							?>
+									<div data-role="collapsible">
+									  <h1>Battery Detected</h1>
+									  <p><?php echo shell_exec("sudo battery.sh");?></p>
+									</div>
+							<?php
+								}
+							?>
 		                </div>
 
 		                <?php
