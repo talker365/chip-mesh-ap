@@ -226,8 +226,8 @@ sudo chgrp www-data /etc/resolv.conf
 sudo chmod g+w /etc/resolv.conf
 
 # Set installation type flag for status page.
-sudo touch /var/www/html/.micromesh
+sudo touch /var/www/flags/.micromesh
 fi
 
 # FINISHED SETUP
-sudo touch /var/www/html/.installed
+sudo touch /var/www/flags/.installed
