@@ -1,0 +1,109 @@
+#!/bin/bash
+source /etc/vdn/include/vdn.lib
+
+show_help()
+{
+echo -e "\n${C}Usage: ${G}${0##*/}${N} (options)\n"
+echo -e "---------------------------------"
+echo -e "Option:"
+echo -e "  check           # Checks presence of a battery connected."
+echo -e "  level           # Battery Fuel Gauge in %."
+echo -e "  tempc           # Internal Charger Temperature in C."
+echo -e "  tempf           # Internal Charger Temperature in F."
+echo -e "  volts           # Battery Voltage in DC"
+echo -e "  current         # Battery Current (+ Charging / - Discharging)"
+}
+
+readBattery() {
+
+# read battery voltage.
+    BAT_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x78)
+    BAT_VOLT_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x79)
+    BAT_BIN=$(( $(($BAT_VOLT_MSB << 4)) | $(($(($BAT_VOLT_LSB & 0x0F)) )) ))
+    BAT_VOLT_FLOAT=$(echo "($BAT_BIN*1.1)"|bc)
+    BAT_VOLT=${BAT_VOLT_FLOAT%.*}
+
+# read charging status.
+    BAT_ICHG_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x7A)
+    BAT_ICHG_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x7B)
+    BAT_ICHG_BIN=$(( $(($BAT_ICHG_MSB << 4)) | $(($(($BAT_ICHG_LSB & 0x0F)) )) ))
+    BAT_ICHG_FLOAT=$(echo "($BAT_ICHG_BIN*0.5)"|bc)
+    BAT_ICHG=${BAT_ICHG_FLOAT%.*}
+    BAT_IDISCHG_MSB=$(i2cget -y -f 0 0x34 0x7C)
+    BAT_IDISCHG_LSB=$(i2cget -y -f 0 0x34 0x7D)
+    BAT_IDISCHG_BIN=$(( $(($BAT_IDISCHG_MSB << 5)) | $(($(($BAT_IDISCHG_LSB & 0x1F)) )) ))
+    BAT_IDISCHG=$(echo "($BAT_IDISCHG_BIN*0.5)"|bc)
+
+#read fuel gauge B9h
+    BAT_GAUGE_HEX=$(i2cget -y -f 0 0x34 0xb9)
+    BAT_GAUGE_DEC=$(($BAT_GAUGE_HEX))
+
+#read internal temperature
+    TEMP_MSB=$(i2cget -y -f 0 0x34 0x5e)
+    TEMP_LSB=$(i2cget -y -f 0 0x34 0x5f)
+    TEMP_BIN=$(( $(($TEMP_MSB << 4)) | $(($(($TEMP_LSB & 0x0F)) )) ))
+    TEMP_C=$(echo "($TEMP_BIN*0.1-144.7)"|bc)
+    TEMP_F=$(echo "scale=2;((9/5) * $TEMP_C) + 32" |bc)
+}
+
+
+# ------------------[ MAIN ]-------------------------------------------------------------
+
+/usr/sbin/i2cset -y -f 0 0x34 0x82 0xC3
+
+POWER_OP_MODE=$(/usr/sbin/i2cget -y -f 0 0x34 0x01)
+BAT_EXIST=$(($(($POWER_OP_MODE&0x20))/32))
+
+
+if [ $# -eq 0 ]; then 
+  printf "\n${C}Usage: ${G}${0##*/}${N} -h, --help for full list of options.\n"
+
+  if [ $BAT_EXIST == 0 ]; then echo -e "Exists:0"; fi
+  if [ $BAT_EXIST == 1 ]; then
+   readBattery
+   echo -e "Exists:$BAT_EXIST"
+   echo -e "Voltage:$BAT_VOLT_FLOAT"
+   echo -e "Level:$BAT_GAUGE_DEC"
+
+     if [ "$BAT_ICHG_FLOAT" == "0" ]; then
+       echo -e "Charge:-$BAT_IDISCHG"
+     else
+       echo -e "Charge:+$BAT_ICHG_FLOAT"
+     fi
+
+   echo -e "Tempc:$TEMP_C"
+   echo -e "Tempf:$TEMP_F"
+ fi
+exit 0
+fi
+
+while [ $# -gt 0 ]
+ if [ $BAT_EXIST == 1 ]; then readBattery; fi
+do
+    case $1 in
+           check ) echo -e "$BAT_EXIST"; exit 0;;
+
+           level ) echo -e "$BAT_GAUGE_DEC"; exit 0;;
+
+            tempc ) echo -e "$TEMP_C"; exit 0;;
+
+            tempf ) echo -e "$TEMP_F"; exit 0;;
+
+           volts ) echo -e "$BAT_VOLT_FLOAT"; exit 0;;
+
+         current )
+	     if [ "$BAT_ICHG_FLOAT" == "0" ]; then
+	       echo -e "-$BAT_IDISCHG"
+	     else
+	       echo -e "+$BAT_ICHG_FLOAT"
+	     fi ;exit 0;;
+
+     -h | --help ) show_help >&2
+    exit 1;;
+
+   esac
+ shift
+done
+
+
+
