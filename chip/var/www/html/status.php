@@ -47,6 +47,7 @@
 		                <div style="">
 							<h1><?php echo shell_exec("hostname"); ?></h1>
 		                    <h4>Operating Mode: Mesh Node</h4>
+							<h4><?php echo shell_exec("cat /etc/vdn-release");?></h4>
 		                    <?php echo shell_exec("./status.sh"); ?>
 		                </div>
 
