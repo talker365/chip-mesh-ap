@@ -231,3 +231,6 @@ fi
 
 # FINISHED SETUP
 sudo touch /var/www/flags/.installed
+
+# Set Timezone to EST
+sudo timedatectl set-timezone EST
