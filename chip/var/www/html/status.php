@@ -10,6 +10,12 @@
 <?php
 	$theme = "b";
 ?>
+<style>
+	.greenCollHeader {
+    	background-color: #7FAF1B !important;
+    	text-shadow: #aaa 0 1px 0 !important;
+	}
+</style>
 </head>
 <body>
 
@@ -50,10 +56,10 @@
 							<h4><?php echo shell_exec("cat /etc/vdn-release");?></h4>
 		                    <?php echo shell_exec("./status.sh"); ?>
 							<?php
-								$batteryExists = shell_exec("sudo battery.sh|grep BAT_EXIST");
-								if (strpos($batteryExists, "AT_EXIST=1") == 1) {
+								$batteryExists = shell_exec("sudo /etc/vdn/bin/battery check");
+								if (trim($batteryExists) == "1") {
 							?>
-									<div data-role="collapsible">
+									<div data-role="collapsible" data-theme="e" data-content-theme="c">
 									  <h1>Battery Detected</h1>
 									  <p>
 										Level: <?php echo shell_exec("sudo /etc/vdn/bin/battery level");?> %<br />

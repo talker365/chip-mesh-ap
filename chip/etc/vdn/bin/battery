@@ -12,6 +12,7 @@ echo -e "  tempc           # Internal Charger Temperature in C."
 echo -e "  tempf           # Internal Charger Temperature in F."
 echo -e "  volts           # Battery Voltage in DC"
 echo -e "  current         # Battery Current (+ Charging / - Discharging)"
+echo -e "  mains           # Indicates presence of main power"
 }
 
 readBattery() {
@@ -53,7 +54,7 @@ readBattery() {
 
 POWER_OP_MODE=$(/usr/sbin/i2cget -y -f 0 0x34 0x01)
 BAT_EXIST=$(($(($POWER_OP_MODE&0x20))/32))
-
+if [ $POWER_OP_MODE == "0x30" ]; then MAINS=1; else MAINS=0; fi
 
 if [ $# -eq 0 ]; then 
   printf "\n${C}Usage: ${G}${0##*/}${N} -h, --help for full list of options.\n"
@@ -82,6 +83,8 @@ while [ $# -gt 0 ]
 do
     case $1 in
            check ) echo -e "$BAT_EXIST"; exit 0;;
+
+           mains ) echo -e "$MAINS"; exit 0;;
 
            level ) echo -e "$BAT_GAUGE_DEC"; exit 0;;
 
