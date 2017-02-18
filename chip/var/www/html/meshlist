@@ -1,0 +1,25 @@
+#!/bin/bash
+
+neighbors=( $(curl localhost:2006/neighbors | tail -n +3 | sort | uniq | awk '{print$1}') )
+hna=( $(curl localhost:2006/hna | tail -n +3 | sort | uniq | awk '{print$2}') )
+
+clear
+
+echo "Neighbors:"
+# List Neighbors
+for i in $(seq 0 $((${#neighbors[@]} - 1 )))
+  do
+name=$(cat /etc/hosts | sort | uniq |awk '{print $1"   "$2}' | grep ${hna[$i]}| awk '{print $2}' )
+  echo ${neighbors[$i]},$name
+done
+
+echo; echo "MeshNodes:"
+# List Nodes
+for i in $(seq 0 $((${#hna[@]} - 1 )))
+  do
+   name=$(cat /etc/hosts | sort | uniq |awk '{print $1"   "$2}' | grep ${hna[$i]}| awk '{print $2}' )
+   echo ${hna[$i]}, $name
+  done
+echo
+
+
