@@ -49,10 +49,10 @@ LoadPlugin "olsrd_watchdog.so.0.1"
 
 LoadPlugin "olsrd_dyn_gw.so.0.5"
 {
-	PlParam "Ping" "71.42.236.91"
-	PlParam "Ping" "71.42.236.90"
-	PlParam "Ping" "8.8.8.8"
 	PlParam "Ping" "8.8.4.4"
+	PlParam "Ping" "8.8.8.8"
+	PlParam "Ping" "71.42.236.90"
+	PlParam "Ping" "71.42.236.91"
 	PlParam "Interval" "60"
 }
 
