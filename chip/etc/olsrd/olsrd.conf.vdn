@@ -63,6 +63,7 @@ Interface "wlan1"
 LoadPlugin "olsrd_nameservice.so.0.3"
 {
     PlParam "sighup-pid-file" "/var/run/dnsmasq.pid"
+    PlParam "hosts-file" "/etc/hosts"
     PlParam "resolv-file" "/etc/resolv.conf"
     PlParam "interval" "30"
     PlParam "timeout" "300"
