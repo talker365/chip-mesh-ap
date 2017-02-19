@@ -7,7 +7,7 @@ echo $(ifconfig $1 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}')
 host=$(hostname | awk '{print toupper($0)}')
 ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
 ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
-pwr=""
+pwr=$(iwconfig wlan1 | grep Tx-Power | cut -d '=' -f2)
 flash=$(df -h | grep rootfs | awk {'print $4'})
 #memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2,$3}')
 memfree=$(( $(cat /proc/meminfo | awk '/MemFree:/ {print $2}') / 1024 ))
