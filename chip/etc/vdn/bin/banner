@@ -54,4 +54,4 @@ echo -e "${BL}Storage:${C}Total:${Y}$disktotal ${C}Used:${Y}$diskused ${C}Free:$
 echo -e "${BL} Memory:${C}Total:${Y}"$memtotal"M ${C}Used:${Y}"$memused"M ${C}Free:${Y}"$memfree"M"
 echo -e "${C}   Time:${N} $(uptime -p)"
 echo -e "${Y}------------------------------------"
-echo -e "\033[44m Build:$(cat /etc/vdn-release) ${N}\n"
+[ -f "/etc/vdn-release" ] && echo -e "\033[44m Build:$(cat /etc/vdn-release) ${N}\n"
