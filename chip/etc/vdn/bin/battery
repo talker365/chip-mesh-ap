@@ -54,7 +54,7 @@ readBattery() {
 
 POWER_OP_MODE=$(/usr/sbin/i2cget -y -f 0 0x34 0x01)
 BAT_EXIST=$(($(($POWER_OP_MODE&0x20))/32))
-if [ $POWER_OP_MODE == "0x30" ]; then MAINS=1; else MAINS=0; fi
+if [ $POWER_OP_MODE == "0x30" ]; then MAINS=0; else MAINS=1; fi
 
 if [ $# -eq 0 ]; then 
   printf "\n${C}Usage: ${G}${0##*/}${N} -h, --help for full list of options.\n"
@@ -74,6 +74,9 @@ if [ $# -eq 0 ]; then
 
    echo -e "Tempc:$TEMP_C"
    echo -e "Tempf:$TEMP_F"
+
+if [ $POWER_OP_MODE == "0x30" ]; then echo "Mains:ON"; else echo "Mains:OFF"; fi
+
  fi
 exit 0
 fi
