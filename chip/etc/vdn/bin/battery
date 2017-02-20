@@ -75,7 +75,7 @@ if [ $# -eq 0 ]; then
    echo -e "Tempc:$TEMP_C"
    echo -e "Tempf:$TEMP_F"
 
-if [ $POWER_OP_MODE == "0x30" ]; then echo "Mains:ON"; else echo "Mains:OFF"; fi
+if [ $POWER_OP_MODE == "0x30" ]; then echo "Mains:OFF"; else echo "Mains:ON"; fi
 
  fi
 exit 0
