@@ -46,46 +46,39 @@
 	  <tbody>
 		<tr>
 		  <td>
-		    <?php
-		        switch (1) {
-		      	    case (file_exists('/var/www/flags/.micromesh')):
-        		        ?>
-		                <div style="">
-							<h1><?php echo shell_exec("hostname"); ?></h1>
-		                    <h4>Operating Mode: Mesh Node</h4>
-							<h4><?php echo shell_exec("cat /etc/vdn-release");?></h4>
-		                    <?php echo shell_exec("./status.sh"); ?>
-							<?php
-								$batteryExists = shell_exec("sudo /etc/vdn/bin/battery check");
-								if (trim($batteryExists) == "1") {
-							?>
-									<div data-role="collapsible" data-theme="e" data-content-theme="c">
-									  <h1>Battery Detected</h1>
-									  <p>
-										Level: <?php echo shell_exec("sudo /etc/vdn/bin/battery level");?> %<br />
-										Voltage: <?php echo shell_exec("sudo /etc/vdn/bin/battery volts");?> mV<br />
-										Battery Temp: <?php echo shell_exec("sudo /etc/vdn/bin/battery tempf");?> F<br />
-										Current: <?php echo shell_exec("sudo /etc/vdn/bin/battery current");?>mA<br />
-									  </p>
-									</div>
-							<?php
-								}
-							?>
-		                </div>
-
-		                <?php
-		                break;
-		            case (file_exists('/var/www/flags/.microrouter')):
-		                ?>
-		                <h2> Micro Router Status </h2>
-
-		                <?php
-		                break;
-		            default:
-		                #echo 'no default tab set, please pick a tab (temp message)';
-		                echo 'no setup detected';
-		        }
-		    ?>
+			<h1><?php echo shell_exec("hostname"); ?></h1>
+		    	<div style="">
+		    		<?php
+		        	  switch (1) {
+		      	        case (file_exists('/var/www/flags/.micromesh')):
+        		          ?><h4>Operating Mode: Mesh Node</h4>x <?php
+		                  break;
+		                case (file_exists('/var/www/flags/.microrouter')):
+		                  ?><h2> Micro Router Status </h2><?php
+		                  break;
+		                default:
+		                  #echo 'no default tab set, please pick a tab (temp message)';
+		                  echo 'unknown setup detected';
+		        	  }?>
+					<h4><?php echo shell_exec("cat /etc/vdn-release");?></h4>
+		            <?php echo shell_exec("./status.sh"); ?>
+					<?php
+						$batteryExists = shell_exec("sudo /etc/vdn/bin/battery check");
+						if (trim($batteryExists) == "1") {
+					?>
+						<div data-role="collapsible" data-theme="e" data-content-theme="c">
+						  <h1>Battery Detected</h1>
+						  <p>
+							Level: <?php echo shell_exec("sudo /etc/vdn/bin/battery level");?> %<br />
+							Voltage: <?php echo shell_exec("sudo /etc/vdn/bin/battery volts");?> mV<br />
+							Battery Temp: <?php echo shell_exec("sudo /etc/vdn/bin/battery tempf");?> F<br />
+							Current: <?php echo shell_exec("sudo /etc/vdn/bin/battery current");?>mA<br />
+						  </p>
+						</div>
+					<?php
+						}
+					?>
+		        </div>
 		  </td>
 		  <td>
 		    <div style="text-align: center;"/>
