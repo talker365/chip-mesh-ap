@@ -10,7 +10,7 @@ Interface_Modes
 
 #---[ FUNCTIONS ]---------------------------------------------------------------------
 
-createAP(){
+createAP() {
 # Set up a static IP for the AP(accesspoint)
 sudo echo "" >> /etc/network/interfaces
 sudo echo "auto wlan0" >> /etc/network/interfaces
@@ -53,13 +53,13 @@ sudo /bin/systemctl enable hostapd-systemd
 sudo /bin/systemctl start hostapd-systemd
 }
 
-connectWifi(){
+connectWifi() {
 # Connect to Wifi
 sudo nmcli dev disconnect wlan1 2>&1
 sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
 }
 
-createADHOC(){
+createADHOC() {
 sudo chmod 777 /usr/sbin/olsrd-adhoc-setup
 sudo echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
 sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
@@ -86,8 +86,13 @@ nodeIP=$net.$ip2.$ip3.$ip4
 echo -e $nodeIP"\n"
 
 # add to /etc/network/interfaces
-sudo echo >> /etc/network/interfaces
-sudo echo "auto $nodeiface " >> /etc/network/interfaces
+sudo echo "" > /etc/network/interfaces
+sudo echo "#Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
+sudo echo -e "\nauto lo" >> /etc/network/interfaces
+sudo echo "iface lo inet loopback" >> /etc/network/interfaces
+sudo echo -e "\nauto eth0" >> /etc/network/interfaces
+sudo echo "iface eth0 inet dhcp" >> /etc/network/interfaces
+sudo echo -e "\nauto $nodeiface " >> /etc/network/interfaces
 sudo echo "iface $nodeiface inet static " >> /etc/network/interfaces
 sudo echo -e "\taddress $nodeIP" >> /etc/network/interfaces
 sudo echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
@@ -96,7 +101,7 @@ sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
 sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 }
 
-createOLSR(){
+createOLSR() {
 # Set host file and hostname
 sudo echo -e "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
 sudo echo -e "127.0.0.1   localhost" >> /etc/hosts
@@ -110,12 +115,41 @@ sudo echo $nodeID > /etc/hostname
 sudo mv /etc/dnsmasq.vdn /etc/dnsmasq.conf
 
 # create link to /etc/hosts > /var/run/hosts_olsr (Prevents hosts & olsr from merging.)
-if [ -L /var/run/hosts_olsr ]; then
-    rm -f /var/run/hosts_olsr
-fi
-sudo ln -s /etc/hosts /var/run/hosts_olsr
+#if [ -L /var/run/hosts_olsr ]; then
+#    rm -f /var/run/hosts_olsr
+#fi
+#sudo ln -s /etc/hosts /var/run/hosts_olsr
 
-# Packet masquerading
+# reset networking.
+sudo /etc/init.d/networking restart
+
+# Get Wired Ethernet Address
+if [ -d "/sys/class/net/eth0" ]; then
+  INET_IFACE=eth0
+  i="0"
+  while [ $i -lt 5 ]; do
+    INET_ADDRESS=`ifconfig ${INET_IFACE} | awk '/inet addr/ {split ($2,A,":"); print A[2]}'`
+
+   if [ "$INET_ADDRESS" != "" ];then
+	IP1=`echo $INET_ADDRESS | cut -d . -f 1`
+	IP2=`echo $INET_ADDRESS | cut -d . -f 2`
+	IP3=`echo $INET_ADDRESS | cut -d . -f 3`
+	INET_ADDRESS=$IP1.$IP2.$IP3."0"
+      break
+    else
+    # restart the interface
+      sleep 2
+      echo "Restarting interface: $INET_IFACE"
+      ifdown ${INET_IFACE}
+      ifup ${INET_IFACE}
+      (( i++ ))
+    fi
+  done
+fi
+
+if [ "$INET_ADDRESS" == "" ]; then INET_ADDRESS="0.0.0.0"; fi
+
+# Packet masquerading - /etc/rc.local
 #sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source $nodeIP/" /etc/rc.local
 #sudo echo "exit 0" >> /etc/rc.local
 
@@ -125,6 +159,7 @@ sudo cp /etc/olsrd/olsrd.conf.vdn /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*Interface.*/Interface \"$nodeiface\"/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
+sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.0/" /etc/olsrd/olsrd.conf
 
 # edit OLSRD boot options
 sudo sed -i.bak "s/.*#START_OLSRD=.*/START_OLSRD=\"YES\"/" /etc/default/olsrd
@@ -234,3 +269,5 @@ sudo touch /var/www/flags/.installed
 
 # Set Timezone to EST
 sudo timedatectl set-timezone EST
+
+
