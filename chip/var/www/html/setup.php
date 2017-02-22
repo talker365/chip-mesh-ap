@@ -271,6 +271,7 @@
     <p>Review and finalize deployment to chip</p>
     <form method="post" action="deploy.php">
 		<div class="ui-field-contain" data-type="vertical">
+	    		<input type="submit" data-inline="true" value="Install">
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_microtype">Installation Type:</label>
 			        <input type="text" readonly="readonly" required name="final_microtype" id="final_microtype" placeholder="Installation Type">

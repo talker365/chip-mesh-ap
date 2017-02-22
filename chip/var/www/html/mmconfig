@@ -86,13 +86,8 @@ nodeIP=$net.$ip2.$ip3.$ip4
 echo -e $nodeIP"\n"
 
 # add to /etc/network/interfaces
-<<<<<<< HEAD
 sudo echo "" > /etc/network/interfaces
-sudo echo "#Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
-=======
-sudo echo > /etc/network/interfaces
-sudo echo " Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
->>>>>>> origin/master
+sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
 sudo echo -e "\nauto lo" >> /etc/network/interfaces
 sudo echo "iface lo inet loopback" >> /etc/network/interfaces
 sudo echo -e "\nauto eth0" >> /etc/network/interfaces
@@ -133,7 +128,6 @@ if [ -d "/sys/class/net/eth0" ]; then
   INET_IFACE=eth0
   i="0"
   while [ $i -lt 5 ]; do
-<<<<<<< HEAD
     INET_ADDRESS=`ifconfig ${INET_IFACE} | awk '/inet addr/ {split ($2,A,":"); print A[2]}'`
 
    if [ "$INET_ADDRESS" != "" ];then
@@ -141,33 +135,19 @@ if [ -d "/sys/class/net/eth0" ]; then
 	IP2=`echo $INET_ADDRESS | cut -d . -f 2`
 	IP3=`echo $INET_ADDRESS | cut -d . -f 3`
 	INET_ADDRESS=$IP1.$IP2.$IP3."0"
-=======
-    INET_ADDRESS=`ifconfig $INET_IFACE | awk '/inet addr/ {split ($2,A,":"); print A[2]}'`
-
-   if [ "$INET_ADDRESS" != "" ];then
->>>>>>> origin/master
       break
     else
     # restart the interface
       sleep 2
       echo "Restarting interface: $INET_IFACE"
-<<<<<<< HEAD
       ifdown ${INET_IFACE}
       ifup ${INET_IFACE}
-=======
-      ifdown $INET_IFACE
-      ifup $INET_IFACE
->>>>>>> origin/master
       (( i++ ))
     fi
   done
 fi
 
-<<<<<<< HEAD
 if [ "$INET_ADDRESS" == "" ]; then INET_ADDRESS="0.0.0.0"; fi
-=======
-if [ "$INET_ADDRESS" == "" ]; then INET_ADDRESS="0.0.0.0"
->>>>>>> origin/master
 
 # Packet masquerading - /etc/rc.local
 #sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source $nodeIP/" /etc/rc.local
@@ -179,12 +159,8 @@ sudo cp /etc/olsrd/olsrd.conf.vdn /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*Interface.*/Interface \"$nodeiface\"/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
-<<<<<<< HEAD
 sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.0/" /etc/olsrd/olsrd.conf
 
-=======
-sudo sec -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS      0.0.0.0"
->>>>>>> origin/master
 # edit OLSRD boot options
 sudo sed -i.bak "s/.*#START_OLSRD=.*/START_OLSRD=\"YES\"/" /etc/default/olsrd
 sudo sed -i.bak "s/.*#SETUP_ADHOC=.*/SETUP_ADHOC=\"YES\"/" /etc/default/olsrd
