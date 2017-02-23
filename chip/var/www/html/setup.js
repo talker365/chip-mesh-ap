@@ -140,5 +140,36 @@ function updateNodeName() {
 
 function loadDeploy() {
 	populateForm();
+	setSummaryDisplay();
 }
 
+function setSummaryDisplay() {
+    document.getElementById("f_routername").style.display = "block";
+    document.getElementById("f_wifissid").style.display = "block";
+    document.getElementById("f_wifipassword").style.display = "block";
+    document.getElementById("f_routerethernet").style.display = "block";
+    document.getElementById("f_apssid").style.display = "block";
+    document.getElementById("f_appassword").style.display = "block";
+    document.getElementById("f_apchannel").style.display = "block";
+    document.getElementById("f_callsign").style.display = "block";
+    document.getElementById("f_nodename").style.display = "block";
+    document.getElementById("f_nodessid").style.display = "block";
+    document.getElementById("f_nodechannel").style.display = "block";
+    document.getElementById("f_nodeethernet").style.display = "block";
+
+	if (document.getElementById("final_microtype").value == "micromesh") {
+		document.getElementById("f_routername").style.display = "none";
+		document.getElementById("f_wifissid").style.display = "none";
+		document.getElementById("f_wifipassword").style.display = "none";
+		document.getElementById("f_routerethernet").style.display = "none";
+		document.getElementById("f_apssid").style.display = "none";
+		document.getElementById("f_appassword").style.display = "none";
+		document.getElementById("f_apchannel").style.display = "none";
+    } else if (document.getElementById("final_microtype").value == "microrouter"){
+		document.getElementById("f_callsign").style.display = "none";
+		document.getElementById("f_nodename").style.display = "none";
+		document.getElementById("f_nodessid").style.display = "none";
+		document.getElementById("f_nodechannel").style.display = "none";
+		document.getElementById("f_nodeethernet").style.display = "none";
+	}
+}

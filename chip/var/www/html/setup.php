@@ -276,15 +276,15 @@
 			        <label for="final_microtype">Installation Type:</label>
 			        <input type="text" readonly="readonly" required name="final_microtype" id="final_microtype" placeholder="Installation Type">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_callsign" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_callsign">Callsign:</label>
 			        <input type="text" readonly="readonly" required name="final_callsign" id="final_callsign" placeholder="Your callsign">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_nodename" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_meshhostname">Node:</label>
 			        <input type="text" readonly="readonly" required name="final_meshhostname" id="final_meshhostname" placeholder="Node name">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_nodessid" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_nodessid">Node SSID:</label>
 			        <input type="text" readonly="readonly" required name="final_nodessid" id="final_nodessid" placeholder="">
 				</div>
@@ -292,39 +292,39 @@
 			        <label for="final_meshpassword">Admin Password:</label>
 			        <input type="text" readonly="readonly" required name="final_meshpassword" id="final_meshpassword" placeholder="Node password">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_nodechannel" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_nodechannel">Node Channel:</label>
 			        <input type="text" readonly="readonly" required name="final_nodechannel" id="final_nodechannel" placeholder="Node channel">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_nodeethernet" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_meshEthernetType">Ethernet:</label>
 			        <input type="text" readonly="readonly" required name="final_meshEthernetType" id="final_meshEthernetType" placeholder="Ethernet use">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_routername" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_routerhostname">Router Name:</label>
 			        <input type="text" readonly="readonly" required name="final_routerhostname" id="final_routerhostname" placeholder="Router hostname">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_wifissid" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_ssid">WiFi SSID:</label>
 			        <input type="text" readonly="readonly" required name="final_ssid" id="final_ssid" placeholder="">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_wifipassword" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_password">WiFi Password:</label>
 			        <input type="text" readonly="readonly" required name="final_password" id="final_password" placeholder="">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_routerethernet" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_routerEthernetType">Ethernet:</label>
 			        <input type="text" readonly="readonly" required name="final_routerEthernetType" id="final_routerEthernetType" placeholder="">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_apssid" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_accesspointssid">AccessPoint SSID:</label>
 			        <input type="text" readonly="readonly" required name="final_accesspointssid" id="final_accesspointssid" placeholder="">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_appassword" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_accesspointpassword">AccessPoint Password:</label>
 			        <input type="text" readonly="readonly" required name="final_accesspointpassword" id="final_accesspointpassword" placeholder="">
 				</div>
-				<div class="ui-field-contain" data-type="horizontal">
+				<div id="f_apchannel" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_accesspointchannel">AccessPoint Channel:</label>
 			        <input type="text" readonly="readonly" required name="final_accesspointchannel" id="final_accesspointchannel" placeholder="">
 				</div>

@@ -6,6 +6,14 @@
 	<link rel="stylesheet" href="jquery.mobile-1.4.5.min.css">
 	<script src="jquery-1.11.3.min.js"></script>
 	<script src="jquery.mobile-1.4.5.min.js"></script>
+	<script>
+		var seconds = 5;
+		var url = "/index.php";
+		setTimeout("window.location='"+url+"'",seconds*1000);
+	</script>
+
+
+
 <?php
     $theme = "b";
 ?>
