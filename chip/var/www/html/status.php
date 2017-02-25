@@ -124,8 +124,9 @@
   </div>
 
   <div data-role="main" class="ui-content">
-	<iframe src="http://<?php echo $_SERVER['SERVER_NAME']; ?>:1978" width="100%" height="100%"></iframe>
-
+    <?php
+        echo shell_exec("if [ -f /var/www/tmp/olsr.routes ]; then rm /var/tmp/olsr.routes; fi; wget http://127.0.0.1:1978/routes -q -O /var/www/tmp/olsr.routes;tail -n +31 /var/www/tmp/olsr.routes | head -n -9 -");
+    ?>  
   </div>
 
   <div data-role="footer">
