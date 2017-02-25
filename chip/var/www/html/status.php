@@ -51,7 +51,7 @@
 		    		<?php
 		        	  switch (1) {
 		      	        case (file_exists('/var/www/flags/.micromesh')):
-        		          ?><h4>Operating Mode: Mesh Node</h4>x <?php
+        		          ?><h4>Operating Mode: Mesh Node</h4><?php
 		                  break;
 		                case (file_exists('/var/www/flags/.microrouter')):
 		                  ?><h2> Micro Router Status </h2><?php
