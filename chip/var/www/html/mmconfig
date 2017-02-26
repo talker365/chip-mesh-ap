@@ -60,14 +60,17 @@ sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
 }
 
 createADHOC() {
-sudo chmod 777 /usr/sbin/olsrd-adhoc-setup
+
 sudo echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
 sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "# Kill olsrd if running..." >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "service=olsrd" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "if (( $(ps -A | grep $service | wc -l) > 0 )); then killall -9 $service; fi" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig wlan0 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/iwconfig $nodeiface mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig $nodeiface up" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "olsrd -f /etc/olsrd/olsrd.conf" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "if [[ $(cat /sys/class/net/$nodeiface/operstate) == "up" ]]; then $service -f /etc/olsrd/olsrd.conf; else echo "$nodeiface Failed to Start !!!"; fi" >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
 
 # Lets Calculate the IP Address via Mac Address
@@ -113,12 +116,6 @@ sudo echo $nodeID > /etc/hostname
 
 # update dnsmasq
 sudo mv /etc/dnsmasq.vdn /etc/dnsmasq.conf
-
-# create link to /etc/hosts > /var/run/hosts_olsr (Prevents hosts & olsr from merging.)
-#if [ -L /var/run/hosts_olsr ]; then
-#    rm -f /var/run/hosts_olsr
-#fi
-#sudo ln -s /etc/hosts /var/run/hosts_olsr
 
 # reset networking.
 sudo /etc/init.d/networking restart
@@ -176,7 +173,6 @@ sudo systemctl daemon-reload
 #---[ MAIN ]----------------------------------------------------------------------------------
 
 clear
-#if [[ $# -eq 0 ]]; then checkInterfaces; fi
 
 request=$1
 
@@ -184,6 +180,9 @@ if [[ $request == "check" ]]; then
    if [[ $2 == "installed" ]]; then [ -e "/var/www/html/.installed" ] && echo "TRUE" || echo "FALSE"; fi
    if [[ $2 == "ethernet" ]]; then [ -d "/sys/class/net/eth0" ] && echo "TRUE" || echo "FALSE"; fi
 fi
+
+# Remove existing Flags 
+sudo rm /var/www/flags/*
 
 # Get all Parameter Values
   callsign=$2
@@ -270,7 +269,3 @@ sudo touch /var/www/flags/.installed
 # Set Timezone to EST
 sudo timedatectl set-timezone EST
 
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
