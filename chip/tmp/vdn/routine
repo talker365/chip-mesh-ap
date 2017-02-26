@@ -86,4 +86,4 @@ fi
 
 # updating permissions...
 chown www-data -RP /var/www
-
+chmod 600 /root/.ssh/vdn_rsa
