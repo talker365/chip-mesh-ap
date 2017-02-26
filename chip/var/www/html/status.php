@@ -30,7 +30,7 @@
         <li><a href="#page_status" data-transition="slide">Status</a></li>
         <!--<li><a href="#page_olsr" class="ui-disabled" data-transition="slide">OLSR</a></li>-->
         <li><a href="#page_olsr" data-transition="slide">OLSR</a></li>
-        <li><a href="setup.php" data-transition="slide">Setup</a></li>
+        <li><a href="setup.php" data-ajax="false" data-transition="slide">Setup</a></li>
       </ul>
     </div>
   </div>
