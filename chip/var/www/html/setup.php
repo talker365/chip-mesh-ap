@@ -15,7 +15,7 @@
 
 <div data-role="page" id="page_home" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="index.php" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
 	<a href="#page_home_info" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
@@ -51,7 +51,7 @@
 
 <div data-role="page" id="page_setup" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="index.php" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_setup_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
@@ -118,7 +118,7 @@
 
 <div data-role="page" id="page_configure" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="index.php" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_configure_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
@@ -255,7 +255,7 @@
 
 <div data-role="page" id="page_deploy" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="index.php" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_deploy_help" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">

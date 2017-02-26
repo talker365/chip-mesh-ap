@@ -30,7 +30,7 @@
         <li><a href="#page_status" data-transition="slide">Status</a></li>
         <!--<li><a href="#page_olsr" class="ui-disabled" data-transition="slide">OLSR</a></li>-->
         <li><a href="#page_olsr" data-transition="slide">OLSR</a></li>
-        <li><a href="setup.php" data-ajax="false" data-transition="slide">Setup</a></li>
+        <li><a href="/setup.php" data-ajax="false" data-transition="slide">Setup</a></li>
       </ul>
     </div>
   </div>
@@ -67,7 +67,18 @@
 						if (trim($batteryExists) == "1") {
 					?>
 						<div data-role="collapsible" data-theme="e" data-content-theme="c">
-						  <h1>Battery Detected</h1>
+						  <h1>
+							Battery
+							<?php 
+								$mains = shell_exec("sudo /etc/vdn/bin/battery mains");
+								if (trim($mains) == "1") {
+									echo " Detected";
+								} else {
+									echo " IN USE!";
+								}
+								echo "($mains)";
+							?>
+						  </h1>
 						  <p>
 							Level: <?php echo shell_exec("sudo /etc/vdn/bin/battery level");?> %<br />
 							Voltage: <?php echo shell_exec("sudo /etc/vdn/bin/battery volts");?> mV<br />
@@ -124,9 +135,9 @@
   </div>
 
   <div data-role="main" class="ui-content">
-    <?php
-        echo shell_exec("if [ -f /var/www/tmp/olsr.routes ]; then rm /var/tmp/olsr.routes; fi; wget http://127.0.0.1:1978/routes -q -O /var/www/tmp/olsr.routes;tail -n +31 /var/www/tmp/olsr.routes | head -n -9 -");
-    ?>  
+	<?php
+		echo shell_exec("if [ -f /var/www/tmp/olsr.routes ]; then rm /var/tmp/olsr.routes; fi; wget http://127.0.0.1:1978/routes -q -O /var/www/tmp/olsr.routes;tail -n +31 /var/www/tmp/olsr.routes | head -n -9 -");
+	?>
   </div>
 
   <div data-role="footer">
