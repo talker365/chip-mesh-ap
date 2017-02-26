@@ -15,7 +15,53 @@ echo -e "  current         # Battery Current (+ Charging / - Discharging)"
 echo -e "  mains           # Indicates presence of main power"
 }
 
-readBattery() {
+getI2C() {
+
+    MSB=$(/usr/sbin/i2cget -y -f 0 0x34 $1)
+    LSB=$(/usr/sbin/i2cget -y -f 0 0x34 $(($1+1)))
+    BIN=$(( $(($MSB << 4)) | $(($(($LSB & 0x0F)) )) )) 
+}
+
+
+readAPX209() {
+
+#read Power status register
+    POWER_STATUS=$(i2cget -y -f 0 0x34 0x00)
+
+#read Power OPERATING MODE register 
+    POWER_OP_MODE=$(i2cget -y -f 0 0x34 0x01)
+
+#read Battery Status
+    BAT_STATUS=$(($(($POWER_OP_MODE&0x02))/2))
+
+# read AC in voltage.
+    AC_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x56)
+    AC_VOLT_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x57)
+    AC_BIN=$(( $(($AC_VOLT_MSB << 4)) | $(($(($AC_VOLT_LSB & 0x0F)) )) ))
+    AC_VOLT_FLOAT=$(echo "($AC_BIN*1.7)"|bc)
+    AC_VOLT=${AC_VOLT_FLOAT%.*}
+
+# read AC mA current.
+    AC_CHG_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x58)
+    AC_CHG_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x59)
+    AC_BIN=$(( $(($AC_CHG_MSB << 4)) | $(($(($AC_CHG_LSB & 0x0F)) )) ))
+    AC_CHG_FLOAT=$(echo "($AC_BIN*0.625)"|bc)
+    AC_CHG=${AC_CHG_FLOAT%.*}
+
+
+# read USBin voltage.
+    USB_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5A)
+    USB_VOLT_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5B)
+    USB_BIN=$(( $(($USB_VOLT_MSB << 4)) | $(($(($USB_VOLT_LSB & 0x0F)) )) ))
+    USB_VOLT_FLOAT=$(echo "($USB_BIN*1.7)"|bc)
+    USB_VOLT=${USB_VOLT_FLOAT%.*}
+
+# read USB mA current.
+    USB_CHG_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5C)
+    USB_CHG_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5D)
+    USB_BIN=$(( $(($USB_CHG_MSB << 4)) | $(($(($USB_CHG_LSB & 0x0F)) )) ))
+    USB_CHG_FLOAT=$(echo "($USB_BIN*0.375)"|bc)
+    USB_CHG=${USB_CHG_FLOAT%.*}
 
 # read battery voltage.
     BAT_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x78)
@@ -47,13 +93,26 @@ readBattery() {
     TEMP_F=$(echo "scale=2;((9/5) * $TEMP_C) + 32" |bc)
 }
 
+readUSB() {
+
+# read USBin voltage.
+    USB_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5A)
+    USB_VOLT_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5B)
+    USB_BIN=$(( $(($USB_VOLT_MSB << 4)) | $(($(($USB_VOLT_LSB & 0x0F)) )) ))
+    USB_VOLT_FLOAT=$(echo "($USB_BIN*1.1)"|bc)
+    USB_VOLT=${USB_VOLT_FLOAT%.*}
+}
+
+
 
 # ------------------[ MAIN ]-------------------------------------------------------------
 
-/usr/sbin/i2cset -y -f 0 0x34 0x82 0xC3
+/usr/sbin/i2cset -y -f 0 0x34 0x82 0xFF
+readAPX209
 
-POWER_OP_MODE="clearing value"
-POWER_OP_MODE=$(/usr/sbin/i2cget -y -f 0 0x34 0x01)
+echo "Power OP Mode: $POWER_OP_MODE"
+echo "Bat Status: $BAT_STATUS"
+
 BAT_EXIST=$(($(($POWER_OP_MODE&0x20))/32))
 if [ $POWER_OP_MODE == "0x30" ]; then MAINS=0; else MAINS=1; fi
 
@@ -62,7 +121,8 @@ if [ $# -eq 0 ]; then
 
   if [ $BAT_EXIST == 0 ]; then echo -e "Exists:0"; fi
   if [ $BAT_EXIST == 1 ]; then
-   readBattery
+
+
    echo -e "Exists:$BAT_EXIST"
    echo -e "Voltage:$BAT_VOLT_FLOAT"
    echo -e "Level:$BAT_GAUGE_DEC"
@@ -72,11 +132,17 @@ if [ $# -eq 0 ]; then
      else
        echo -e "Charge:+$BAT_ICHG_FLOAT"
      fi
-
+   echo
+   echo -e "AC-IN:$AC_VOLT_FLOAT"
+   echo -e "AC-mA:$AC_CHG_FLOAT"
+   echo
+   echo -e "USB-IN:$USB_VOLT_FLOAT"
+   echo -e "USB-mA:$USB_CHG_FLOAT"
+   echo
    echo -e "Tempc:$TEMP_C"
    echo -e "Tempf:$TEMP_F"
 
-if [ $POWER_OP_MODE == "0x70" ]; then echo "Mains:OFF"; else echo "Mains:ON"; fi
+if [ $POWER_OP_MODE == "0x30" ]; then echo "Mains:OFF"; else echo "Mains:ON"; fi
 
  fi
 exit 0
@@ -99,11 +165,11 @@ do
            volts ) echo -e "$BAT_VOLT_FLOAT"; exit 0;;
 
          current )
-	     if [ "$BAT_ICHG_FLOAT" == "0" ]; then
-	       echo -e "-$BAT_IDISCHG"
-	     else
-	       echo -e "+$BAT_ICHG_FLOAT"
-	     fi ;exit 0;;
+       if [ "$BAT_ICHG_FLOAT" == "0" ]; then
+         echo -e "-$BAT_IDISCHG"
+       else
+         echo -e "+$BAT_ICHG_FLOAT"
+       fi ;exit 0;;
 
      -h | --help ) show_help >&2
     exit 1;;
@@ -111,6 +177,4 @@ do
    esac
  shift
 done
-
-
 
