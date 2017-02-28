@@ -118,7 +118,6 @@ sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 
 createOLSR() {
 # Set host file and hostname
-nodeIP=$(ifconfig wlan1 | awk '/inet addr/ {split ($2,A,":"); print A[2]}')
 sudo echo -e "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
 sudo echo -e "127.0.0.1   localhost" >> /etc/hosts
 sudo echo -e "$nodeIP\t$nodeID" >> /etc/hosts
