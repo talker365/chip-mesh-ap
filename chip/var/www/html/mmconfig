@@ -70,7 +70,7 @@ sudo echo "sudo /sbin/ifconfig wlan0 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/iwconfig $nodeiface mode ad-hoc channel $nodeCH essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sudo /sbin/ifconfig $nodeiface up" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "if [[ $(cat /sys/class/net/$nodeiface/operstate) == "up" ]]; then $service -f /etc/olsrd/olsrd.conf; else echo "$nodeiface Failed to Start !!!"; fi" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'if [[ $(cat /sys/class/net/wlan1/operstate) == "up" ]]; then olsrd -f /etc/olsrd/olsrd.conf; else echo "wlan1 Failed to Start !!!"; fi' >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
 
 # Lets Calculate the IP Address via Mac Address
@@ -128,10 +128,10 @@ if [ -d "/sys/class/net/eth0" ]; then
     INET_ADDRESS=`ifconfig ${INET_IFACE} | awk '/inet addr/ {split ($2,A,":"); print A[2]}'`
 
    if [ "$INET_ADDRESS" != "" ];then
-	IP1=`echo $INET_ADDRESS | cut -d . -f 1`
-	IP2=`echo $INET_ADDRESS | cut -d . -f 2`
-	IP3=`echo $INET_ADDRESS | cut -d . -f 3`
-	INET_ADDRESS=$IP1.$IP2.$IP3."0"
+  IP1=`echo $INET_ADDRESS | cut -d . -f 1`
+  IP2=`echo $INET_ADDRESS | cut -d . -f 2`
+  IP3=`echo $INET_ADDRESS | cut -d . -f 3`
+  INET_ADDRESS=$IP1.$IP2.$IP3."0"
       break
     else
     # restart the interface
@@ -268,4 +268,3 @@ sudo touch /var/www/flags/.installed
 
 # Set Timezone to EST
 sudo timedatectl set-timezone EST
-
