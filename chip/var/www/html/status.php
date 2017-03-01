@@ -136,7 +136,7 @@
 
   <div data-role="main" class="ui-content">
 	<?php
-		echo shell_exec("if [ -f /var/www/tmp/olsr.routes ]; then rm /var/tmp/olsr.routes; fi; wget http://127.0.0.1:1978/routes -q -O /var/www/tmp/olsr.routes;tail -n +31 /var/www/tmp/olsr.routes | head -n -9 -");
+		echo shell_exec("if [ -f /var/www/tmp/olsr.routes ]; then rm /var/www/tmp/olsr.routes; fi; wget http://127.0.0.1:1978/routes -q -O /var/www/tmp/olsr.routes;tail -n +31 /var/www/tmp/olsr.routes | head -n -9 -");
 	?>
   </div>
 
