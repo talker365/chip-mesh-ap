@@ -60,43 +60,44 @@ sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
 }
 
 createADHOC() {
-
-sudo echo "#!/bin/sh" > /usr/sbin/olsrd-adhoc-setup
+sudo echo "#!/bin/bash" > /usr/sbin/olsrd-adhoc-setup
 sudo echo "# Auto created by Valley Digital Network Installer." >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "# Kill olsrd if running..." >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'if (( $(ps -A | grep olsrd | wc -l) > 0 )); then killall -9 olsrd; fi' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "/sbin/ip link set wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'if (( $(ps -A | grep olsrd | wc -l) > 1 )); then killall -9 olsrd; fi' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "ip link set wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "/sbin/iwconfig wlan1 mode ad-hoc" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "/sbin/iwconfig wlan1 channel $nodeCH" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "/sbin/iwconfig wlan1 essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "/sbin/iwconfig wlan1 key off" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "/sbin/iwconfig wlan1 rate auto" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo "/sbin/ip link set wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "iwconfig wlan1 mode ad-hoc" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "iwconfig wlan1 channel $nodeCH" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "iwconfig wlan1 essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "iwconfig wlan1 key off" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "iwconfig wlan1 rate auto" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "ip link set wlan1 up" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "# Lets Calculate the IP Address via Mac Address" >> /usr/sbin/olsrd-adhoc-setup
 sudo echo "sleep 1" >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'echo -ne "Setting up IP address: "' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'MACID=$(cat /sys/class/net/wlan1/address)' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'MAC4=$(echo $MACID | cut -d : -f 4)' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'MAC5=$(echo $MACID | cut -d : -f 5)' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'MAC6=$(echo $MACID | cut -d : -f 6)' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'ip2=$(printf %d 0x$MAC4)' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'ip3=$(printf %d 0x$MAC5)' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'ip4=$(printf %d 0x$MAC6)' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'echo "Setting up IP address: "' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "MACID=`cat /sys/class/net/wlan1/address`" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'MAC4=`echo $MACID | cut -d : -f 4 `' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'MAC5=`echo $MACID | cut -d : -f 5 `' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'MAC6=`echo $MACID | cut -d : -f 6 `' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'ip2=`printf %d 0x$MAC4 `' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'ip3=`printf %d 0x$MAC5 `' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'ip4=`printf %d 0x$MAC6 `' >> /usr/sbin/olsrd-adhoc-setup
 sudo echo 'net=10' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'nodeIP=$net.$ip2.$ip3.$ip4' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'nodeIP=$net.$ip2.$ip3.$ip4 ' >> /usr/sbin/olsrd-adhoc-setup
 sudo echo 'echo -e $nodeIP"\n"' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo '/sbin/ip address replace $nodeIP/16 broadcast $net.255.255.255 dev wlan1 ' >> /usr/sbin/olsrd-adhoc-setup
-sudo echo 'if [[ $(cat /sys/class/net/wlan1/operstate) == "up" ]]; then olsrd -f /etc/olsrd/olsrd.conf; else echo "wlan1 Failed to Start !!!"; fi' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "ip link set wlan1 down" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo "iwconfig wlan1 essid $nodeSSID" >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'ip address replace $nodeIP""/16 broadcast 255.255.255.255 dev wlan1 ' >> /usr/sbin/olsrd-adhoc-setup
+sudo echo 'if (( $(cat /sys/class/net/wlan1/operstate) == "up" )); then olsrd -f /etc/olsrd/olsrd.conf; else echo "wlan1 Failed to Start !!!"; fi' >> /usr/sbin/olsrd-adhoc-setup
 sudo chmod 755 /usr/sbin/olsrd-adhoc-setup
 
-MACID=$(cat /sys/class/net/wlan1/address)
-MAC4=$(echo $MACID | cut -d : -f 4)
-MAC5=$(echo $MACID | cut -d : -f 5)
-MAC6=$(echo $MACID | cut -d : -f 6)
-ip2=$(printf %d 0x$MAC4)
-ip3=$(printf %d 0x$MAC5)
-ip4=$(printf %d 0x$MAC6)
+MACID=`cat /sys/class/net/wlan1/address`
+MAC4=`echo $MACID | cut -d : -f 4 `
+MAC5=`echo $MACID | cut -d : -f 5 `
+MAC6=`echo $MACID | cut -d : -f 6 `
+ip2=`printf %d 0x$MAC4 `
+ip3=`printf %d 0x$MAC5 `
+ip4=`printf %d 0x$MAC6 `
 net=10
 nodeIP=$net.$ip2.$ip3.$ip4
 
@@ -104,11 +105,11 @@ nodeIP=$net.$ip2.$ip3.$ip4
 sudo echo "" > /etc/network/interfaces
 sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
 sudo echo -e "\nauto lo" >> /etc/network/interfaces
-sudo echo "iface lo inet loopback" >> /etc/network/interfaces
+sudo echo -e "iface lo inet loopback" >> /etc/network/interfaces
 sudo echo -e "\nauto eth0" >> /etc/network/interfaces
-sudo echo "iface eth0 inet dhcp" >> /etc/network/interfaces
+sudo echo -e "iface eth0 inet dhcp" >> /etc/network/interfaces
 sudo echo -e "\nauto $nodeiface " >> /etc/network/interfaces
-sudo echo "iface $nodeiface inet static " >> /etc/network/interfaces
+sudo echo -e "iface $nodeiface inet static " >> /etc/network/interfaces
 sudo echo -e "\taddress $nodeIP" >> /etc/network/interfaces
 sudo echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
 sudo echo -e "\twireless-channel $nodeCH " >> /etc/network/interfaces
@@ -118,13 +119,13 @@ sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 
 createOLSR() {
 # Set host file and hostname
-sudo echo -e "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
-sudo echo -e "127.0.0.1   localhost" >> /etc/hosts
-sudo echo -e "$nodeIP\t$nodeID" >> /etc/hosts
-sudo echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-sudo echo "ff02::1   ip6-allnodes" >> /etc/hosts
-sudo echo "ff02::2   ip6-allrouters" >> /etc/hosts
-sudo echo $nodeID > /etc/hostname
+sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
+sudo echo "127.0.0.1 localhost" >> /etc/hosts
+sudo echo -e "$nodeIP $nodeID" >> /etc/hosts
+sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
+sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
+sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
+sudo echo -e "$nodeID" > /etc/hostname
 
 # Get Wired Ethernet Address
 if [ -d "/sys/class/net/eth0" ]; then
@@ -160,9 +161,9 @@ if [ "$INET_ADDRESS" == "" ]; then INET_ADDRESS="0.0.0.0"; fi
 # Create the OLSRD Config File
 sudo cp /etc/olsrd/olsrd.conf.vdn /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
-sudo sed -i.bak "s/.*Interface.*/Interface \"$nodeiface\"/" /etc/olsrd/olsrd.conf
+sudo sed -i.bak "s/.*Interface.*/Interface \"wlan1\"/" /etc/olsrd/olsrd.conf
 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
-sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.0/" /etc/olsrd/olsrd.conf
+sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.255/" /etc/olsrd/olsrd.conf
 
 # edit OLSRD boot options
 sudo sed -i.bak "s/.*#START_OLSRD=.*/START_OLSRD=\"YES\"/" /etc/default/olsrd
@@ -171,12 +172,13 @@ sudo sed -i.bak "s/.*MESH_IF=.*/MESH_IF=$nodeiface/" /etc/default/olsrd
 sudo sed -i.bak "s/.*channel=.*/channel=$nodeCH/" /etc/default/olsrd
 sudo sed -i.bak "s/.*ssid=.*/ssid=$nodeSSID/" /etc/default/olsrd
 sudo sed -i.bak "s/.*bssid=.*/#bssid=/" /etc/default/olsrd
-sudo /usr/sbin/olsrd-adhoc-setup
-sudo ifconfig wlan1 inet $nodeIP broadcast $net.255.255.255
+sudo olsrd-adhoc-setup
+sudo ifconfig wlan1 inet $nodeIP broadcast 255.255.255.255
+
 sudo systemctl daemon-reload
 
 # update dnsmasq
-sudo mv /etc/dnsmasq.vdn /etc/dnsmasq.conf
+#sudo mv /etc/dnsmasq.vdn /etc/dnsmasq.conf
 
 # reset networking.
 #sudo /etc/init.d/networking restart
@@ -256,7 +258,6 @@ if [[ $request == "micromesh" ]]; then
   echo "AP-Pass [$apPASS]"
   echo "AP-CH [$apCH]"
   echo
-  nodeiface="wlan1"
   createADHOC
   createOLSR
 
