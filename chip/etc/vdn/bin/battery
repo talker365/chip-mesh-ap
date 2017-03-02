@@ -13,26 +13,25 @@ echo -e "  tempf           # Internal Charger Temperature in F."
 echo -e "  volts           # Battery Voltage in DC"
 echo -e "  current         # Battery Current (+ Charging / - Discharging)"
 echo -e "  mains           # Indicates presence of main power"
+echo -e "  usbvolts        # USB Voltage"
+echo -e "  usbma           # USB Current "
 }
-
-getI2C() {
-
-    MSB=$(/usr/sbin/i2cget -y -f 0 0x34 $1)
-    LSB=$(/usr/sbin/i2cget -y -f 0 0x34 $(($1+1)))
-    BIN=$(( $(($MSB << 4)) | $(($(($LSB & 0x0F)) )) )) 
-}
-
 
 readAPX209() {
+# Enable all ADC channels
+/usr/sbin/i2cset -y -f 0 0x34 0x82 0xFF
 
-#read Power status register
+#read Power status register Register 00
     POWER_STATUS=$(i2cget -y -f 0 0x34 0x00)
+    CHG_STATUS=$(($POWER_STATUS >> 3 ))
+    USB_PWR=$(($POWER_STATUS >> 5 ))
+    AC_PWR=$(($POWER_STATUS >> 8 ))
 
-#read Power OPERATING MODE register 
+#read Power OPERATING MODE register  01
     POWER_OP_MODE=$(i2cget -y -f 0 0x34 0x01)
 
 #read Battery Status
-    BAT_STATUS=$(($(($POWER_OP_MODE&0x02))/2))
+    BAT_EXIST=$(($(($POWER_OP_MODE&0x20))/32))
 
 # read AC in voltage.
     AC_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x56)
@@ -47,7 +46,6 @@ readAPX209() {
     AC_BIN=$(( $(($AC_CHG_MSB << 4)) | $(($(($AC_CHG_LSB & 0x0F)) )) ))
     AC_CHG_FLOAT=$(echo "($AC_BIN*0.625)"|bc)
     AC_CHG=${AC_CHG_FLOAT%.*}
-
 
 # read USBin voltage.
     USB_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5A)
@@ -93,37 +91,31 @@ readAPX209() {
     TEMP_F=$(echo "scale=2;((9/5) * $TEMP_C) + 32" |bc)
 }
 
-readUSB() {
-
-# read USBin voltage.
-    USB_VOLT_MSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5A)
-    USB_VOLT_LSB=$(/usr/sbin/i2cget -y -f 0 0x34 0x5B)
-    USB_BIN=$(( $(($USB_VOLT_MSB << 4)) | $(($(($USB_VOLT_LSB & 0x0F)) )) ))
-    USB_VOLT_FLOAT=$(echo "($USB_BIN*1.1)"|bc)
-    USB_VOLT=${USB_VOLT_FLOAT%.*}
-}
-
-
 
 # ------------------[ MAIN ]-------------------------------------------------------------
 
-/usr/sbin/i2cset -y -f 0 0x34 0x82 0xFF
 readAPX209
-
-echo "Power OP Mode: $POWER_OP_MODE"
-echo "Bat Status: $BAT_STATUS"
-
-BAT_EXIST=$(($(($POWER_OP_MODE&0x20))/32))
-if [ $POWER_OP_MODE == "0x30" ]; then MAINS=0; else MAINS=1; fi
+if [ $USB_PWR = 0 ]; then MAINS=0; else MAINS=1; fi
 
 if [ $# -eq 0 ]; then 
   printf "\n${C}Usage: ${G}${0##*/}${N} -h, --help for full list of options.\n"
 
-  if [ $BAT_EXIST == 0 ]; then echo -e "Exists:0"; fi
-  if [ $BAT_EXIST == 1 ]; then
+# Display all Values
 
+  if [ $USB_PWR = 1 ]; then echo "MAINS:ON" 
+   echo -e "USB-IN:$USB_VOLT_FLOAT"
+   echo -e "USB-mA:$USB_CHG_FLOAT"
+   echo
+  fi
 
-   echo -e "Exists:$BAT_EXIST"
+  if [ $AC_PWR = 1 ]; then echo "MAINS:ON" 
+   echo -e "AC-IN:$AC_VOLT_FLOAT"
+   echo -e "AC-mA:$AC_CHG_FLOAT"
+   echo
+  fi
+
+ if [ $BAT_EXIST = 1 ]; then
+   echo -e "Bat Exists:$BAT_EXIST"
    echo -e "Voltage:$BAT_VOLT_FLOAT"
    echo -e "Level:$BAT_GAUGE_DEC"
 
@@ -133,23 +125,13 @@ if [ $# -eq 0 ]; then
        echo -e "Charge:+$BAT_ICHG_FLOAT"
      fi
    echo
-   echo -e "AC-IN:$AC_VOLT_FLOAT"
-   echo -e "AC-mA:$AC_CHG_FLOAT"
-   echo
-   echo -e "USB-IN:$USB_VOLT_FLOAT"
-   echo -e "USB-mA:$USB_CHG_FLOAT"
-   echo
    echo -e "Tempc:$TEMP_C"
    echo -e "Tempf:$TEMP_F"
-
-if [ $POWER_OP_MODE == "0x30" ]; then echo "Mains:OFF"; else echo "Mains:ON"; fi
-
  fi
-exit 0
 fi
 
+
 while [ $# -gt 0 ]
- if [ $BAT_EXIST == 1 ]; then readBattery; fi
 do
     case $1 in
            check ) echo -e "$BAT_EXIST"; exit 0;;
@@ -158,22 +140,27 @@ do
 
            level ) echo -e "$BAT_GAUGE_DEC"; exit 0;;
 
-            tempc ) echo -e "$TEMP_C"; exit 0;;
+           tempc ) echo -e "$TEMP_C"; exit 0;;
 
-            tempf ) echo -e "$TEMP_F"; exit 0;;
+           tempf ) echo -e "$TEMP_F"; exit 0;;
 
            volts ) echo -e "$BAT_VOLT_FLOAT"; exit 0;;
 
          current )
-       if [ "$BAT_ICHG_FLOAT" == "0" ]; then
-         echo -e "-$BAT_IDISCHG"
-       else
-         echo -e "+$BAT_ICHG_FLOAT"
-       fi ;exit 0;;
+
+                  if [ "$BAT_ICHG_FLOAT" == "0" ]; then
+                    echo -e "-$BAT_IDISCHG"
+                  else
+                    echo -e "+$BAT_ICHG_FLOAT"
+                  fi ;exit 0;;
+
+        usbvolts ) echo -e "$USB_VOLT_FLOAT"; exit 0;;
+
+           usbma ) echo -e "$USB_CHG_FLOAT"; exit 0;;
 
      -h | --help ) show_help >&2
-    exit 1;;
 
+    exit 1;;
    esac
  shift
 done
