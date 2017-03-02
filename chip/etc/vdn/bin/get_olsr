@@ -47,22 +47,26 @@ topology)
     while read DEST_IP LAST_HOP LQ NLQ COST ; do
 		PREFIX=""
 		if [[ "$2" == "html" ]]; then
-			PREFIX="<tr><td><a href='http://$DEST_IP:8080'>"
+			PREFIX="<tr><td>"
 		fi
         DATA=$(cut -f1-2 /etc/hosts | grep "$DEST_IP" | grep -v "dtdlink." | grep -v "mid1." | grep -v "mid2." | grep -v "mid3." | cut -f2)
         SUFFIX=""
         if [[ "$2" == "html" ]]; then
-            SUFFIX="</a></td><td>$DEST_IP</td></tr>"
+            SUFFIX="</a></td><td>$DEST_IP</td><td>$LQ</td><td>$NLQ</td></tr>"
 		else
-			SUFFIX="</a></td><td>unknown<td>/<tr>"
+			SUFFIX="</a></td><td>unknown</td><td>$LQ</td><td>$NLQ</td></tr>"
         fi
-		echo -e "$PREFIX $DATA $SUFFIX" >> /var/www/tmp/olsr.$1
+        if [[ "$2" == "html" ]]; then
+			echo -e "$PREFIX <a href='http://$DATA.local.mesh:8080'>$DATA $SUFFIX" >> /var/www/tmp/olsr.$1
+		else
+			echo -e "$DATA" >> /var/www/tmp/olsr.$1
+        fi
     done < /var/www/tmp/$1
 	if [[ "$2" == "html" ]]; then
-		echo "<table><thead><tr><th>Device</th><th>IP</th></tr></thead>"
+		echo "<table><thead><tr><th>Node</th><th>IP</th><th>LQ</th><th>NLQ</th></tr></thead>"
 		echo "<tbody>"
 	fi
-	sort /var/www/tmp/olsr.$1 | uniq
+	sort -f /var/www/tmp/olsr.$1 | uniq
 	if [[ "$2" == "html" ]]; then
 		echo "</tbody></table>"
 	fi
