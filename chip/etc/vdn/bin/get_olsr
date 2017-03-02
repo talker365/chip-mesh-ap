@@ -11,36 +11,65 @@ INPUT_FORMAT=""
 case "$1" in
 
 neighbors)
-    echo "Getting list for neighbors"
-    ;;  
+    ;;
 topology)
-    echo "Getting list for topology"
-    ;;  
+    ;;
 *)
-    echo "Usage:  get_olsr neighbors|topology [html]"
-    echo "Example:  get_olsr topology"
-    echo "          get_olsr neighbors html"
-    exit
-   ;;  
+	echo "Usage:  get_olsr neighbors|topology|devices [html]"
+	echo "Example:  get_olsr topology"
+	echo "          get_olsr neighbors html"
+	exit
+   ;;
 esac
 
 
-if [ -f /var/www/tmp/$1 ]; then rm /var/www/tmp/$1; fi; 
-if [ -f /var/www/tmp/$1\.tmp ]; then rm /var/www/tmp/$1\.tmp; fi; 
+if [ -f /var/www/tmp/$1 ]; then rm /var/www/tmp/$1; fi;
+if [ -f /var/www/tmp/$1\.tmp ]; then rm /var/www/tmp/$1\.tmp; fi;
 
 wget -q -O /var/www/tmp/$1\.tmp  http://127.0.0.1:2006/$1
 tail -n +3 /var/www/tmp/$1\.tmp | head -n -1 - >> /var/www/tmp/$1
 
-if [ -f /var/www/tmp/$1\.tmp ]; then rm /var/www/tmp/$1\.tmp; fi; 
-if [ -f /var/www/tmp/olsr.$1 ]; then rm /var/www/tmp/olsr.$1; fi; 
+if [ -f /var/www/tmp/$1\.tmp ]; then rm /var/www/tmp/$1\.tmp; fi;
+if [ -f /var/www/tmp/olsr.$1 ]; then rm /var/www/tmp/olsr.$1; fi;
 
-while read IP SYM MPR MPRS WILL TWOHOPS ; do
-    cat /etc/hosts | grep "$IP" | grep -v "dtdlink." | grep -v "mid1." >> /var/www/tmp/olsr.$1
-done < /var/www/tmp/$1
 
-if [ -f /var/www/tmp/$1 ]; then rm /var/www/tmp/$1; fi; 
 
-cat /var/www/tmp/olsr.$1
+case "$1" in
 
-if [ -f /var/www/tmp/olsr.$1 ]; then rm /var/www/tmp/olsr.$1; fi; 
+neighbors)
+	while read IP SYM MPR MPRS WILL TWOHOPS ; do
+    	cat /etc/hosts | grep "$IP" | grep -v "dtdlink." | grep -v "mid1." | cut -f2 >> /var/www/tmp/olsr.$1
+	done < /var/www/tmp/$1
+	cat /var/www/tmp/olsr.$1
+
+    ;;  
+topology)
+    while read DEST_IP LAST_HOP LQ NLQ COST ; do
+		PREFIX=""
+		if [[ "$2" == "html" ]]; then
+			PREFIX="<tr><td><a href='http://$DEST_IP:8080'>"
+		fi
+        DATA=$(cut -f1-2 /etc/hosts | grep "$DEST_IP" | grep -v "dtdlink." | grep -v "mid1." | grep -v "mid2." | grep -v "mid3." | cut -f2)
+        SUFFIX=""
+        if [[ "$2" == "html" ]]; then
+            SUFFIX="</a></td><td>$DEST_IP</td></tr>"
+		else
+			SUFFIX="</a></td><td>unknown<td>/<tr>"
+        fi
+		echo -e "$PREFIX $DATA $SUFFIX" >> /var/www/tmp/olsr.$1
+    done < /var/www/tmp/$1
+	if [[ "$2" == "html" ]]; then
+		echo "<table><thead><tr><th>Device</th><th>IP</th></tr></thead>"
+		echo "<tbody>"
+	fi
+	sort /var/www/tmp/olsr.$1 | uniq
+	if [[ "$2" == "html" ]]; then
+		echo "</tbody></table>"
+	fi
+    ;;  
+esac
+
+
+if [ -f /var/www/tmp/$1 ]; then rm /var/www/tmp/$1; fi;
+if [ -f /var/www/tmp/olsr.$1 ]; then rm /var/www/tmp/olsr.$1; fi;
 
