@@ -77,14 +77,15 @@
 								} else {
 									echo " IN USE!";
 								}
-								echo "($mains)";
 							?>
 						  </h1>
 						  <p>
 							Level: <?php echo shell_exec("sudo /etc/vdn/bin/battery level");?> %<br />
 							Voltage: <?php echo shell_exec("sudo /etc/vdn/bin/battery volts");?> mV<br />
-							Battery Temp: <?php echo shell_exec("sudo /etc/vdn/bin/battery tempf");?> F<br />
 							Current: <?php echo shell_exec("sudo /etc/vdn/bin/battery current");?>mA<br />
+							Battery Temp: <?php echo shell_exec("sudo /etc/vdn/bin/battery tempf");?> F<br />
+							USB Voltage: <?php echo shell_exec("sudo /etc/vdn/bin/battery usbvolts");?> mV<br />
+							USB Current: <?php echo shell_exec("sudo /etc/vdn/bin/battery usbma");?> mA<br />
 						  </p>
 						</div>
 					<?php
