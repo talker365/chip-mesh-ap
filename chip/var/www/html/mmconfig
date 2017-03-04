@@ -13,8 +13,8 @@ Interface_Modes
 createAP() {
 # Set up a static IP for the AP(accesspoint)
 sudo echo "" >> /etc/network/interfaces
-sudo echo "auto wlan0" >> /etc/network/interfaces
-sudo echo "iface wlan0 inet static" >> /etc/network/interfaces
+sudo echo "auto wlan1" >> /etc/network/interfaces
+sudo echo "iface wlan1 inet static" >> /etc/network/interfaces
 sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
@@ -26,15 +26,15 @@ sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
   echo "ff02::2   ip6-allrouters" >> /etc/hosts
   echo $routerName > /etc/hostname
 
-# Restart the wlan0 interface:
-sudo ifdown wlan0
-sudo ifup wlan0
+# Restart the wlan1 interface:
+sudo ifdown wlan1
+sudo ifup wlan1
 
 # Restart the DHCP server
 sudo /etc/init.d/dnsmasq restart 
 
-# Configure the WiFi access point on wlan0
-sudo echo "interface=wlan0" > /etc/hostapd.conf
+# Configure the WiFi access point on wlan1
+sudo echo "interface=wlan1" > /etc/hostapd.conf
 sudo echo "driver=nl80211" >> /etc/hostapd.conf
 sudo echo "ssid=$apSSID" >> /etc/hostapd.conf
 sudo echo "channel=$apCH" >> /etc/hostapd.conf
@@ -56,7 +56,7 @@ sudo /bin/systemctl start hostapd-systemd
 connectWifi() {
 # Connect to Wifi
 sudo nmcli dev disconnect wlan1 2>&1
-sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan0 2>&1
+sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan1 2>&1
 }
 
 createADHOC() {
@@ -231,9 +231,9 @@ if [[ $routeEthMode == "WAN" ]]; then
   echo "SETUP IP Forwarding for ETH0"
 fi
 
-  enableNAT
+  #enableNAT
   createAP
-  connectWifi
+  #connectWifi
 
 # Set installation type flag for status page.
 sudo touch /var/www/html/.microrouter
