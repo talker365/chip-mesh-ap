@@ -120,13 +120,6 @@ sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
 }
 
 createOLSR() {
-# Set host file and hostname
-sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
-sudo echo "127.0.0.1 localhost" >> /etc/hosts
-sudo echo -e "$nodeIP $nodeID" >> /etc/hosts
-sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
-sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
-sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
 
 # Get Wired Ethernet Address
 if [ -d "/sys/class/net/eth0" ]; then
