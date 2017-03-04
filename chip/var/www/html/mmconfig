@@ -18,6 +18,7 @@ sudo echo "iface wlan1 inet static" >> /etc/network/interfaces
 sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
+<<<<<<< HEAD
 # Set host file and hostname
   echo -e "127.0.0.1\tlocalhost" > /etc/hosts
   echo -e "127.0.0.1\t$routerName" >> /etc/hosts
@@ -26,6 +27,8 @@ sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
   echo "ff02::2   ip6-allrouters" >> /etc/hosts
 
 
+=======
+>>>>>>> origin/master
 # Restart the wlan1 interface:
 sudo ifdown wlan1
 sudo ifup wlan1
@@ -118,8 +121,12 @@ sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
 sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 }
 
+<<<<<<< HEAD
 createHosts()
 {
+=======
+createHosts() {
+>>>>>>> origin/master
 # Set host file and hostname
 sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
 sudo echo "127.0.0.1 localhost" >> /etc/hosts
@@ -130,13 +137,6 @@ sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
 }
 
 createOLSR() {
-# Set host file and hostname
-sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
-sudo echo "127.0.0.1 localhost" >> /etc/hosts
-sudo echo -e "$nodeIP $nodeID" >> /etc/hosts
-sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
-sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
-sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
 
 # Get Wired Ethernet Address
 if [ -d "/sys/class/net/eth0" ]; then
