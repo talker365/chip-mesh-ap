@@ -18,14 +18,6 @@ sudo echo "iface wlan1 inet static" >> /etc/network/interfaces
 sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
-# Set host file and hostname
-  echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-  echo -e "$nodeIP\t$routerName" >> /etc/hosts
-  echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
-  echo "ff02::1   ip6-allnodes" >> /etc/hosts
-  echo "ff02::2   ip6-allrouters" >> /etc/hosts
-
-
 # Restart the wlan1 interface:
 sudo ifdown wlan1
 sudo ifup wlan1
