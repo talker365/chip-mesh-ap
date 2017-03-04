@@ -20,7 +20,7 @@ sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
 # Set host file and hostname
   echo -e "127.0.0.1\tlocalhost" > /etc/hosts
-  echo -e "$nodeIP\t$routerName" >> /etc/hosts
+  echo -e "127.0.0.1\t$routerName" >> /etc/hosts
   echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
   echo "ff02::1   ip6-allnodes" >> /etc/hosts
   echo "ff02::2   ip6-allrouters" >> /etc/hosts
@@ -51,6 +51,7 @@ sudo /usr/sbin/update-rc.d hostapd disable
 sudo /bin/systemctl daemon-reload
 sudo /bin/systemctl enable hostapd-systemd
 sudo /bin/systemctl start hostapd-systemd
+sudo /bin/systemctl status hostapd-systemd
 }
 
 connectWifi() {
@@ -118,6 +119,7 @@ sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 }
 
 createHosts()
+{
 # Set host file and hostname
 sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
 sudo echo "127.0.0.1 localhost" >> /etc/hosts

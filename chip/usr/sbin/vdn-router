@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Make sure interface is up
-ifdown wlan0
-ifup wlan0
+ifdown wlan1
+ifup wlan1
 
 # Enable DNS forwarding
 #sysctl -w net.ipv4.ip_forward=1
