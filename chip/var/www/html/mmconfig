@@ -24,7 +24,7 @@ sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
   echo "::1       localhost ip6-localhost ip6-loopback" >> /etc/hosts
   echo "ff02::1   ip6-allnodes" >> /etc/hosts
   echo "ff02::2   ip6-allrouters" >> /etc/hosts
-  echo $routerName > /etc/hostname
+
 
 # Restart the wlan1 interface:
 sudo ifdown wlan1
@@ -108,13 +108,23 @@ sudo echo -e "\nauto lo" >> /etc/network/interfaces
 sudo echo -e "iface lo inet loopback" >> /etc/network/interfaces
 sudo echo -e "\nauto eth0" >> /etc/network/interfaces
 sudo echo -e "iface eth0 inet dhcp" >> /etc/network/interfaces
-sudo echo -e "\nauto $nodeiface " >> /etc/network/interfaces
-sudo echo -e "iface $nodeiface inet static " >> /etc/network/interfaces
+sudo echo -e "\nauto wlan1 " >> /etc/network/interfaces
+sudo echo -e "iface wlan1 inet static " >> /etc/network/interfaces
 sudo echo -e "\taddress $nodeIP" >> /etc/network/interfaces
 sudo echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
 sudo echo -e "\twireless-channel $nodeCH " >> /etc/network/interfaces
 sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
 sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
+}
+
+createHosts()
+# Set host file and hostname
+sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
+sudo echo "127.0.0.1 localhost" >> /etc/hosts
+sudo echo -e "$nodeIP $newHostName" >> /etc/hosts
+sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
+sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
+sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
 }
 
 createOLSR() {
@@ -125,7 +135,6 @@ sudo echo -e "$nodeIP $nodeID" >> /etc/hosts
 sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
 sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
 sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
-sudo echo -e "$nodeID" > /etc/hostname
 
 # Get Wired Ethernet Address
 if [ -d "/sys/class/net/eth0" ]; then
@@ -218,6 +227,7 @@ fi
 # Router Mode
 if [[ $request == "microrouter" ]]; then  
   
+  newHostName=$routerName
   echo "Router [$routerName]"
   echo "Wifi [$wifiSSID]"
   echo "WifiPassword [$wifiPASS]"
@@ -231,6 +241,7 @@ if [[ $routeEthMode == "WAN" ]]; then
   echo "SETUP IP Forwarding for ETH0"
 fi
 
+  
   #enableNAT
   createAP
   #connectWifi
@@ -243,6 +254,7 @@ fi
 # Mesh Mode
 if [[ $request == "micromesh" ]]; then 
 
+  newHostName=$nodeID
   echo "Callsign [$callsign]"
   echo "NodeID [$nodeID]"
   echo "Admin Password [$adminPASS]"
@@ -250,14 +262,7 @@ if [[ $request == "micromesh" ]]; then
   echo "Node Ethernet Mode [$nodeEthMode]"
   echo "Node SSID [$nodeSSID]"
   echo
-  echo "Router [$routerName]"
-  echo "Wifi [$wifiSSID]"
-  echo "WifiPassword [$wifiPASS]"
-  echo "Eth Mode [$routeEthMode]"
-  echo "AP [$apSSID]"
-  echo "AP-Pass [$apPASS]"
-  echo "AP-CH [$apCH]"
-  echo
+
   createADHOC
   createOLSR
 
@@ -282,3 +287,9 @@ sudo touch /var/www/flags/.installed
 
 # Set Timezone to EST
 sudo timedatectl set-timezone EST
+
+# Change Hostname, no longer chip
+echo $routerName > /etc/hostname
+createHosts
+
+
