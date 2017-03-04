@@ -109,7 +109,7 @@ sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
 sudo echo -e "\twireless-mode ad-hoc " >> /etc/network/interfaces
 }
 
-createHosts()
+createHosts() {
 # Set host file and hostname
 sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
 sudo echo "127.0.0.1 localhost" >> /etc/hosts
