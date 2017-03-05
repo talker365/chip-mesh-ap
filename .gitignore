@@ -6,3 +6,7 @@ chip/etc/build#128
 deploy/mac/install
 
 deploy/mac/install
+
+*.swp
+
+deploy/mac/install
