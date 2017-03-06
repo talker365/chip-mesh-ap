@@ -199,6 +199,8 @@ createOLSR() {
 
 clear
 
+if [[ $# -lt 1 ]]; then echo "invalid or no parameters used !"; exit 1; fi
+
 request=$1
 
 if [[ $request == "check" ]]; then 
@@ -211,6 +213,25 @@ if [[ $request == "update" ]]; then
   while [ $# -gt 0 ]
     do
         case "$1" in
+
+        routerName )
+          #Change Router Name
+          echo $2 > /etc/hostname
+          sudo sed -i.bak "s/.*127.0.0.1 localhost.*/127.0.0.1 localhost $2/" /etc/hosts
+          shift; shift;
+        ;;
+
+        adminPASS )
+          #Change admin password
+          echo $2 > /var/www/html/.password
+          shift; shift;
+        ;;
+
+        apPASS )
+          #Change access point password
+          sudo sed -i.bak "s/.*wpa_passphrase=.*/wpa_passphrase=$2/" /etc/hostapd.conf
+          shift; shift;
+        ;;
 
         ssid )
           #update ssid
@@ -226,6 +247,8 @@ if [[ $request == "update" ]]; then
 
         esac
    done
+   # Update any required services.
+   systemctl restart hostapd-systemd
  exit 0
 fi
 
