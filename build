@@ -21,6 +21,7 @@ rm -r $orig/deploy/*
 mkdir $orig/deploy/mac
 mkdir $orig/deploy/linux
 mkdir $orig/deploy/windows
+mkdir $orig/deploy/chip
 
 echo "Archiving chip root files..."
 # tar all folders/files
@@ -43,6 +44,10 @@ tar -rf $orig/deploy/VdnMeshChip.tar vdn_rsa
 # create single file Mac Installer...
 cp $orig/installers/mac/install $orig/deploy/mac/install
 cat $orig/deploy/VdnMeshChip.tar >> $orig/deploy/mac/install
+
+# create single file CHIP Installer...
+cp $orig/installers/chip/install $orig/deploy/chip/install
+cat $orig/deploy/VdnMeshChip.tar >> $orig/deploy/chip/install
 
 #remove build files
 rm $orig/deploy/VdnMeshChip.tar

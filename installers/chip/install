@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# This is the VDN Chip Mesh Firmware installation process.  This script will untar
+# the package files from VdnMeshChip.tar and move them to the chip.  After moving
+# the files, the installation routine will be started remotely on the chip.
+
+start=$(date +'%s')
+echo -e '\nInstalling Micro Mesh...'
+
+echo -e "Extracting installation files locally..."
+# Capture current path...
+orig=`pwd`
+
+# Create temporary directory for installation files...
+mkdir /tmp/chip.install
+
+# Untar installation files...
+cd /tmp/chip.install
+#tail -n +69 $orig/$0 | tar xf -
+tail -n +$[$(cat $orig/$0 | grep -n "exit #end of file" | cut -d ":" -f1)+1] $orig/$0 | tar xf - 
+
+echo -e "Copying installation files to chip..."
+# Create remote directories for installation files...
+mkdir /tmp/vdn
+mkdir /root/.ssh
+
+# Setup key...
+chmod 600 /tmp/chip.install/vdn_rsa
+mv /tmp/chip.install/vdn_rsa /tmp/vdn/.
+mv /tmp/chip.install/vdn_rsa.pub /tmp/vdn/.
+cat /tmp/vdn/vdn_rsa.pub >> /root/.ssh/authorized_keys
+
+# Push files to CHIP...
+mv /tmp/chip.install/root.tar /tmp/vdn/.
+
+# Begin installation on the CHIP...
+echo -e "Expanding files on the chip"
+tar -oxf /tmp/vdn/root.tar -C /
+chmod +x /tmp/vdn/routine
+echo -e "Starting Micro Mesh installation on chip..."
+echo -e "=============================================================="
+/tmp/vdn/./routine
+
+echo -e "\n\nMicro Mesh Installation Completed! in $(($(date +'%s') - $start)) seconds."
+echo -e "\nYour browser is now launching to http://chip.local.\n"
+
+# Auto Launch the Default Browser to http://chip.local
+x-www-browser http://chip.local
+
+# Return to original directory...
+cd $orig
+
+# Clean up temporary installation directory...
+rm -r /tmp/chip.install
+exit #end of file
