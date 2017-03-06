@@ -206,6 +206,29 @@ if [[ $request == "check" ]]; then
 	if [[ $2 == "ethernet" ]]; then [ -d "/sys/class/net/eth0" ] && echo "TRUE" || echo "FALSE"; fi
 fi
 
+if [[ $request == "update" ]]; then 
+ shift
+  while [ $# -gt 0 ]
+    do
+        case "$1" in
+
+        ssid )
+          #update ssid
+          sudo sed -i.bak "s/.*ssid=.*/ssid=$2/" /etc/hostapd.conf
+          shift; shift;
+        ;;
+
+        channel )
+         #update channel
+         sudo sed -i.bak "s/.*channel=.*/channel=$2/" /etc/hostapd.conf
+        shift; shift;
+        ;;
+
+        esac
+   done
+ exit 0
+fi
+
 # Remove existing Flags 
 [ -f "/var/www/flags/.installed" ] && rm /var/www/flags/.installed || echo "Install flag didn't exist"
 [ -f "/var/www/flags/.micromesh" ] && rm /var/www/flags/.micromesh || echo "Micromesh flag didn't exist"
