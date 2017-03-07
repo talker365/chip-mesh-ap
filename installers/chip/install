@@ -16,8 +16,8 @@ mkdir /tmp/chip.install
 
 # Untar installation files...
 cd /tmp/chip.install
-tail -n +56 $orig/$0 | tar xf -
-#tail -n +`echo $[$(cat $orig/$0 | grep -n "exit #end of file" | cut -d ":" -f1)+1]` $orig/$0 | tar xf - 
+#tail -n +56 $orig/$0 | tar xf -
+tail -n +`echo $[$(cat $orig/$0 | grep -a -n "^exit #end of file$" | cut -d ":" -f1)+1]` $orig/$0 | tar xf - 
 
 echo -e "Copying installation files to chip..."
 # Create remote directories for installation files...
