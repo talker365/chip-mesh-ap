@@ -16,8 +16,8 @@ mkdir /tmp/chip.install
 
 # Untar installation files...
 cd /tmp/chip.install
-#tail -n +69 $orig/$0 | tar xf -
-tail -n +`echo $[$(cat $orig/$0 | grep -n "exit #end of file" | cut -d ":" -f1)+1]` $orig/$0 | tar xf - 
+#tail -n +56 $orig/$0 | tar xf -
+tail -n +`echo $[$(cat $orig/$0 | grep -a -n "^exit #end of file$" | cut -d ":" -f1)+1]` $orig/$0 | tar xf - 
 
 echo -e "Copying installation files to chip..."
 # Create remote directories for installation files...
@@ -45,7 +45,7 @@ echo -e "\n\nMicro Mesh Installation Completed! in $(($(date +'%s') - $start)) s
 echo -e "\nYour browser is now launching to http://chip.local.\n"
 
 # Auto Launch the Default Browser to http://chip.local
-x-www-browser http://chip.local
+#x-www-browser http://chip.local
 
 # Return to original directory...
 cd $orig
