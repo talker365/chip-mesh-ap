@@ -337,6 +337,14 @@
     </div>
 
 
+    <form method="post" action="deploy.php">
+        <input type="submit" data-inline="true" value="Update">
+                    <label for="final_microtype">Installation Type:</label>
+                    <input type="text" readonly="readonly" required name="deploy_mode" id="deploy_mode" placeholder="Deploy Mode" value="admin">
+
+    </form>
+
+
   </div>
   <div data-role="footer">
     <h1>Valley Digital Network (VDN)</h1>

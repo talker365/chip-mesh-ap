@@ -274,6 +274,10 @@
 	    		<input type="submit" data-inline="true" value="Install">
 				<div class="ui-field-contain" data-type="horizontal">
 			        <label for="final_microtype">Installation Type:</label>
+			        <input type="text" readonly="readonly" required name="deploy_mode" id="deploy_mode" placeholder="Deploy Mode" value="install">
+				</div>
+				<div class="ui-field-contain" data-type="horizontal">
+			        <label for="final_microtype">Installation Type:</label>
 			        <input type="text" readonly="readonly" required name="final_microtype" id="final_microtype" placeholder="Installation Type">
 				</div>
 				<div id="f_callsign" class="ui-field-contain" data-type="horizontal">
