@@ -123,8 +123,7 @@ createHosts()
 {
 	# Set host file and hostname
 	sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
-	sudo echo "127.0.0.1 localhost" >> /etc/hosts
-	sudo echo -e "$nodeIP $newHostName" >> /etc/hosts
+	sudo echo "127.0.0.1 localhost $newHostName" >> /etc/hosts
 	sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
 	sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
 	sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
@@ -191,13 +190,9 @@ createOLSR() {
 }
 
 
-
-
-
-
 #---[ MAIN ]----------------------------------------------------------------------------------
 
-clear
+#clear
 
 if [[ $# -lt 1 ]]; then echo "invalid or no parameters used !"; exit 1; fi
 
@@ -214,11 +209,19 @@ if [[ $request == "update" ]]; then
     do
         case "$1" in
 
-        routerName )
+        apName )
           #Change Router Name
           echo $2 > /etc/hostname
           sudo sed -i.bak "s/.*127.0.0.1 localhost.*/127.0.0.1 localhost $2/" /etc/hosts
           shift; shift;
+        ;;
+
+        meshName )
+          #Change Router Name
+          echo
+          #echo $2 > /etc/hostname
+          #sudo sed -i.bak "s/.*127.0.0.1 localhost.*/127.0.0.1 localhost $2/" /etc/hosts
+          #shift; shift;
         ;;
 
         adminPASS )
@@ -233,18 +236,33 @@ if [[ $request == "update" ]]; then
           shift; shift;
         ;;
 
-        ssid )
+        apSSID )
           #update ssid
           sudo sed -i.bak "s/.*ssid=.*/ssid=$2/" /etc/hostapd.conf
           shift; shift;
         ;;
 
-        channel )
+        meshSSID )
+          #update ssid
+          echo
+          #sudo sed -i.bak "s/.*ssid=.*/ssid=$2/" /etc/hostapd.conf
+          #shift; shift;
+        ;;
+
+        apChannel )
          #update channel
          sudo sed -i.bak "s/.*channel=.*/channel=$2/" /etc/hostapd.conf
         shift; shift;
         ;;
 
+        meshChannel )
+         #update channel
+         echo
+         #sudo sed -i.bak "s/.*channel=.*/channel=$2/" /etc/hostapd.conf
+        #shift; shift;
+        ;;
+
+                                
         esac
    done
    # Update any required services.
