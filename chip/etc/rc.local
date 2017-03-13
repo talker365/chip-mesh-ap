@@ -1,5 +1,4 @@
 #!/bin/sh 
-
 #
 # WARNING WARNING WARNING WARNING
 # This file is managed by VDN.
@@ -42,7 +41,8 @@ iptables -A FORWARD -p ALL -i eth0 -j ACCEPT
 iptables -A FORWARD -i wlan1 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source 10.35.49.105
 
+echo "127.0.0.1" >> /etc/resolv.conf
+
 if (( $(cat /sys/class/net/wlan1/operstate) == "up" )); then olsrd -f /etc/olsrd/olsrd.conf; else echo "wlan1 Failed to Start !!!"; fi
-echo "OLSRD was Launched !" > /tmp/status
 
 exit 0

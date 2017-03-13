@@ -1,0 +1,5 @@
+# Created by VDN Scripts... Do not edit directly, changes will be lost !
+
+ENABLED=1
+
+CONFIG_DIR=/etc/dnsmasq.d,.dpkg-dist,.dpkg-old,.dpkg-new

@@ -146,59 +146,14 @@ createOLSR() {
 	sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
 	#sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.255/" /etc/olsrd/olsrd.conf
 
-<<testolsrd
-	# edit OLSRD boot options
-	sudo sed -i.bak "s/.*#START_OLSRD=.*/START_OLSRD=\"YES\"/" /etc/default/olsrd
-	sudo sed -i.bak "s/.*#SETUP_ADHOC=.*/SETUP_ADHOC=\"YES\"/" /etc/default/olsrd
-	sudo sed -i.bak "s/.*MESH_IF=.*/MESH_IF=$nodeiface/" /etc/default/olsrd
-	sudo sed -i.bak "s/.*channel=.*/channel=$nodeCH/" /etc/default/olsrd
-	sudo sed -i.bak "s/.*ssid=.*/ssid=$nodeSSID/" /etc/default/olsrd
-	sudo sed -i.bak "s/.*bssid=.*/#bssid=/" /etc/default/olsrd
-
-	#sudo ifconfig wlan1 inet $nodeIP broadcast 255.255.255.255
-testolsrd
-
 	# update dnsmasq
- 	sudo echo "" > /etc/default/dnsmasq
-	sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/default/dnsmasq
-	sudo echo -e "\nENABLED=1" >> /etc/default/dnsmasq
-	sudo echo -e "\nCONFIG_DIR=/etc/dnsmasq.d,.dpkg-dist,.dpkg-old,.dpkg-new" >> /etc/default/dnsmasq
-
-  sudo rm -r /etc/dnsmasq.d/*.conf
- 	sudo echo "" > /etc/dnsmasq.d/mesh-node.conf
-	sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "#" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "interface=eth0" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "#dhcp-option=3,192.168.2.234" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "#dhcp-range=192.168.2.5,192.168.2.25,255.255.255.0,24h" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "domain-needed" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "bogus-priv" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "filterwin2k" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "localise-queries" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "no-resolv" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "server=8.8.8.8" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "server=8.8.4.4" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "domain=local.mesh" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "expand-hosts" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "no-negcache" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "resolv-file=/etc/resolv.conf" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "#address=/localnode/$nodeIP" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "address=/$nodeID/$nodeIP" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "addn-hosts=/var/run/hosts_olsr" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "dhcp-authoritative" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "dhcp-leasefile=/var/lib/misc/dnsmasq.leases" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "read-ethers" >> /etc/dnsmasq.d/mesh-node.conf
-  sudo echo "strict-order" >> /etc/dnsmasq.d/mesh-node.conf
+	# Change nodeIP to Eth0's IP
+  #sudo sed -i.bak "s/.*address=/localnode.*/address=/localnode/$nodeIP/" /etc/dnsmasq.d/mesh-node.conf
+	sudo sed -i.bak "s/.*address=/node-id.*/address=/$nodeID/$nodeIP/" /etc/dnsmasq.d/mesh-node.conf
 
 	# reset networking.
 	sudo systemctl daemon-reload
 	sudo /etc/./rc.local
-#	sudo olsrd-adhoc-setup
-
 }
 
 
