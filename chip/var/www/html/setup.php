@@ -167,10 +167,18 @@
 	</div>
 
     <div id="divConfigureRouter" style="display:none;">
+		<h2> Router Mode </h2>
+                <fieldset data-role="controlgroup">
+                    <legend>Choose your router mode:</legend>
+                    <label for="hotspot">Acts as WiFi Hotspot</label>
+                    <input type="radio" name="router_mode" id="hotspot" value="hotspot">
+                    <label for="bridge">Connects to a WiFi Hotspot</label>
+                    <input type="radio" name="router_mode" id="bridge" value="bridge">
+                </fieldset>
 		<h2> Router Name </h2>
 	    <label id="label_routerhostname" for="routerhostname"> Router name:</label>
 	    <input type="text" name="routerhostname" id="routerhostname">
-	    <span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
+	    <span> <i>Please make sure it is unique (e.g. yourcall-microrouter-01, yourcall-microrouter-02, etc...)</i> </span>
 
         <!--<h2> WiFi Connection </h2>-->
         <?php /*echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");*/    ?>
@@ -189,7 +197,7 @@
 	
 	        if (trim($eth0present) == "FALSE") {
 	    ?>
-			<h2 style="display:none;"> Ethernet Connection </h2>
+			<h2> Ethernet Connection </h2>
 	        <fieldset data-role="controlgroup" style="display:none;">
 	            <legend>A wired connection was identified, please select how to use it:</legend>
 	            <label for="routerLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
