@@ -140,7 +140,7 @@ createOLSR() {
 	#sudo echo "exit 0" >> /etc/rc.local
 
 	# Create the OLSRD Config File
-	sudo cp /etc/olsrd/olsrd.conf.vdn /etc/olsrd/olsrd.conf
+	sudo cp /etc/default/olsrd.conf.vdn /etc/olsrd/olsrd.conf
 	sudo sed -i.bak "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
 	sudo sed -i.bak "s/.*Interface.*/Interface \"wlan1\"/" /etc/olsrd/olsrd.conf
 	sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
@@ -148,8 +148,9 @@ createOLSR() {
 
 	# update dnsmasq
 	# Change nodeIP to Eth0's IP
+	sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
   #sudo sed -i.bak "s/.*address=/localnode.*/address=/localnode/$nodeIP/" /etc/dnsmasq.d/mesh-node.conf
-	sudo sed -i.bak "s/.*address=/node-id.*/address=/$nodeID/$nodeIP/" /etc/dnsmasq.d/mesh-node.conf
+	sudo sed -i.bak "s/.*address=/node-id.*/address=/ $nodeID/$nodeIP/" /etc/dnsmasq.d/mesh-node.conf
 
 	# reset networking.
 	sudo systemctl daemon-reload
