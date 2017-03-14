@@ -21,7 +21,7 @@
 
 <div data-role="page" id="page_status" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
 	<a href="#page_status_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">
@@ -143,7 +143,7 @@
 
 <div data-role="page" id="page_nodes" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_nodes_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">
@@ -178,7 +178,7 @@
 
 <div data-role="page" id="page_olsr" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_olsr_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">
@@ -211,7 +211,7 @@
 
 <div data-role="page" id="page_clients" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_clients_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">
@@ -242,7 +242,7 @@
 
 <div data-role="page" id="page_admin" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_status" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_admin_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">

@@ -16,7 +16,7 @@
 <body>
 	<div data-role="page" id="page_status" data-theme="<?php echo $theme; ?>">
 		<div data-role="header">
-			<a href="/index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
+			<a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
 			<a href="#page_home_info" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
 			<!--<a href="#page_home_info" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>-->
 			<h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>

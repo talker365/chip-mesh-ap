@@ -118,7 +118,7 @@
 
 <div data-role="page" id="page_configure" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_configure_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">
@@ -167,65 +167,60 @@
 	</div>
 
     <div id="divConfigureRouter" style="display:none;">
-		<h2> Router Mode </h2>
-                <fieldset data-role="controlgroup">
-                    <legend>Choose your router mode:</legend>
-                    <label for="hotspot">Acts as WiFi Hotspot</label>
-                    <input type="radio" name="router_mode" id="hotspot" value="hotspot">
-                    <label for="bridge">Connects to a WiFi Hotspot</label>
-                    <input type="radio" name="router_mode" id="bridge" value="bridge">
-                </fieldset>
-		<h2> Router Name </h2>
-	    <label id="label_routerhostname" for="routerhostname"> Router name:</label>
-	    <input type="text" name="routerhostname" id="routerhostname">
-	    <span> <i>Please make sure it is unique (e.g. yourcall-microrouter-01, yourcall-microrouter-02, etc...)</i> </span>
+		<h2> Router Configuration </h2>
+    	<div class="ui-field-contain">
+	    	<label id="label_routerhostname" for="routerhostname"> Router name:</label>
+	    	<input type="text" name="routerhostname" id="routerhostname">
+	    	<span style="font-size: smaller;"> <i>Please make sure the router name is unique (e.g. yourcall-microrouter-01, yourcall-microrouter-02, etc...)</i> </span>
+    	</div>
+    	<div class="ui-field-contain">
+	    	<label for="adminpassword">Admin Password:</label>
+	    	<input type="text" name=adminpassword" id="adminpassword" placeholder="This is the password used to access this micro router's mangement features">
+    	</div>
 
-        <!--<h2> WiFi Connection </h2>-->
-        <?php /*echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");*/    ?>
-
-        <!--<br /><br />-->
-        <div class="ui-field-contain" style="display:none;">
-            <label for="ssid">SSID:</label>
-            <input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true">
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true">
-        </div>
-
+        <fieldset data-role="controlgroup">
+        	<legend>Choose routing mode:</legend>
+        	<label for="hotspot">Acts as WiFi Hotspot</label>
+        	<input type="radio" name="router_mode" id="hotspot" value="hotspot" onclick="document.getElementById('div1').style.display='block';document.getElementById('div2').style.display='none';" checked>
+            <label for="bridge">Connects to a WiFi Hotspot</label>
+            <input type="radio" name="router_mode" id="bridge" value="bridge" onclick="document.getElementById('div2').style.display='block';document.getElementById('div1').style.display='none';">
+        </fieldset>
 	    <?php
 	        $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
 	        #echo "<p> DEBUG: mmconfig=$eth0present </p>";
 	
 	        if (trim($eth0present) == "FALSE") {
 	    ?>
-			<h2> Ethernet Connection </h2>
-	        <fieldset data-role="controlgroup" style="display:none;">
-	            <legend>A wired connection was identified, please select how to use it:</legend>
-	            <label for="routerLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
-	            <input type="radio" name="routerEthernetType" id="routerLan" value="routerLan" disabled="disabled">
-	            <label for="routerWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
-	            <input type="radio" name="routerEthernetType" id="routerWan" value="routerWan" checked="checked">
-	        </fieldset>
-	    <?php
-	        } else {
-	    ?>
-			<h2> Ethernet Connection </h2>
+			<h2 style="color: red;"> Ethernet Connection Error!</h2>
             <p> No wired connection found!  You must have a wired connection for the micro router to function properly. </p>
 	    <?php
 	        }
 	    ?>
+		<div id="div1">
+			<h2> Access Point </h2>
+    	    <div class="ui-field-contain">
+        	    <label for="accesspointssid">SSID:</label>
+            	<input type="text" name="accesspointssid" id="accesspointssid" placeholder="SSID used by the access point">
+	            <label for="accesspointpassword">Password:</label>
+    	        <input type="text" name="accesspointpassword" id="accesspointpassword" placeholder="This is the password used to access the access point">
+        	    <label for="accesspointchannel">Select Channel</label>
+            	<select name="accesspointchannel" id="accesspointchannel">
+					<?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
+	            </select>
+    	    </div>
+		</div>
+		<div id="div2" style="display: none;">
+	        <h2> WiFi Connection </h2>
+	        <?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");  ?>  
 
-		<h2> Access Point </h2>
-        <div class="ui-field-contain">
-            <label for="accesspointssid">SSID:</label>
-            <input type="text" name="accesspointssid" id="accesspointssid" placeholder="SSID used by the access point">
-            <label for="accesspointpassword">Password:</label>
-            <input type="text" name="accesspointpassword" id="accesspointpassword" placeholder="This is the password used to access the access point">
-            <label for="accesspointchannel">Select Channel</label>
-            <select name="accesspointchannel" id="accesspointchannel">
-				<?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
-            </select>
-        </div>
-
+    	    <!--<br /><br />-->
+    	    <div class="ui-field-contain">
+        	    <label for="ssid">SSID:</label>
+            	<input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true">
+	            <label for="password">Password:</label>
+    	        <input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true">
+        	</div>
+		</div>
 
 	</div>
 
@@ -263,7 +258,7 @@
 
 <div data-role="page" id="page_deploy" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
-    <a href="#page_home" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_deploy_help" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
     <h1>Micro Mesh Installer</h1>
     <div data-role="navbar">

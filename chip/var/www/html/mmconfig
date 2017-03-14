@@ -169,6 +169,7 @@ request=$1
 if [[ $request == "check" ]]; then 
 	if [[ $2 == "installed" ]]; then [ -e "/var/www/html/.installed" ] && echo "TRUE" || echo "FALSE"; fi
 	if [[ $2 == "ethernet" ]]; then [ -d "/sys/class/net/eth0" ] && echo "TRUE" || echo "FALSE"; fi
+	exit 0
 fi
 
 if [[ $request == "update" ]]; then 

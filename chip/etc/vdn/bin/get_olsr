@@ -38,7 +38,8 @@ case "$1" in
 
 neighbors)
 	while read IP SYM MPR MPRS WILL TWOHOPS ; do
-    	cat /etc/hosts | grep "$IP" | grep -v "dtdlink." | grep -v "mid1." | cut -f2 >> /var/www/tmp/olsr.$1
+    	#cat /etc/hosts | grep "$IP" | grep -v "dtdlink." | grep -v "mid1." | cut -f2 >> /var/www/tmp/olsr.$1
+    	cat /run/hosts_olsr | grep "$IP" | grep -v "dtdlink." | grep -v "mid1." | cut -f2 >> /var/www/tmp/olsr.$1
 	done < /var/www/tmp/$1
 	cat /var/www/tmp/olsr.$1
 
