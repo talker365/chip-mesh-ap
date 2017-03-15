@@ -8,32 +8,41 @@
 
 Interface_Modes
 
+#---[ GLOBAL VARIABLES ]--------------------------------------------------------------
+
+defaultWLAN=wlan1
+
+
+
+
 #---[ FUNCTIONS ]---------------------------------------------------------------------
 
-createAP() {
+createDHCP() {
 	# Set up a static IP for the AP(accesspoint)
 	sudo echo "" >> /etc/network/interfaces
-	sudo echo "auto wlan1" >> /etc/network/interfaces
-	sudo echo "iface wlan1 inet static" >> /etc/network/interfaces
+	sudo echo "auto $defaultWLAN" >> /etc/network/interfaces
+	sudo echo "iface $defaultWLAN inet static" >> /etc/network/interfaces
 	sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 	sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
 	# Restart the wlan1 interface:
-	sudo ifdown wlan1
-	sudo ifup wlan1
+	sudo ifdown $defaultWLAN
+	sudo ifup $defaultWLAN
 
 	# Create Dnsmasq & Restart the DHCP server
-  sudo rm -r /etc/dnsmasq.d/*.conf
+  i	sudo rm -r /etc/dnsmasq.d/*.conf
  	sudo echo "" > /etc/dnsmasq.d/access-point.conf
 	sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/dnsmasq.d/access-point.conf
-	sudo echo -e "\ninterface=wlan1" >> /etc/dnsmasq.d/access-point.conf
+	sudo echo -e "\ninterface=$defaultWLAN" >> /etc/dnsmasq.d/access-point.conf
 	sudo echo -e "\nexcept-interface=eth0" >> /etc/dnsmasq.d/access-point.conf
 	sudo echo -e "\ndhcp-range=172.20.0.100,172.20.0.250,1h" >> /etc/dnsmasq.d/access-point.conf
 
 	sudo /etc/init.d/dnsmasq restart 
+}
 
+createAP() {
 	# Configure the WiFi access point on wlan1
-	sudo echo "interface=wlan1" > /etc/hostapd.conf
+	sudo echo "interface=$defaultWLAN" > /etc/hostapd.conf
 	sudo echo "driver=nl80211" >> /etc/hostapd.conf
 	sudo echo "ssid=$apSSID" >> /etc/hostapd.conf
 	sudo echo "channel=$apCH" >> /etc/hostapd.conf
@@ -58,8 +67,8 @@ createAP() {
 
 connectWifi() {
 	# Connect to Wifi
-	sudo nmcli dev disconnect wlan1 2>&1
-	sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname wlan1 2>&1
+	sudo nmcli dev disconnect $defaultWLAN 2>&1
+	sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname $defaultWLAN 2>&1
 }
 
 createADHOC() {
@@ -273,12 +282,16 @@ if [[ $request == "microrouter" ]]; then
 	echo "AP-CH [$apCH]"
 	echo ""
 
-	if [[ $routeEthMode == "WAN" ]]; then 
-		echo "SETUP IP Forwarding for ETH0"
+	if [[ $routeEthMode == "ETH" ]]; then 
+		echo "SETUP AccessPoint with IP Forwarding to ETH0"
+		createDHCP
+		createAP
+	fi
+	if [[ $routeEthMode == "WLAN" ]]; then 
+		echo "CONNECT to WiFi Hotspot with IP Forwarding to $defaultWLAN"
+		connectWifi
 	fi
 
-	createAP
-	#connectWifi
 
 	# Set installation type flag for status page.
 	sudo touch /var/www/flags/.microrouter

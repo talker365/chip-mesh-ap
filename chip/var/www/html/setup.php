@@ -180,10 +180,10 @@
 
         <fieldset data-role="controlgroup">
         	<legend>Choose routing mode:</legend>
-        	<label for="hotspot">Acts as WiFi Hotspot</label>
-        	<input type="radio" name="router_mode" id="hotspot" value="hotspot" onclick="document.getElementById('div1').style.display='block';document.getElementById('div2').style.display='none';" checked>
-            <label for="bridge">Connects to a WiFi Hotspot</label>
-            <input type="radio" name="router_mode" id="bridge" value="bridge" onclick="document.getElementById('div2').style.display='block';document.getElementById('div1').style.display='none';">
+        	<label for="routerEth">Acts as WiFi Hotspot</label>
+        	<input type="radio" name="routerEthernetType" id="routerEth" value="routerEth" onclick="document.getElementById('div1').style.display='block';document.getElementById('div2').style.display='none';" checked>
+            <label for="routerWlan">Connects to a WiFi Hotspot</label>
+            <input type="radio" name="routerEthernetType" id="routerWlan" value="routerWlan" onclick="document.getElementById('div2').style.display='block';document.getElementById('div1').style.display='none';">
         </fieldset>
 	    <?php
 	        $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");

@@ -83,11 +83,11 @@ function populateForm() {
         document.getElementById("final_password").value = "none"; 
     }
     
-    if (document.getElementById("routerLan") != null) {
-    	if (document.getElementById("routerLan").checked) {
-	        document.getElementById("final_routerEthernetType").value = "LAN";
-	    } else if (document.getElementById("routerWan").checked) {
-	        document.getElementById("final_routerEthernetType").value = "WAN";
+    if (document.getElementById("routerEth") != null) {
+    	if (document.getElementById("routerEth").checked) {
+	        document.getElementById("final_routerEthernetType").value = "ETH";
+	    } else if (document.getElementById("routerWlan").checked) {
+	        document.getElementById("final_routerEthernetType").value = "WLAN";
 	    } else {
 	        document.getElementById("final_routerEthernetType").value = "unknown";
 	    }
