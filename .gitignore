@@ -10,3 +10,5 @@ deploy/mac/install
 *.swp
 
 deploy/mac/install
+
+deploy/chip/install
