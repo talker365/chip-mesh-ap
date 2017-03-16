@@ -37,7 +37,10 @@
 			                    Mesh Ethernet Type: <?php echo $_POST["final_meshEthernetType"]; ?> <br />
 			                    Router Hostname: <?php echo $_POST["final_routerhostname"]; ?> <br />
 			                    SSID: <?php echo $_POST["final_ssid"]; ?> <br />
-			                    Password: <?php echo $_POST["final_password"]; ?> <br />
+			                    <span data-role="collapsible">
+									<h1>Password</h1>
+									<p><?php echo $_POST["final_password"]; ?></p>
+								</span>
 			                    Router Ethernet Type: <?php echo $_POST["final_routerEthernetType"]; ?> <br />
 			                    AP SSID: <?php echo $_POST["final_accesspointssid"]; ?> <br />
 			                    AP Password: <?php echo $_POST["final_accesspointpassword"]; ?> <br />

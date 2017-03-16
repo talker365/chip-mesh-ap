@@ -211,8 +211,10 @@
 		</div>
 		<div id="div2" style="display: none;">
 	        <h2> WiFi Connection </h2>
-	        <?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");  ?>  
-
+			<span id=spanWiFiConnection>
+	        	<?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");  ?>  
+			</span>
+			<a class="ui-btn" onclick="refreshWiFiConnection();" data-inline="true">Refresh</a>
     	    <!--<br /><br />-->
     	    <div class="ui-field-contain">
         	    <label for="ssid">SSID:</label>
@@ -317,7 +319,7 @@
 				</div>
 				<div id="f_wifipassword" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_password">WiFi Password:</label>
-			        <input type="text" readonly="readonly" required name="final_password" id="final_password" placeholder="">
+			        <input type="password" readonly="readonly" required name="final_password" id="final_password" placeholder="">
 				</div>
 				<div id="f_routerethernet" class="ui-field-contain" data-type="horizontal">
 			        <label for="final_routerEthernetType">Ethernet:</label>

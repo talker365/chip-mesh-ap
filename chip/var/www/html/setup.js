@@ -173,3 +173,18 @@ function setSummaryDisplay() {
 		document.getElementById("f_nodeethernet").style.display = "none";
 	}
 }
+
+function refreshWiFiConnection() {
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      document.getElementById("spanWiFiConnection").innerHTML =
+      this.responseText;
+    }
+  };
+  xhttp.open("GET", "ap_list.php", true);
+  xhttp.send();
+}
+
+
+

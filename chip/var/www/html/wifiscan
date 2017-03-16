@@ -66,13 +66,15 @@ if [[ $2 != "HTML" ]]; then
    nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq 
    exit 0
 else
-   nmcli -f SSID,MODE,CHAN,SIGNAL,BARS d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > ./wifilist
+   nmcli -f MODE,CHAN,SIGNAL,BARS,SSID d wifi list | grep $mode | egrep -v "^--|Apple" | sort | uniq > ./wifilist
 fi
 
 
 printf "<table data-role=\"table\" class=\"ui-responsive\">"
 printf "<thead><tr><th>SSID</th><th>Channel</th><th>Signal</th><th>Bars</th></tr></thead><tbody>"
-while read SSID MODE CHAN SIG BARS ; do
+while read MODE CHAN SIG BARS SSID ; do
+
+	SSID=${SSID//\'/&#39;}
 
 	if [ "$SSID" == "*" ] ; then
         printf "<tr><th>SSID</th><th>Mode</th><th>Ch.</th><th>Rate</th><th>Signal</th><th>Bars</th><th>Security</th></tr>"
@@ -81,8 +83,7 @@ while read SSID MODE CHAN SIG BARS ; do
 	if [ "$SSID" != "--" ] && [ "$SSID" != "*" ] ; then
 
   		printf "<tr>\n"
-		printf "<td><a href=\"#page_configure\" class=\"ui-btn\" onclick=\"document.getElementById('ssid').value='$SSID'\" data-inline=\"true\">$SSID</a></td>\n"
-		#printf "<td><a href='#page_configure' class='ui-btn'>$SSID</a></td>\n"
+		printf "<td><a href=\"#page_configure\" class=\"ui-btn\" onclick=\'document.getElementById(\"ssid\").value=\"$SSID\"\' data-inline=\"true\">$SSID</a></td>\n"
   		printf "<td>$CHAN</td>\n"
   		printf "<td>$SIG</td>\n"
   		printf "<td>$BARS</td>\n"

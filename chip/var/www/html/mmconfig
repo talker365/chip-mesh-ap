@@ -11,30 +11,34 @@ Interface_Modes
 #---[ GLOBAL VARIABLES ]--------------------------------------------------------------
 
 defaultWLAN=wlan1
-
+defaultLAN=eth0
+defaultInterfaceDHCP=$defaultWLAN
+defaultInterfaceGateway=$defaultLAN
 
 
 
 #---[ FUNCTIONS ]---------------------------------------------------------------------
 
 createDHCP() {
+	interfaceDHCP=$1		# Interface serving the DHCP
+	interfaceGateway=$2		# Interface providing IP and DNS Forwarding
 	# Set up a static IP for the AP(accesspoint)
 	sudo echo "" >> /etc/network/interfaces
-	sudo echo "auto $defaultWLAN" >> /etc/network/interfaces
-	sudo echo "iface $defaultWLAN inet static" >> /etc/network/interfaces
+	sudo echo "auto $interfaceDHCP" >> /etc/network/interfaces
+	sudo echo "iface $interfaceDHCP inet static" >> /etc/network/interfaces
 	sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 	sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
 	# Restart the wlan1 interface:
-	sudo ifdown $defaultWLAN
-	sudo ifup $defaultWLAN
+	sudo ifdown $interfaceDHCP
+	sudo ifup $interfaceDHCP
 
 	# Create Dnsmasq & Restart the DHCP server
   i	sudo rm -r /etc/dnsmasq.d/*.conf
  	sudo echo "" > /etc/dnsmasq.d/access-point.conf
 	sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/dnsmasq.d/access-point.conf
-	sudo echo -e "\ninterface=$defaultWLAN" >> /etc/dnsmasq.d/access-point.conf
-	sudo echo -e "\nexcept-interface=eth0" >> /etc/dnsmasq.d/access-point.conf
+	sudo echo -e "\ninterface=$interfaceDHCP" >> /etc/dnsmasq.d/access-point.conf
+	sudo echo -e "\nexcept-interface=$interfaceGateway" >> /etc/dnsmasq.d/access-point.conf
 	sudo echo -e "\ndhcp-range=172.20.0.100,172.20.0.250,1h" >> /etc/dnsmasq.d/access-point.conf
 
 	sudo /etc/init.d/dnsmasq restart 
@@ -283,12 +287,13 @@ if [[ $request == "microrouter" ]]; then
 	echo ""
 
 	if [[ $routeEthMode == "ETH" ]]; then 
-		echo "SETUP AccessPoint with IP Forwarding to ETH0"
-		createDHCP
+		echo "SETUP AccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
+		createDHCP $defaultWLAN $defaultLAN
 		createAP
 	fi
 	if [[ $routeEthMode == "WLAN" ]]; then 
-		echo "CONNECT to WiFi Hotspot with IP Forwarding to $defaultWLAN"
+		echo "CONNECT to WiFi Hotspot with IP Forwarding to $defaultWLAN, serving DHCP to $defaultLAN"
+		createDHCP $defaultLAN $defaultWLAN
 		connectWifi
 	fi
 
