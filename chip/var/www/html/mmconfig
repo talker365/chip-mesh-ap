@@ -26,12 +26,12 @@ createDHCP() {
 	# Set up a static IP for the AP(accesspoint)
 	echo "adding $interfaceDHCP to /etc/network/interfaces"
 
-        ifconfig $interfaceDHCP $nodeIP
-        sudo echo "" > /etc/network/interfaces
-        sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
-        sudo echo "# automatically re-created during install & updates" >> /etc/network/interfaces
-        sudo echo "auto lo" >> /etc/network/interfaces
-        sudo echo -e "iface lo inet loopback\n" >> /etc/network/interfaces
+    ifconfig $interfaceDHCP $nodeIP
+    sudo echo "" > /etc/network/interfaces
+    sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
+    sudo echo "# automatically re-created during install & updates" >> /etc/network/interfaces
+    sudo echo "auto lo" >> /etc/network/interfaces
+    sudo echo -e "iface lo inet loopback\n" >> /etc/network/interfaces
 	sudo echo "auto $interfaceDHCP" >> /etc/network/interfaces
 	sudo echo "iface $interfaceDHCP inet static" >> /etc/network/interfaces
 	sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
