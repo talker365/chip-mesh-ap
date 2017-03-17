@@ -23,24 +23,29 @@ createDHCP() {
 	interfaceDHCP=$1		# Interface serving the DHCP
 	interfaceGateway=$2		# Interface providing IP and DNS Forwarding
 	# Set up a static IP for the AP(accesspoint)
+	echo "adding $interfaceDHCP to /etc/network/interfaces"
 	sudo echo "" >> /etc/network/interfaces
 	sudo echo "auto $interfaceDHCP" >> /etc/network/interfaces
 	sudo echo "iface $interfaceDHCP inet static" >> /etc/network/interfaces
 	sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
 	sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
 
-	# Restart the wlan1 interface:
+	# Restart the hosting interface:
+	echo "spinning down $interfaceDHCP"
 	sudo ifdown $interfaceDHCP
+	echo "spinning up $interfaceDHCP"
 	sudo ifup $interfaceDHCP
 
 	# Create Dnsmasq & Restart the DHCP server
-  i	sudo rm -r /etc/dnsmasq.d/*.conf
+	echo "Writing to /etc/dnsmasq.d/access-point.conf"
+  	sudo rm -r /etc/dnsmasq.d/*.conf
  	sudo echo "" > /etc/dnsmasq.d/access-point.conf
 	sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/dnsmasq.d/access-point.conf
 	sudo echo -e "\ninterface=$interfaceDHCP" >> /etc/dnsmasq.d/access-point.conf
 	sudo echo -e "\nexcept-interface=$interfaceGateway" >> /etc/dnsmasq.d/access-point.conf
 	sudo echo -e "\ndhcp-range=172.20.0.100,172.20.0.250,1h" >> /etc/dnsmasq.d/access-point.conf
 
+	echo "restarting dnsmasq"
 	sudo /etc/init.d/dnsmasq restart 
 }
 
@@ -71,7 +76,9 @@ createAP() {
 
 connectWifi() {
 	# Connect to Wifi
+	echo "disconnecting any existing connections on $defaultWLAN"
 	sudo nmcli dev disconnect $defaultWLAN 2>&1
+	echo "connecting to WiFi ($wifiSSID) on $defaultWLAN"
 	sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname $defaultWLAN 2>&1
 }
 
@@ -119,6 +126,7 @@ createHosts()
 	sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
 	sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
 	sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
+	echo "completed createHosts()"
 }
 
 createOLSR() {
@@ -292,8 +300,10 @@ if [[ $request == "microrouter" ]]; then
 		createAP
 	fi
 	if [[ $routeEthMode == "WLAN" ]]; then 
-		echo "CONNECT to WiFi Hotspot with IP Forwarding to $defaultWLAN, serving DHCP to $defaultLAN"
+		defaultWLAN=wlan0
+		echo "Setting up DHCP and IP Forwarding to $defaultLAN"
 		createDHCP $defaultLAN $defaultWLAN
+		echo "CONNECT to WiFi Hotspot using $defaultWLAN"
 		connectWifi
 	fi
 
@@ -301,6 +311,7 @@ if [[ $request == "microrouter" ]]; then
 	# Set installation type flag for status page.
 	sudo touch /var/www/flags/.microrouter
 
+	nodeIP=127.0.0.1
 fi
 
 # Mesh Mode
@@ -335,13 +346,18 @@ if [[ $request == "micromesh" ]]; then
 fi
 
 # FINISHED SETUP
+echo "setting installed flag"
 sudo touch /var/www/flags/.installed
 
 # Set Timezone to EST
+echo "setting timezone"
 sudo timedatectl set-timezone EST
 
 # Change Hostname, no longer chip
+echo "setting hostname to $newHostName"
 echo $newHostName > /etc/hostname
+
+echo "running createHosts()"
 createHosts
 
 
