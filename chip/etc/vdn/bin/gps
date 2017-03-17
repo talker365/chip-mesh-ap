@@ -10,7 +10,7 @@ function closePort() {
 }
 
 function openPort() {
-  exec 5</dev/vdnGPS
+  exec 5</dev/ttyACM0
 }
 
 # Pass the GPS value and direction (N/S/E/W) to get the decimal latitude/longitude.
