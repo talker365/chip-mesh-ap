@@ -1,0 +1,12 @@
+[Unit]
+Description=vdn-router service
+Wants=network-manager.service
+After=network-manager.service
+Wants=module-init-tools.service
+After=module-init-tools.service
+
+[Service]
+ExecStart=/usr/sbin/vdn-router
+
+[Install]
+WantedBy=multi-user.target

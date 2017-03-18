@@ -106,6 +106,35 @@ createDHCP() {
 	sudo /etc/init.d/dnsmasq restart 
 }
 
+<<<<<<< HEAD:chip/var/www/html/mmconfig.ldr
+=======
+createAP() {
+	# Configure the WiFi access point on wlan1
+	sudo echo "interface=$defaultWLAN" > /etc/hostapd.conf
+	sudo echo "driver=nl80211" >> /etc/hostapd.conf
+	sudo echo "ssid=$apSSID" >> /etc/hostapd.conf
+	sudo echo "channel=$apCH" >> /etc/hostapd.conf
+	sudo echo "auth_algs=3" >> /etc/hostapd.conf
+	sudo echo "max_num_sta=10" >> /etc/hostapd.conf
+	sudo echo "wpa=2" >> /etc/hostapd.conf
+	sudo echo "wpa_passphrase=$apPASS" >> /etc/hostapd.conf
+	sudo echo "wpa_pairwise=TKIP CCMP" >> /etc/hostapd.conf
+	sudo echo "rsn_pairwise=CCMP" >> /etc/hostapd.conf
+	sudo echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
+
+	# Add call to vdn-router
+ 	sudo echo "" >> /usr/sbin/vdn-router
+	sudo echo "# Start the Access Point" >> /usr/sbin/vdn-router
+	sudo echo "/usr/sbin/hostapd /etc/hostapd.conf" >> /usr/sbin/vdn-router
+
+	# Restart Services
+	sudo /usr/sbin/update-rc.d hostapd disable
+	sudo /bin/systemctl daemon-reload
+	sudo /bin/systemctl enable hostapd-systemd
+	sudo /bin/systemctl start hostapd-systemd
+	sudo /bin/systemctl status hostapd-systemd
+}
+>>>>>>> origin/master:chip/var/www/html/mmconfig
 
 createHosts()
 {
@@ -118,6 +147,27 @@ createHosts()
 	sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
 }
 
+<<<<<<< HEAD:chip/var/www/html/mmconfig.ldr
+=======
+createRouter() {
+	routerSource=$1
+	routerDestination=$2
+	sudo echo "#!/bin/bash" > /usr/sbin/vdn-router
+ 	sudo echo "" >> /usr/sbin/vdn-router
+	sudo echo "# Make sure interface $routerSource is up" >> /usr/sbin/vdn-router
+	sudo echo "ifdown $routerSoure" >> /usr/sbin/vdn-router
+	sudo echo "ifup $routerSource" >> /usr/sbin/vdn-router
+	sudo echo "" >> /usr/sbin/vdn-router
+	sudo echo "# Enable DNS forwarding" >> /usr/sbin/vdn-router
+	sudo echo "sysctl -w net.ipv4.ip_forward=1" >> /usr/sbin/vdn-router
+	sudo echo "" >> /usr/sbin/vdn-router
+	sudo echo "# Enable NAT" >> /usr/sbin/vdn-router
+	sudo echo "iptables -t nat -A POSTROUTING -o $routerDestination -j MASQUERADE" >> /usr/sbin/vdn-router
+
+}
+
+createADHOC() {
+>>>>>>> origin/master:chip/var/www/html/mmconfig
 
 createIP() {
 
@@ -298,14 +348,22 @@ if [[ $request == "microrouter" ]]; then
 	if [[ $routeEthMode == "ETH" ]]; then 
 		echo "SETUP AccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
 		createDHCP $defaultWLAN $defaultLAN
+		createRouter $defaultWLAN $defaultLAN
 		createAP
 	fi
 	if [[ $routeEthMode == "WLAN" ]]; then 
 		defaultWLAN=wlan0
 		echo "Setting up DHCP and IP Forwarding to $defaultLAN"
 		createDHCP $defaultLAN $defaultWLAN
+		createRouter $defaultLAN $defaultWLAN
 		echo "CONNECT to WiFi Hotspot using $defaultWLAN"
 		connectWifi
+
+	    # Start Service
+	    sudo /bin/systemctl daemon-reload
+    	sudo /bin/systemctl enable router-systemd
+	    sudo /bin/systemctl start router-systemd
+    	sudo /bin/systemctl status router-systemd
 	fi
 
 	# Set installation type flag for status page.
