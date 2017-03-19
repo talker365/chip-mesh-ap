@@ -25,16 +25,6 @@ createADHOC() {
 	sudo iwconfig wlan1 key off
 	sudo iwconfig wlan1 rate auto
 
-	MACID=`cat /sys/class/net/wlan1/address`
-	MAC4=`echo $MACID | cut -d : -f 4 `
-	MAC5=`echo $MACID | cut -d : -f 5 `
-	MAC6=`echo $MACID | cut -d : -f 6 `
-	ip2=`printf %d 0x$MAC4 `
-	ip3=`printf %d 0x$MAC5 `
-	ip4=`printf %d 0x$MAC6 `
-	net=10
-	nodeIP=$net.$ip2.$ip3.$ip4
-
 	# add to /etc/network/interfaces
 	sudo echo "" > /etc/network/interfaces
 	sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
@@ -125,6 +115,7 @@ createHosts()
 {
 
 	# Update host file and hostname
+	sudo echo "Updating hosts file with hostname:$newHostName"
 	sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
 	sudo echo "127.0.0.1 localhost" >> /etc/hosts
 	sudo echo "$nodeIP $newHostName" >> /etc/hosts
@@ -160,9 +151,9 @@ createOLSR() {
 	#sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.255/" /etc/olsrd/olsrd.conf
 
 	# Packet masquerading - /etc/rc.local
-	sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source $lanIP/" /etc/rc.local
+#	sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source $lanIP/" /etc/rc.local
+	sudo systemctl daemon-reload
 	sudo /etc/./rc.local
-
 }
 
 
@@ -197,12 +188,16 @@ updateDnsmasq() {
 	# Change nodeIP to Eth0's IP
 	sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
 #	sudo sed -i.bak "s/.*dhcp-option=3.*/dhcp-option=3,$lanIP/" /etc/dnsmasq.d/mesh-node.conf
-#	sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,24H/" /etc/dnsmasq.d/mesh-node.conf
-#    sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$lanIP|" /etc/dnsmasq.d/mesh-node.conf
-#	sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+	sudo sed -i.bak "s/.*#interface=eth0.*/interface=eth0/" /etc/dnsmasq.d/mesh-node.conf
+	sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
+    sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$lanIP|" /etc/dnsmasq.d/mesh-node.conf
+	sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
 
-	# reset networking.
-#	sudo systemctl daemon-reload
+	# Remove Un-Used config files.
+	sudo rm /etc/dnsmasq.d/access_point.conf
+	echo "restarting dnsmasq"
+	sudo /etc/init.d/dnsmasq restart 
+
 }
 
 #---[ MAIN ]----------------------------------------------------------------------------------
@@ -364,6 +359,7 @@ if [[ $request == "micromesh" ]]; then
 	    createIP eth0
 	    createADHOC
 	    createOLSR
+#	    updateDnsmasq
 	fi
 
 	if [[ $meshEthMode == "WLAN" ]]; then 
@@ -390,5 +386,3 @@ createHosts
 
 echo "setting hostname to $newHostName"
 echo $newHostName > /etc/hostname
-
-
