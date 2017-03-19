@@ -312,7 +312,7 @@ if [[ $request == "microrouter" ]]; then
 	echo "Router [$routerName]"
 	echo "Wifi [$wifiSSID]"
 	echo "WifiPassword [$wifiPASS]"
-	echo "Eth Mode [$routerEthMode]"
+	echo "Eth Mode [$routeEthMode]"
 	echo "AP [$apSSID]"
 	echo "AP-Pass [$apPASS]"
 	echo "AP-CH [$apCH]"
