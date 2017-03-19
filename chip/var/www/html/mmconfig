@@ -158,6 +158,11 @@ createOLSR() {
 	sudo sed -i.bak "s/.*Interface.*/Interface \"wlan1\"/" /etc/olsrd/olsrd.conf
 	sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
 	#sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.255/" /etc/olsrd/olsrd.conf
+
+	# Packet masquerading - /etc/rc.local
+	sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source $lanIP/" /etc/rc.local
+	sudo /etc/./rc.local
+
 }
 
 
@@ -198,10 +203,6 @@ updateDnsmasq() {
 
 	# reset networking.
 #	sudo systemctl daemon-reload
-
-	# Packet masquerading - /etc/rc.local
-#	sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source $lanIP/" /etc/rc.local
-	sudo /etc/./rc.local
 }
 
 #---[ MAIN ]----------------------------------------------------------------------------------
