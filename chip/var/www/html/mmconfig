@@ -339,39 +339,39 @@ if [[ $request == "micromesh" ]]; then
 	if [[ $meshEthMode == "LAN" ]]; then 
 	    echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
 	    getIP wlan1; getIP eth0
-	    createADHOC 
- 	  	sudo echo -e "\nauto eth0" >> /etc/network/interfaces   
+	    createADHOC
+ 	  	sudo echo -e "\nauto eth0" >> /etc/network/interfaces
 		sudo echo -e "iface eth0 inet static" >> /etc/network/interfaces
 		sudo echo -e "\taddress $lanIP" >> /etc/network/interfaces
 		sudo echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
-
+		createOLSR
 	# update dnsmasq
 		sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
 		sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
 		sudo sed -i.bak "s/.*#interface=eth0.*/interface=eth0/" /etc/dnsmasq.d/mesh-node.conf
 		sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
-	    sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$lanIP|" /etc/dnsmasq.d/mesh-node.conf
+  		sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
 		sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+                sudo /etc/init.d/networking restart
 	fi
 
 
-	if [[ $meshEthMode == "WLAN" ]]; then 
+	if [[ $meshEthMode == "WAN" ]]; then 
 		echo "Setting up DHCP and IP Forwarding to $defaultLAN"
     	getIP wlan1
    		createADHOC
  	  	sudo echo -e "\nauto eth0" >> /etc/network/interfaces   
 		sudo echo -e "iface eth0 inet dhcp" >> /etc/network/interfaces
-
+		sudo /etc/init.d/networking restart
+		createOLSR
 	# update dnsmasq
 		sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
 		sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
 		sudo sed -i.bak "s/.*interface=eth0.*/#interface=eth0/" /etc/dnsmasq.d/mesh-node.conf
 		sudo sed -i.bak "s/.*dhcp-range=.*/#dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
-	    sudo sed -i.bak "s|.*address=/localnode.*|#address=/localnode/$lanIP|" /etc/dnsmasq.d/mesh-node.conf
+	    sudo sed -i.bak "s|.*address=/localnode.*|#address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
 		sudo sed -i.bak "s|.*address=/node-id.*|#address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
 	fi
-
-		createOLSR
 
 	# Remove Access-Point config files.
 		sudo rm /etc/dnsmasq.d/access_point.conf
