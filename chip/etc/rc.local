@@ -39,7 +39,8 @@ iptables -t nat -P OUTPUT ACCEPT
 # Allow forwarding packets:
 iptables -A FORWARD -p ALL -i eth0 -j ACCEPT
 iptables -A FORWARD -i wlan1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source 10.37.0.111
+#iptables -t nat -A POSTROUTING -o wlan1 -j SNAT --to-source 10.37.0.111
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
 # Enable DNS forwarding
 sysctl -w net.ipv4.ip_forward=1

@@ -352,7 +352,6 @@ if [[ $request == "micromesh" ]]; then
 		sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
   		sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
 		sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-                sudo /etc/init.d/networking restart
 	fi
 
 
@@ -378,6 +377,7 @@ if [[ $request == "micromesh" ]]; then
 
 	# Start Services
 	    echo "restarting dnsmasq"
+	    sudo systemctl daemon-reload
 	    sudo /etc/init.d/dnsmasq restart 
 		sudo /etc/./rc.local
 
