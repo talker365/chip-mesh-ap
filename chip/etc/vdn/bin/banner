@@ -4,7 +4,7 @@ source /etc/vdn/include/vdn.lib
 getmac() {
 echo $(ifconfig $1 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}')
 }
-
+nodedesc=""; [ -f "/etc/nodedesc" ] && nodedesc=$(cat /etc/nodedesc)
 host=$(hostname | awk '{print toupper($0)}')
 ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
 ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
@@ -37,7 +37,7 @@ echo -e "${Y}"
 echo    "------------------------------------"
 echo    "      Valley Digital Networking     "
 echo    "===================================="
-echo -e "${G}${BOLD}$host${N}"
+echo -e "${G}${BOLD}$host${N} $nodedesc"
 echo -e "$ssid  CH:$ch @ $pwr"
 echo -e "${G}Interfaces:"
 
