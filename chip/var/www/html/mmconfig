@@ -23,7 +23,7 @@ createADHOC() {
 	sudo iwconfig $defaultWLAN channel $nodeCH 
 	sudo iwconfig $defaultWLAN essid $nodeSSID
 	sudo iwconfig $defaultWLAN key off
-	sudo iwconfig $defaultWLAN rate auto
+#	sudo iwconfig $defaultWLAN rate auto
 
 	# add to /etc/network/interfaces
 	sudo echo "" > /etc/network/interfaces
