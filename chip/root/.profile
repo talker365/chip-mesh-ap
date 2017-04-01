@@ -1,9 +1,9 @@
 # ~/.profile: executed by Bourne-compatible login shells.
 
 if [ "$BASH" ]; then
-  if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-  fi
+    if [ -f ~/.bashrc ]; then
+        . ~/.bashrc
+    fi
 fi
 PATH=/etc/vdn/bin:/usr/bin:/usr/sbin:/bin:/sbin
 mesg n
