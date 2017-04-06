@@ -1,0 +1,49 @@
+#!/bin/bash
+clear
+
+#set -e
+
+pak() { [ -z "$1" ] && read -n 1 -s -p "Press any key to continue"; }
+
+createRules() {
+echo "Rule does not Exist, Creating a new entry."
+echo "" >> /etc/udev/rules.d/80-vdn.rules
+echo "# Defination of GPS " >> /etc/udev/rules.d/80-vdn.rules
+echo 'ACTION=="add", ATTRS{idVendor}=="'${vendorId}'", ATTRS{idProduct}=="'${productId}'", KERNEL=="ttyACM*", SYMLINK+="vdnGPS", OWNER="root", RUN+="/etc/vdn/bin/gps & "' >> /etc/udev/rules.d/80-vdn.rules
+echo "Unplug GPS and re-insert."
+}
+
+count=0
+
+printf "***************************\n"
+printf "* Setting up GPS Hardware *\n"
+printf "***************************\n\n"
+printf "Connect your GPS.  Make sure the Chip is powered by battery.\n"
+pak
+printf "\n...............................\n\n"
+
+lsusb | grep -v "hub" | grep -v "HUB" | awk  ' { print $2,$4, $6, $7, $8, $9, $10, $11 $12} ' > /tmp/usb
+
+ while read busId devId venId d1 d2; do
+
+# ACTION=="add", ATTRS{idVendor}=="1546", ATTRS{idProduct}=="01a6", KERNEL=="ttyACM*", SYMLINK+="vdnGPS", OWNER="root", RUN+="/etc/vdn/bin/gps &"
+
+busId=${busId:0:3}
+devId=${devId:0:3}
+vendorId=${venId:0:4} # Strip off before the :
+productId=${venId:5:4}
+
+printf "BusID=$busId\n"
+printf "DeviceId=$devId\n"
+printf "VendorId=$vendorId\n"
+printf "ProductId=$productId\n"
+printf "Description=$d1 $d2\n"
+
+((count ++))
+
+done </tmp/usb
+
+rm /tmp/usb
+
+grep -q "$vendorId" "/etc/udev/rules.d/80-vdn.rules"; [ $? -eq 0 ] && echo "GPS Rule already exists !, Unplug GPS and re-insert." || createRules
+
