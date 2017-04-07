@@ -269,7 +269,25 @@
   </div>
 
   <div data-role="main" class="ui-content">
-    <form method="post" action="/#page_admin">
+
+  <?php
+    if (file_exists('/var/www/flags/.admin'){
+      $pwdFromFile = shell_exec("cat /var/www/flags/.admin")
+    } else {
+      $pwdFromFile = "micromesh";
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // collect value of input field
+        $adminPwd = $_POST['adminPwd'];
+        if (!empty($adminPwd)) {
+          if ($adminPwd == $pwdFromFile) {
+            echo "";
+          }
+        }
+    }
+  ?>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>/#page_admin">
       <div class="ui-field-contain">
         <label for="adminPwd">Admin Password:</label>
         <input type="text" name="adminPwd" id="adminPwd">       
@@ -277,6 +295,9 @@
       <input type="submit" data-inline="true" value="Submit">
     </form>
 
+  <?php
+
+  ?>
 
 
 
