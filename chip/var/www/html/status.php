@@ -269,48 +269,17 @@
   </div>
 
   <div data-role="main" class="ui-content">
-    <div class="ui-field-contain">
-      <label for="adminPwd">Admin Password:</label>
-      <input type="text" name="adminPwd" id="adminPwd">       
-    </div>
-    <li><a href="#page_admin" class="ui-btn-active">Admin</a></li>
-
-  </div>
-  <div data-role="footer">
-    <h1>Valley Digital Network (VDN)</h1>
-  </div>
-</div>
+    <form method="post" action="/#page_admin">
+      <div class="ui-field-contain">
+        <label for="adminPwd">Admin Password:</label>
+        <input type="text" name="adminPwd" id="adminPwd">       
+      </div>
+      <input type="submit" data-inline="true" value="Submit">
+    </form>
 
 
-<div data-role="page" id="page_admin_authenticated" data-theme="<?php echo $theme; ?>">
-  <div data-role="header">
-    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
-    <a href="#page_admin_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
-    <div data-role="navbar">
-      <ul>
-        <li><a href="#page_status" data-transition="reverse">Status</a></li>
-        <?php
-            switch (1) {
-                case (file_exists('/var/www/flags/.micromesh')) :
-                    ?>  
-                    <li><a href="#page_nodes" data-transition="reverse">Nodes</a></li>
-                    <li><a href="#page_olsr" data-transition="reverse">OLSR</a></li>
-                    <?php
-                    break;
-                case (file_exists('/var/www/flags/.microrouter')) :
-                    ?>  
-                    <li><a href="#page_clients" data-transition="reverse">Clients</a></li>
-                    <?php
-                    break;
-            }   
-        ?>  
-        <li><a href="#page_admin" class="ui-btn-active">Admin</a></li>
-      </ul>
-    </div>
-  </div>
 
-  <div data-role="main" class="ui-content">
+
 	<h2>Admin Options</h2>
     <?php
         switch (1) {
