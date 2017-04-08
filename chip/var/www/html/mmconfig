@@ -228,7 +228,7 @@ if [[ $request == "update" ]]; then
             
             adminPASS )
                 #Change admin password
-                echo $2 > /var/www/html/.password
+                echo $2 > /var/www/flags/.admin
                 shift; shift;
             ;;
             
