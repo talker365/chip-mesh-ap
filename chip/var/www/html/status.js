@@ -123,3 +123,9 @@ function loadDeploy() {
 	populateForm();
 }
 
+function authenticate(pwd) {
+	if (document.getElementById("adminPwd") == pwd) {
+
+	}
+}
+

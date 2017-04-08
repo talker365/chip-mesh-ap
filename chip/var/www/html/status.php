@@ -9,6 +9,7 @@
 <script src="status.js"></script>
 <?php
 	$theme = "b";
+  session_start();
 ?>
 <style>
 	.greenCollHeader {
@@ -269,41 +270,64 @@
   </div>
 
   <div data-role="main" class="ui-content">
-	<h2>Admin Options</h2>
-    <?php
-        switch (1) {
+
+  <!-- Admin Login Form -->
+  <?php if ($_SESSION["authenticated"] == "true") { ?>
+    <div style="display: none;">
+  <?php } else { ?>
+    <div>
+  <?php } ?>
+      <form method="post" action="authenticate.php">
+        <div class="ui-field-contain">
+          <label for="adminPwd">Admin Password:</label>
+          <input type="text" name="adminPwd" id="adminPwd">       
+        </div>
+        <input type="submit" data-inline="true" value="Submit">
+      </form>
+    </div>
+  
+  <!-- Admin Page -->
+  <?php if ($_SESSION["authenticated"] == "true") { ?>
+    <div>
+  <?php } else { ?>
+    <div style="display: none;">
+  <?php } ?>
+    	<h2>Admin Options</h2>
+        <a href="authenticate.php" data-ajax="false" data-transition="slide">Log off</a>
+        <?php
+          switch (1) {
             case (file_exists('/var/www/flags/.micromesh')) :
-                ?>
+              ?>
                 <!-- -->
-                <?php
-                break;
+              <?php
+              break;
             case (file_exists('/var/www/flags/.microrouter')) :
-                ?>
+              ?>
                 <!-- -->
-		        <div class="ui-field-contain">
-    				<label id="label_routerhostname" for="routerhostname"> Router Name:</label>
-    				<input type="text" name="routerhostname" id="routerhostname" value="<?php echo shell_exec("hostname"); ?>">
-    				<span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
-				</div>
-                <?php
-                break;
-        }
-    ?>
-	<div class="ui-field-contain">
-    	<label for="adminpassword">Admin Password:</label>
-    	<input type="text" name="adminpassword" id="adminpassword" placeholder="Enter new admin password (optional)">
-	</div>
+		            <div class="ui-field-contain">
+    				      <label id="label_routerhostname" for="routerhostname"> Router Name:</label>
+    				      <input type="text" name="routerhostname" id="routerhostname" value="<?php echo shell_exec("hostname"); ?>">
+    				      <span> <i>Please make sure it is unique (e.g. microrouter01, microrouter02, etc...)</i> </span>
+				        </div>
+              <?php
+              break;
+          }
+        ?>
+        <div class="ui-field-contain">
+    	    <label for="adminpassword">Admin Password:</label>
+          <input type="text" name="adminpassword" id="adminpassword" placeholder="Enter new admin password (optional)">
+        </div>
 
     <?php
         switch (1) {
             case (file_exists('/var/www/flags/.micromesh')) :
                 ?>
-				<!-- -->
+				<!-- Mesh Settings -->
                 <?php
                 break;
             case (file_exists('/var/www/flags/.microrouter')) :
                 ?>
-				<!-- -->
+				<!-- Router Settings -->
 		        <h2> Access Point </h2>
 		    	<fieldset data-role="controlgroup">
 		    		<legend>Choose your router mode:</legend>
@@ -405,6 +429,9 @@
 			</div>
         	<input type="submit" data-inline="true" value="Update" data-ajax="false">
      	</form>
+
+      </div>
+
     </div>
 
 
