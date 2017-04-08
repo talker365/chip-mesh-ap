@@ -53,9 +53,12 @@ done
 echo -e "${G}Free Space:"
 echo -e "${BL}Storage:${C}Total:${Y}$disktotal ${C}Used:${Y}$diskused ${C}Free:${Y}$diskfree$diskpct ${N}"
 echo -e "${BL} Memory:${C}Total:${Y}"$memtotal"M ${C}Used:${Y}"$memused"M ${C}Free:${Y}"$memfree"M"
-[ -e /etc/latlon ] && echo -e "${C}    Lat:${Y}$lat  ${C}Lon:${Y}$lon"
+#[ -e /etc/latlon ] && echo -e "${G}    Lat:${Y}$lat  ${G}Lon:${Y}$lon"
 echo -e "${C}   Time:${N} $(uptime -p)"
-echo -e "${Y}---------------------------------------------------------------------"
+
+if (( $(ps -A | grep gps | wc -l) > 0 )); then echo -e "${BLINK}${R}           Waiting for GPS to Aquire Lat/Lon Position...${N}"; fi
+
+[ -e /etc/latlon ] && echo -e "${Y}-------------------[ ${G}Lat:${Y}$lat  ${G}Lon:${Y}$lon ]${Y}-------------------" || echo -e "${Y}------------------------------------------------------------------"
 if [ $(battery mains) = 1 ]; then echo -e "${Y}USB-IN :${C}$(battery usbvolts) mV @ $(battery usbma) mA${N}";fi 
 if [ $(battery check) = 1 ]; then echo -e "${Y}Battery:${C}$(battery volts) mV @ $(battery current)  mA | ${Y}Level:${C}$(battery level)% ${Y}Temp:${C}$(battery tempf)F${N}";fi
 echo -e "${Y}---------------------------------------------------------------------"

@@ -1,0 +1,33 @@
+#!/bin/bash
+# reserved for description (It's Important this line if left in place)
+
+start=$(date +'%s')
+echo -e '\nCreating App Installer ...'
+
+# Capture current path...
+orig=`pwd`
+
+# Create temporary directory for installation files...
+sudo mkdir /tmp/chip.install
+sudo chmod 755 /tmp/chip.install
+
+# Untar installation files...
+cd /tmp/chip.install
+
+tail -n +`echo $[$(cat $orig/$0 | grep -a -n "^exit #end of file$" | cut -d ":" -f1)+1]` $orig/$0 | tar xf - 
+
+echo -e "Expanding Application files ..."
+#tar -oxf /tmp/chip.install/app.tar -C /
+
+echo -e "Starting Package installation ..."
+echo -e "=============================================================="
+echo -e "\n\nPackage Installation Completed! in $(($(date +'%s') - $start)) seconds."
+sudo chmod +x /tmp/chip.install/./install
+/tmp/chip.install/./install
+
+# Return to original directory...
+cd $orig
+
+# Clean up temporary installation directory...
+sudo rm -r /tmp/chip.install
+exit #end of file
