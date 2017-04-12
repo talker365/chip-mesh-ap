@@ -313,16 +313,49 @@
               break;
           }
         ?>
-        <div class="ui-field-contain">
-    	    <label for="adminpassword">Admin Password:</label>
-          <input type="text" name="adminpassword" id="adminpassword" placeholder="Enter new admin password (optional)">
-        </div>
-
-    <?php
+ 
+     <?php
         switch (1) {
             case (file_exists('/var/www/flags/.micromesh')) :
                 ?>
 				<!-- Mesh Settings -->
+          <div class="ui-field-contain">
+            <label for="callsign">Callsign:</label>
+            <input type="text" name="callsign" id="callsign" value="<?php echo trim(shell_exec("cat /var/www/flags/.callsign")) ?>" onkeyup="updateNodeName();" placeholder="Please enter your callsign">
+            <label for="meshhostname">Node name:</label>
+            <input type="text" name="meshhostname" id="meshhostname" value="<?php echo shell_exec("hostname"); ?>" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
+            <label for="meshpassword">Admin Password:</label>
+            <input type="text" name="meshpassword" id="meshpassword" placeholder="This is the password used to access this micro mesh node's mangement features">
+            <label for="accesspointssid">SSID:</label>
+            <input type="text" name="accesspointssid" id="accesspointssid" value="<?php echo trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)")); ?>" placeholder="SSID used by the mesh node">
+            <label for="accesspointchannel">Select Channel</label>
+            <select name="accesspointchannel" id="accesspointchannel">
+                <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
+            </select>
+          </div>
+        <?php
+            $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
+            #echo "<p> DEBUG: mmconfig=$eth0present </p>";
+
+            if (trim($eth0present) == "TRUE") {
+        ?>
+          <h2> Ethernet Connection </h2>
+            <fieldset data-role="controlgroup">
+                <legend>A wired connection was identified, please select how to use it:</legend>
+                <label for="meshLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
+                <input type="radio" name="meshEthernetType" id="meshLan" value="meshLan" checked="checked">
+                <label for="meshWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
+                <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan">
+            </fieldset>
+
+        <?php
+            }
+        ?>
+
+
+
+
+
                 <?php
                 break;
             case (file_exists('/var/www/flags/.microrouter')) :

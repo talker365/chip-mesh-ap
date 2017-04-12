@@ -344,6 +344,8 @@ if [[ $request == "micromesh" ]]; then
     echo "Node Ethernet Mode [$meshEthMode]"
     echo "Node SSID [$nodeSSID]"
     echo ""
+
+    sudo echo -e $callsign > /var/www/flags/.callsign
     
     if [[ $meshEthMode == "LAN" ]]; then
         echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
