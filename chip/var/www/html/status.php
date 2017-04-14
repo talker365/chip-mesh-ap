@@ -325,9 +325,9 @@
             <label for="meshhostname">Node name:</label>
             <input type="text" name="meshhostname" id="meshhostname" value="<?php echo shell_exec("hostname"); ?>" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
             <label for="meshpassword">Admin Password:</label>
-            <input type="text" name="meshpassword" id="meshpassword" placeholder="This is the password used to access this micro mesh node's mangement features">
+            <input type="password" name="meshpassword" id="meshpassword" value="<?php echo trim(shell_exec("cat /var/www/flags/.admin")) ?>" placeholder="This is the password used to access this micro mesh node's mangement features">
             <label for="accesspointssid">SSID:</label>
-            <input type="text" name="accesspointssid" id="accesspointssid" value="<?php echo trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)")); ?>" placeholder="SSID used by the mesh node">
+            <input type="text" name="accesspointssid" id="accesspointssid" value="<?php echo trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)")); ?>" placeholder="SSID used by the mesh node (e.g. AREDN-VDN-20-v3)">
             <label for="accesspointchannel">Select Channel</label>
             <select name="accesspointchannel" id="accesspointchannel">
                 <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
