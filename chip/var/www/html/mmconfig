@@ -4,7 +4,7 @@
 
  Interface: wlan1 = AP for all modes.
 
- Parameters: type, Callsign, NodeId, AdminPassword, NodeCH, Eth0Mode, RouterName, WifiSSID, WifiPassword, Eth0Use, apSSID, apPASS, apCH, nodeSSID
+ Parameters: type, callsign, nodeId, adminPASS, NodeCH, meshEthMode, RouterName, WifiSSID, WifiPassword, Eth0Use, apSSID, apPASS, apCH, nodeSSID
 
 Interface_Modes
 
@@ -76,8 +76,8 @@ createAP() {
 
 createDHCP() {
     
-    interfaceDHCP=$1		# Interface serving the DHCP
-    interfaceGateway=$2		# Interface providing IP and DNS Forwarding
+    interfaceDHCP=$1        # Interface serving the DHCP
+    interfaceGateway=$2     # Interface providing IP and DNS Forwarding
     nodeIP="127.20.0.1"
     # Set up a static IP for the AP(accesspoint)
     echo "adding $interfaceDHCP to /etc/network/interfaces"
@@ -345,16 +345,17 @@ if [[ $request == "micromesh" ]]; then
     echo "Node SSID [$nodeSSID]"
     echo ""
     
+    createADHOC
+    createOLSR
+
     if [[ $meshEthMode == "LAN" ]]; then
         echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
-        #	    getIP $defaultWLAN
+        #       getIP $defaultWLAN
         getIP eth0
-        createADHOC
         sudo echo -e "\nauto eth0" >> /etc/network/interfaces
         sudo echo -e "iface eth0 inet static" >> /etc/network/interfaces
         sudo echo -e "\taddress $lanIP" >> /etc/network/interfaces
         sudo echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
-        createOLSR
         # update dnsmasq
         sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
         sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
@@ -367,12 +368,9 @@ if [[ $request == "micromesh" ]]; then
     
     if [[ $meshEthMode == "WAN" ]]; then
         echo "Setting up DHCP and IP Forwarding to $defaultLAN"
-        #	    getIP $defaultWLAN
-        createADHOC
         sudo echo -e "\nauto eth0" >> /etc/network/interfaces
         sudo echo -e "iface eth0 inet dhcp" >> /etc/network/interfaces
         sudo /etc/init.d/networking restart
-        createOLSR
         # update dnsmasq
         sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
         sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
