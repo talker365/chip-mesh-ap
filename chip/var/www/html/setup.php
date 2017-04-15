@@ -145,6 +145,14 @@
 				<?php echo shell_exec("/var/www/html/./wifiscan SSID 2>&1"); ?>
 			</select>
 		</div>
+			<fieldset data-role="controlgroup">
+	        	<legend>Choose how to use your ethernet connection:</legend>
+	        	<label for="meshLan">LAN - Gives Mesh address to connected device</label>
+	        	<input type="radio" name="meshEthernetType" id="meshLan" value="meshLan" checked>
+	            <label for="meshWan">WAN - Uses connected device as the internet</label>
+	            <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan">
+	        </fieldset>
+
 
  	</div>
 

@@ -78,11 +78,65 @@
 			                    ?>
 			                </p>
 			            </div>
-			        </div>
+
+
 
 				        <?php break;
 				    case "admin": ?>
-						<h1>Admin Page Changes</h1>
+			            <div data-role="collapsible" data-theme="e" data-content-theme="c">
+			                <h1>Admin Updates</h1>
+			                <p> 
+			                    Installation Type: <?php echo $_POST["final_microtype"]; ?> <br />
+			                    Callsign: <?php echo $_POST["final_callsign"]; ?> <br />
+			                    Node Name: <?php echo $_POST["final_meshhostname"]; ?> <br />
+        			            Node Password: <?php echo $_POST["final_meshpassword"]; ?> <br />
+			                    Node Channel: <?php echo $_POST["final_nodechannel"]; ?> <br />
+			                    Node SSID: <?php echo $_POST["final_nodessid"]; ?> <br />
+			                    Mesh Ethernet Type: <?php echo $_POST["final_meshEthernetType"]; ?> <br />
+			                    Router Hostname: <?php echo $_POST["final_routerhostname"]; ?> <br />
+			                    SSID: <?php echo $_POST["final_ssid"]; ?> <br />
+			                    <span data-role="collapsible">
+									<h1>Password</h1>
+									<p><?php echo $_POST["final_password"]; ?></p>
+								</span>
+			                    Router Ethernet Type: <?php echo $_POST["final_routerEthernetType"]; ?> <br />
+			                    AP SSID: <?php echo $_POST["final_accesspointssid"]; ?> <br />
+			                    AP Password: <?php echo $_POST["final_accesspointpassword"]; ?> <br />
+			                    AP Channel: <?php echo $_POST["final_accesspointchannel"]; ?> <br />
+			                    <div data-role="collapsible" data-collapsed="false" data-theme="e" data-content-theme="c">
+			                        <h1>Installation Commmand</h1>
+			                        <p>
+			                            <?php
+			                                $command = "sudo /var/www/html/./mmconfig ";
+			                                $command .= $_POST["final_microtype"] . " ";
+			                                $command .= $_POST["final_callsign"] . " ";
+			                                $command .= $_POST["final_meshhostname"] . " ";
+			                                $command .= $_POST["final_meshpassword"] . " ";
+			                                $command .= $_POST["final_nodechannel"] . " ";
+			                                $command .= $_POST["final_meshEthernetType"] . " ";
+            			                    $command .= $_POST["final_routerhostname"] . " ";
+                        			        $command .= $_POST["final_ssid"] . " ";
+			                                $command .= $_POST["final_password"] . " ";
+            			                    $command .= $_POST["final_routerEthernetType"] . " ";
+                        			        $command .= $_POST["final_accesspointssid"] . " ";
+			                                $command .= $_POST["final_accesspointpassword"] . " ";
+            			                    $command .= $_POST["final_accesspointchannel"] . " ";
+                        			        $command .= $_POST["final_nodessid"] . " ";
+			                                echo $command;
+            				                ?>
+			                        </p>
+			                    </div>
+			                </p>
+			            </div>
+			            <div data-role="collapsible" data-collapsed="false" data-theme="e" data-content-theme="c">
+			                <h1>Installation Results</h1>
+			                <p>
+			                    <?php
+			                        echo shell_exec("$command");
+			                    ?>
+			                </p>
+			            </div>
+
 				        <?php break;	
 			    	default: ?>
 						<h1>Unknown Navigation</h1>
@@ -90,6 +144,7 @@
 				<?php }
 			?>
 
+        </div>
 		<div data-role="footer">
 			<h1>Valley Digital Network (VDN)</h1>
 		</div>
