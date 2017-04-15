@@ -326,10 +326,10 @@
             <input type="text" name="meshhostname" id="meshhostname" value="<?php echo shell_exec("hostname"); ?>" placeholder="Please select a unique hostname (e.g. callsign-micromesh-01)">
             <label for="meshpassword">Admin Password:</label>
             <input type="password" name="meshpassword" id="meshpassword" value="<?php echo trim(shell_exec("cat /var/www/flags/.admin")) ?>" placeholder="This is the password used to access this micro mesh node's mangement features">
-            <label for="accesspointssid">SSID:</label>
-            <input type="text" name="accesspointssid" id="accesspointssid" value="<?php echo trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)")); ?>" placeholder="SSID used by the mesh node (e.g. AREDN-VDN-20-v3)">
-            <label for="accesspointchannel">Select Channel</label>
-            <select name="accesspointchannel" id="accesspointchannel">
+            <label for="nodessid">SSID:</label>
+            <input type="text" name="nodessid" id="nodessid" value="<?php echo trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)")); ?>" placeholder="SSID used by the mesh node (e.g. AREDN-VDN-20-v3)">
+            <label for="nodechannel">Select Channel</label>
+            <select name="nodechannel" id="nodechannel">
                 <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
             </select>
           </div>
@@ -393,7 +393,22 @@
         <li><a href="/setup.php" data-ajax="false" data-transition="slide">Reset this device!</a></li>
     </div>
 
-    <a href="#submitChangesPopup" data-rel="popup" data-transition="slideup" onclick="populateForm('microrouter');" data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Review Changes</a>
+    <a href="#submitChangesPopup" data-rel="popup" data-transition="slideup" 
+     <?php
+        switch (1) {
+            case (file_exists('/var/www/flags/.micromesh')) :
+                ?>
+                  onclick="populateForm('micromesh');" 
+                <?php
+                break;
+            case (file_exists('/var/www/flags/.microrouter')) :
+                ?>
+                  onclick="populateForm('microrouter');" 
+                <?php
+                break;
+        }
+    ?>
+    data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Review Changes</a>
     <div data-role="popup" id="submitChangesPopup" class="ui-content">
         <p>Here are the new values you are updating:</p>
 

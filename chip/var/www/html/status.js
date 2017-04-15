@@ -48,10 +48,13 @@ function populateForm(microtype) {
 		        document.getElementById("final_meshpassword").value = "micromesh"; 
 		    }
     
-			var data = document.getElementById("nodessid").value;
-			var nodeData = data.split("|||");
-		    document.getElementById("final_nodessid").value = nodeData[0];
-		    document.getElementById("final_nodechannel").value = nodeData[1];
+		    if (document.getElementById("nodessid").value.length > 0) {
+			    document.getElementById("final_nodessid").value = document.getElementById("nodessid").value;
+		    }
+    
+		    if (document.getElementById("nodechannel").value.length > 0) {
+			    document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").value;
+		    }
 
 		    if (document.getElementById("meshLan") != null) {
 			    if (document.getElementById("meshLan").checked) {
@@ -65,6 +68,10 @@ function populateForm(microtype) {
 			    document.getElementById("final_meshEthernetType").value = "none";
 			}
     
+			break;
+
+		case "not_sure_what_to_do_with_these":
+
 		    if (document.getElementById("ssid").value.length > 0) {
 		     	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
 		    } else {
@@ -121,11 +128,5 @@ function updateNodeName() {
 
 function loadDeploy() {
 	populateForm();
-}
-
-function authenticate(pwd) {
-	if (document.getElementById("adminPwd") == pwd) {
-
-	}
 }
 
