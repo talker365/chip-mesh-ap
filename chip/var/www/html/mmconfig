@@ -275,6 +275,9 @@ fi
 [ -f "/var/www/flags/.installed" ] && rm /var/www/flags/.installed
 [ -f "/var/www/flags/.micromesh" ] && rm /var/www/flags/.micromesh
 [ -f "/var/www/flags/.microrouter" ] && rm /var/www/flags/.microrouter
+[ -f "/var/www/flags/.admin" ] && rm /var/www/flags/.admin
+[ -f "/var/www/flags/.lan" ] && rm /var/www/flags/.lan
+[ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
 
 # Get all Parameter Values
 callsign=$2
@@ -291,6 +294,10 @@ apSSID=$5
 apPASS=$6
 apCH=$7
 nodeSSID=$8
+
+# Record password...
+sudo echo -e $adminPASS > /var/www/flags/.admin
+
 
 # Router Mode
 if [[ $request == "microrouter" ]]; then
@@ -346,17 +353,19 @@ if [[ $request == "micromesh" ]]; then
     echo ""
 
     sudo echo -e $callsign > /var/www/flags/.callsign
+
+    createADHOC
+    createOLSR
     
     if [[ $meshEthMode == "LAN" ]]; then
+        sudo touch /var/www/flags/.lan
         echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
         #	    getIP $defaultWLAN
         getIP eth0
-        createADHOC
         sudo echo -e "\nauto eth0" >> /etc/network/interfaces
         sudo echo -e "iface eth0 inet static" >> /etc/network/interfaces
         sudo echo -e "\taddress $lanIP" >> /etc/network/interfaces
         sudo echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
-        createOLSR
         # update dnsmasq
         sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
         sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
@@ -368,13 +377,12 @@ if [[ $request == "micromesh" ]]; then
     
     
     if [[ $meshEthMode == "WAN" ]]; then
+        sudo touch /var/www/flags/.wan
         echo "Setting up DHCP and IP Forwarding to $defaultLAN"
         #	    getIP $defaultWLAN
-        createADHOC
         sudo echo -e "\nauto eth0" >> /etc/network/interfaces
         sudo echo -e "iface eth0 inet dhcp" >> /etc/network/interfaces
         sudo /etc/init.d/networking restart
-        createOLSR
         # update dnsmasq
         sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
         sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf

@@ -280,7 +280,7 @@
       <form method="post" action="authenticate.php">
         <div class="ui-field-contain">
           <label for="adminPwd">Admin Password:</label>
-          <input type="text" name="adminPwd" id="adminPwd">       
+          <input type="password" name="adminPwd" id="adminPwd">       
         </div>
         <input type="submit" data-inline="true" value="Submit">
       </form>
@@ -343,9 +343,9 @@
             <fieldset data-role="controlgroup">
                 <legend>A wired connection was identified, please select how to use it:</legend>
                 <label for="meshLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
-                <input type="radio" name="meshEthernetType" id="meshLan" value="meshLan" checked="checked">
+                <input type="radio" name="meshEthernetType" id="meshLan" value="meshLan" <?php if (file_exists('/var/www/flags/.lan')) { echo "checked";} ?> >
                 <label for="meshWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
-                <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan">
+                <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan" <?php if (file_exists('/var/www/flags/.wan')) { echo "checked";} ?> >
             </fieldset>
 
         <?php
