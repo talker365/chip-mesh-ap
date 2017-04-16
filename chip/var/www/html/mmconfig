@@ -4,7 +4,7 @@
 
  Interface: wlan1 = AP for all modes.
 
- Parameters: type, callsign, nodeId, adminPASS, NodeCH, meshEthMode, RouterName, WifiSSID, WifiPassword, Eth0Use, apSSID, apPASS, apCH, nodeSSID
+ Parameters: type, callsign, nodeID, adminPASS, nodeCH, meshEthMode, routerName, wifiSSID, wifiPASS, routerEthMode, apSSID, apPASS, apCH, nodeSSID
 
 Interface_Modes
 
@@ -347,7 +347,7 @@ if [[ $request == "micromesh" ]]; then
     
     createADHOC
     createOLSR
-
+    
     if [[ $meshEthMode == "LAN" ]]; then
         echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
         #       getIP $defaultWLAN
