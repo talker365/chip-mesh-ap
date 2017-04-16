@@ -189,7 +189,7 @@ connectWifi() {
     echo "connecting to WiFi ($wifiSSID) on $defaultWLAN"
     sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname $defaultWLAN 2>&1
 }
-?
+
 
 #---[ MAIN ]----------------------------------------------------------------------------------
 
