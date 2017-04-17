@@ -267,8 +267,8 @@
     <form method="post" action="deploy.php">
 		<div class="ui-field-contain" data-type="vertical">
 	    		<input type="submit" data-inline="true" value="Install">
-				<div class="ui-field-contain" data-type="horizontal">
-			        <label for="final_microtype">Installation Type:</label>
+				<div class="ui-field-contain" data-type="horizontal" style="display: none;">
+			        <label for="deploy_mode">Installation Type:</label>
 			        <input type="text" readonly="readonly" required name="deploy_mode" id="deploy_mode" placeholder="Deploy Mode" value="install">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">

@@ -37,10 +37,7 @@
 			                    Mesh Ethernet Type: <?php echo $_POST["final_meshEthernetType"]; ?> <br />
 			                    Router Hostname: <?php echo $_POST["final_routerhostname"]; ?> <br />
 			                    SSID: <?php echo $_POST["final_ssid"]; ?> <br />
-			                    <span data-role="collapsible">
-									<h1>Password</h1>
-									<p><?php echo $_POST["final_password"]; ?></p>
-								</span>
+			                    Password: <?php echo $_POST["final_password"]; ?><br />
 			                    Router Ethernet Type: <?php echo $_POST["final_routerEthernetType"]; ?> <br />
 			                    AP SSID: <?php echo $_POST["final_accesspointssid"]; ?> <br />
 			                    AP Password: <?php echo $_POST["final_accesspointpassword"]; ?> <br />
@@ -82,23 +79,80 @@
 
 
 				        <?php break;
-				    case "admin": ?>
+				    case "admin":
+				    	$old_callsign = trim(shell_exec("cat /var/www/flags/.callsign"));
+				    	$old_meshhostname = trim(shell_exec("hostname"));
+				    	$old_meshpassword = trim(shell_exec("cat /var/www/flags/.admin"));
+				    	$old_nodechannel = trim(shell_exec("/var/www/html/./wifiscan CH 2>&1"));
+				    	$old_nodessid = trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)"));
+				    	if (file_exists('/var/www/flags/.lan')) { 
+				    		$old_meshEthernetType = "LAN";
+				    	} else {
+				    		$old_meshEthernetType = "WAN";
+				    	}
+				    ?>
 			            <div data-role="collapsible" data-theme="e" data-content-theme="c">
 			                <h1>Admin Updates</h1>
-			                <p> 
-			                    Installation Type: <?php echo $_POST["final_microtype"]; ?> <br />
-			                    Callsign: <?php echo $_POST["final_callsign"]; ?> <br />
-			                    Node Name: <?php echo $_POST["final_meshhostname"]; ?> <br />
-        			            Node Password: <?php echo $_POST["final_meshpassword"]; ?> <br />
-			                    Node Channel: <?php echo $_POST["final_nodechannel"]; ?> <br />
-			                    Node SSID: <?php echo $_POST["final_nodessid"]; ?> <br />
-			                    Mesh Ethernet Type: <?php echo $_POST["final_meshEthernetType"]; ?> <br />
+			                <p> 			            
+			                    Installation Type: 
+			                    	<?php
+			                    		echo $_POST["final_microtype"];
+			                    		if ($old_callsign != $_POST["final_microtype"]) {
+			                    			echo " (new) ";
+			                    		}
+			                    	?>
+			                    	<br />
+			                    Callsign:
+			                    	<?php
+			                    		echo $_POST["final_callsign"];
+			                    		if ($old_callsign != $_POST["final_callsign"]) {
+			                    			echo " (new) ";
+			                    		}
+		                    		?>
+		                    		<br />
+			                    Node Name:
+			                    	<?php
+			                    		echo $_POST["final_meshhostname"];
+			                    		if ($old_meshhostname != $_POST["final_meshhostname"]) {
+			                    			echo " (new) ";
+			                    		}
+		                    		?>
+		                    		<br />
+        			            Node Password:
+        			            	<?php
+        			            		echo $_POST["final_meshpassword"];
+			                    		if ($old_meshpassword != $_POST["final_meshpassword"]) {
+			                    			echo " (new) ";
+			                    		}
+    			            		?>
+    			            		<br />
+			                    Node Channel:
+			                    	<?php
+			                    		echo $_POST["final_nodechannel"];
+			                    		if ($old_nodechannel != $_POST["final_nodechannel"]) {
+			                    			echo " (new) ";
+			                    		}
+		                    		?>
+		                    		<br />
+			                    Node SSID:
+			                    	<?php
+			                    		echo $_POST["final_nodessid"];
+			                    		if ($old_nodessid != $_POST["final_nodessid"]) {
+			                    			echo " (new) ";
+			                    		}
+		                    		?>
+		                    		<br />
+			                    Mesh Ethernet Type:
+			                    	<?php
+			                    		echo $_POST["final_meshEthernetType"];
+			                    		if ($old_meshEthernetType != $_POST["final_meshEthernetType"]) {
+			                    			echo " (new) ";
+			                    		}
+		                    		?>
+		                    		<br />
 			                    Router Hostname: <?php echo $_POST["final_routerhostname"]; ?> <br />
 			                    SSID: <?php echo $_POST["final_ssid"]; ?> <br />
-			                    <span data-role="collapsible">
-									<h1>Password</h1>
-									<p><?php echo $_POST["final_password"]; ?></p>
-								</span>
+			                    Password: <?php echo $_POST["final_password"]; ?><br />
 			                    Router Ethernet Type: <?php echo $_POST["final_routerEthernetType"]; ?> <br />
 			                    AP SSID: <?php echo $_POST["final_accesspointssid"]; ?> <br />
 			                    AP Password: <?php echo $_POST["final_accesspointpassword"]; ?> <br />
@@ -107,7 +161,7 @@
 			                        <h1>Installation Commmand</h1>
 			                        <p>
 			                            <?php
-			                                $command = "sudo /var/www/html/./mmconfig ";
+			                                $command = "#sudo /var/www/html/./mmconfig ";
 			                                $command .= $_POST["final_microtype"] . " ";
 			                                $command .= $_POST["final_callsign"] . " ";
 			                                $command .= $_POST["final_meshhostname"] . " ";
@@ -132,7 +186,7 @@
 			                <h1>Installation Results</h1>
 			                <p>
 			                    <?php
-			                        echo shell_exec("$command");
+			                        echo shell_exec("#$command");
 			                    ?>
 			                </p>
 			            </div>
