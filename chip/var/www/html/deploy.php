@@ -80,10 +80,11 @@
 
 				        <?php break;
 				    case "admin":
+					    $command = "";
 				    	$old_callsign = trim(shell_exec("cat /var/www/flags/.callsign"));
 				    	$old_meshhostname = trim(shell_exec("hostname"));
 				    	$old_meshpassword = trim(shell_exec("cat /var/www/flags/.admin"));
-				    	$old_nodechannel = trim(shell_exec("/var/www/html/./wifiscan CH 2>&1"));
+				    	$old_nodechannel = trim(shell_exec("cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1"));
 				    	$old_nodessid = trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)"));
 				    	if (file_exists('/var/www/flags/.lan')) { 
 				    		$old_meshEthernetType = "LAN";
@@ -94,19 +95,13 @@
 			            <div data-role="collapsible" data-theme="e" data-content-theme="c">
 			                <h1>Admin Updates</h1>
 			                <p> 			            
-			                    Installation Type: 
-			                    	<?php
-			                    		echo $_POST["final_microtype"];
-			                    		if ($old_callsign != $_POST["final_microtype"]) {
-			                    			echo " (new) ";
-			                    		}
-			                    	?>
-			                    	<br />
+			                    Installation Type: <?php echo $_POST["final_microtype"]; ?> <br />
 			                    Callsign:
 			                    	<?php
 			                    		echo $_POST["final_callsign"];
 			                    		if ($old_callsign != $_POST["final_callsign"]) {
 			                    			echo " (new) ";
+			                    			$command .= "sudo /var/www/html/./mmconfig update callsign " . $_POST["final_callsign"] . "; ";
 			                    		}
 		                    		?>
 		                    		<br />
@@ -115,6 +110,7 @@
 			                    		echo $_POST["final_meshhostname"];
 			                    		if ($old_meshhostname != $_POST["final_meshhostname"]) {
 			                    			echo " (new) ";
+			                    			$command .= "sudo /var/www/html/./mmconfig update meshName " . $_POST["final_meshhostname"] . "; ";
 			                    		}
 		                    		?>
 		                    		<br />
@@ -123,6 +119,7 @@
         			            		echo $_POST["final_meshpassword"];
 			                    		if ($old_meshpassword != $_POST["final_meshpassword"]) {
 			                    			echo " (new) ";
+			                    			$command .= "sudo /var/www/html/./mmconfig update adminPASS " . $_POST["final_meshpassword"] . "; ";
 			                    		}
     			            		?>
     			            		<br />
@@ -131,6 +128,7 @@
 			                    		echo $_POST["final_nodechannel"];
 			                    		if ($old_nodechannel != $_POST["final_nodechannel"]) {
 			                    			echo " (new) ";
+			                    			$command .= "sudo /var/www/html/./mmconfig update meshChannel " . $_POST["final_nodechannel"] . "; ";
 			                    		}
 		                    		?>
 		                    		<br />
@@ -139,6 +137,7 @@
 			                    		echo $_POST["final_nodessid"];
 			                    		if ($old_nodessid != $_POST["final_nodessid"]) {
 			                    			echo " (new) ";
+			                    			$command .= "sudo /var/www/html/./mmconfig update meshSSID " . $_POST["final_nodessid"] . "; ";
 			                    		}
 		                    		?>
 		                    		<br />
@@ -147,37 +146,14 @@
 			                    		echo $_POST["final_meshEthernetType"];
 			                    		if ($old_meshEthernetType != $_POST["final_meshEthernetType"]) {
 			                    			echo " (new) ";
+			                    			$command .= "sudo /var/www/html/./mmconfig update doesntexist " . $_POST["final_meshEthernetType"] . "; ";
 			                    		}
 		                    		?>
 		                    		<br />
-			                    Router Hostname: <?php echo $_POST["final_routerhostname"]; ?> <br />
-			                    SSID: <?php echo $_POST["final_ssid"]; ?> <br />
-			                    Password: <?php echo $_POST["final_password"]; ?><br />
-			                    Router Ethernet Type: <?php echo $_POST["final_routerEthernetType"]; ?> <br />
-			                    AP SSID: <?php echo $_POST["final_accesspointssid"]; ?> <br />
-			                    AP Password: <?php echo $_POST["final_accesspointpassword"]; ?> <br />
-			                    AP Channel: <?php echo $_POST["final_accesspointchannel"]; ?> <br />
 			                    <div data-role="collapsible" data-collapsed="false" data-theme="e" data-content-theme="c">
-			                        <h1>Installation Commmand</h1>
+			                        <h1>Update Commmands</h1>
 			                        <p>
-			                            <?php
-			                                $command = "#sudo /var/www/html/./mmconfig ";
-			                                $command .= $_POST["final_microtype"] . " ";
-			                                $command .= $_POST["final_callsign"] . " ";
-			                                $command .= $_POST["final_meshhostname"] . " ";
-			                                $command .= $_POST["final_meshpassword"] . " ";
-			                                $command .= $_POST["final_nodechannel"] . " ";
-			                                $command .= $_POST["final_meshEthernetType"] . " ";
-            			                    $command .= $_POST["final_routerhostname"] . " ";
-                        			        $command .= $_POST["final_ssid"] . " ";
-			                                $command .= $_POST["final_password"] . " ";
-            			                    $command .= $_POST["final_routerEthernetType"] . " ";
-                        			        $command .= $_POST["final_accesspointssid"] . " ";
-			                                $command .= $_POST["final_accesspointpassword"] . " ";
-            			                    $command .= $_POST["final_accesspointchannel"] . " ";
-                        			        $command .= $_POST["final_nodessid"] . " ";
-			                                echo $command;
-            				                ?>
+			                            <?php echo $command; ?>
 			                        </p>
 			                    </div>
 			                </p>
@@ -186,7 +162,7 @@
 			                <h1>Installation Results</h1>
 			                <p>
 			                    <?php
-			                        echo shell_exec("#$command");
+			                        echo shell_exec("$command");
 			                    ?>
 			                </p>
 			            </div>

@@ -53,7 +53,9 @@ function populateForm(microtype) {
 		    }
     
 		    if (document.getElementById("nodechannel").value.length > 0) {
-			    document.getElementById("final_nodechannel").value = document.getElementById("nodechannel").value;
+				var data = document.getElementById("nodechannel").value;
+				var nodeData = data.split(" ");
+			    document.getElementById("final_nodechannel").value = nodeData[0];
 		    }
 
 		    if (document.getElementById("meshLan") != null) {
