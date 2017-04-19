@@ -10,7 +10,7 @@ Interface_Modes
 
 #---[ GLOBAL VARIABLES ]--------------------------------------------------------------
 
-defaultWLAN=wlan0
+defaultWLAN=wlan1
 defaultLAN=eth0
 defaultInterfaceDHCP=$defaultWLAN
 defaultInterfaceGateway=$defaultLAN
@@ -209,6 +209,9 @@ if [[ $request == "update" ]]; then
     shift
     while [ $# -gt 0 ]
     do
+        [ -f /var/www/flags/.microrouter ] && defaultWLAN=wlan0
+        [ -f /var/www/flags/.micromesh ] && defaultWLAN=wlan1
+
         case "$1" in
   
             callsign )
@@ -228,9 +231,11 @@ if [[ $request == "update" ]]; then
             
             meshName )
                 #Change mesh node Name
-                getIP wlan1
+                newHostName=$2
+                getIP $defaultWLAN
+                createHosts
                 sudo echo $2 > /etc/hostname
-                sudo sed -i.bak "s/.$nodeIP.*/$nodeIP $2/" /etc/hosts
+                #sudo sed -i.bak "s/.$nodeIP.*/$nodeIP $2/" /etc/hosts
                 sudo hostname $2
                 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$2\"/" /etc/olsrd/olsrd.conf
                 /etc/rc.local
@@ -264,10 +269,12 @@ if [[ $request == "update" ]]; then
             
             meshSSID )
                 #update ssid
-                sudo sed -i.bak "s/.wireless-essid.*/wireless-essid $2/" /etc/network/interfaces
-                sudo ifconfig wlan1 down
-                sudo ifconfig wlan1 up
+                sudo sed -i.bak "s/.*wireless-essid.*/\twireless-essid $2/" /etc/network/interfaces
+                sudo ifconfig $defaultWLAN down
+                sudo ifconfig $defaultWLAN up
+                echo -e " [updated node to SSID $2] "
                 shift; shift;
+                sudo /etc/init.d/networking restart
             ;;
             
             apChannel )
@@ -280,10 +287,12 @@ if [[ $request == "update" ]]; then
             
             meshChannel )
                 #update channel
-                sudo sed -i.bak "s/.wireless-channel.*/wireless-channel $2/" /etc/network/interfaces
-                sudo ifconfig wlan1 down
-                sudo ifconfig wlan1 up
+                sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces
+                sudo ifconfig $defaultWLAN down
+                sudo ifconfig $defaultWLAN up
+                echo -e " [updated node to channel $2] "
                 shift; shift;
+                sudo /etc/init.d/networking restart
             ;;
 
         esac
@@ -322,6 +331,7 @@ sudo echo -e $adminPASS > /var/www/flags/.admin
 
 # Router Mode
 if [[ $request == "microrouter" ]]; then
+    defaultWLAN=wlan0
     
     newHostName=$routerName
     echo "Router [$routerName]"
