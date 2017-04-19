@@ -269,12 +269,12 @@ if [[ $request == "update" ]]; then
             
             meshSSID )
                 #update ssid
-                sudo sed -i.bak "s/.*wireless-essid.*/\twireless-essid $2/" /etc/network/interfaces
+                sudo sed -i.bak "s/.*wireless-essid.*/\twireless-essid $2/" /etc/network/interfaces;cat /etc/network/interfaces
                 sudo ifconfig $defaultWLAN down
                 sudo ifconfig $defaultWLAN up
                 echo -e " [updated node to SSID $2] "
                 shift; shift;
-                sudo /etc/init.d/networking restart
+                sudo /etc/init.d/networking restart;cat /etc/network/interfaces
             ;;
             
             apChannel )
@@ -287,7 +287,7 @@ if [[ $request == "update" ]]; then
             
             meshChannel )
                 #update channel
-                sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces
+                sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces;cat /etc/network/interfaces
                 sudo ifconfig $defaultWLAN down
                 sudo ifconfig $defaultWLAN up
                 echo -e " [updated node to channel $2] "
