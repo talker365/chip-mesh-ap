@@ -12,8 +12,6 @@ Interface_Modes
 
 defaultWLAN=wlan1
 defaultLAN=eth0
-defaultInterfaceDHCP=$defaultWLAN
-defaultInterfaceGateway=$defaultLAN
 
 #---[ FUNCTIONS ]---------------------------------------------------------------------
 
@@ -257,11 +255,20 @@ if [[ $request == "update" ]]; then
         [ -f /var/www/flags/.micromesh ] && defaultWLAN=wlan1
 
         case "$1" in
-  
-            callsign )
-                echo -e $2 > /var/www/flags/.callsign
-                echo -e " [updated callsign to $2] "
+            
+            adminPASS )
+                #Change admin password
+                echo $2 > /var/www/flags/.admin
+                echo -e " [updated admin password] "
                 shift; shift;
+            ;;
+            
+            apChannel )
+                #update channel
+                sudo sed -i.bak "s/.*channel=.*/channel=$2/" /etc/hostapd.conf
+                shift; shift;
+                # Update any required services.
+                sudo systemctl restart hostapd-systemd
             ;;
 
             apName )
@@ -272,28 +279,7 @@ if [[ $request == "update" ]]; then
                 # Update any required services.
                 systemctl restart hostapd-systemd
             ;;
-            
-            meshName )
-                #Change mesh node Name
-                newHostName=$2
-                getIP $defaultWLAN
-                createHosts
-                sudo echo $2 > /etc/hostname
-                #sudo sed -i.bak "s/.$nodeIP.*/$nodeIP $2/" /etc/hosts
-                sudo hostname $2
-                sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$2\"/" /etc/olsrd/olsrd.conf
-                /etc/rc.local
-                echo -e " [updated node name to $2] "
-                shift; shift;
-            ;;
-            
-            adminPASS )
-                #Change admin password
-                echo $2 > /var/www/flags/.admin
-                echo -e " [updated admin password] "
-                shift; shift;
-            ;;
-            
+
             apPASS )
                 #Change access point password
                 sudo sed -i.bak "s/.*wpa_passphrase=.*/wpa_passphrase=$2/" /etc/hostapd.conf
@@ -321,14 +307,12 @@ if [[ $request == "update" ]]; then
                 sudo /etc/init.d/networking restart;cat /etc/network/interfaces
             ;;
             
-            apChannel )
-                #update channel
-                sudo sed -i.bak "s/.*channel=.*/channel=$2/" /etc/hostapd.conf
+            callsign )
+                echo -e $2 > /var/www/flags/.callsign
+                echo -e " [updated callsign to $2] "
                 shift; shift;
-                # Update any required services.
-                sudo systemctl restart hostapd-systemd
             ;;
-            
+
             meshChannel )
                 #update channel
                 sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces
@@ -337,6 +321,20 @@ if [[ $request == "update" ]]; then
                 echo -e " [updated node to channel $2] "
                 shift; shift;
                 sudo /etc/init.d/networking restart
+            ;;
+
+            meshName )
+                #Change mesh node Name
+                newHostName=$2
+                getIP $defaultWLAN
+                createHosts
+                sudo echo $2 > /etc/hostname
+                #sudo sed -i.bak "s/.$nodeIP.*/$nodeIP $2/" /etc/hosts
+                sudo hostname $2
+                sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$2\"/" /etc/olsrd/olsrd.conf
+                /etc/rc.local
+                echo -e " [updated node name to $2] "
+                shift; shift;
             ;;
 
             meshEthernetType )
