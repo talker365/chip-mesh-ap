@@ -74,8 +74,8 @@ createAP() {
 
 createDHCP() {
     
-    interfaceDHCP=$1		# Interface serving the DHCP
-    interfaceGateway=$2		# Interface providing IP and DNS Forwarding
+    interfaceDHCP=$1        # Interface serving the DHCP
+    interfaceGateway=$2     # Interface providing IP and DNS Forwarding
     nodeIP="127.20.0.1"
     # Set up a static IP for the AP(accesspoint)
     echo "adding $interfaceDHCP to /etc/network/interfaces"
@@ -191,12 +191,12 @@ connectWifi() {
 
 setupMeshEthernet() {
     meshEthernetMode=$1        # Ethernet Mode
-
+    
     [ -f "/var/www/flags/.lan" ] && rm /var/www/flags/.lan
     [ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
-
-        getIP $defaultLAN
-
+    
+    getIP $defaultLAN
+    
     # LAN Mode...
     if [[ $meshEthernetMode == "LAN" ]]; then
         sudo touch /var/www/flags/.lan
@@ -253,7 +253,7 @@ if [[ $request == "update" ]]; then
     do
         [ -f /var/www/flags/.microrouter ] && defaultWLAN=wlan0
         [ -f /var/www/flags/.micromesh ] && defaultWLAN=wlan1
-
+        
         case "$1" in
             
             adminPASS )
@@ -270,7 +270,7 @@ if [[ $request == "update" ]]; then
                 # Update any required services.
                 sudo systemctl restart hostapd-systemd
             ;;
-
+            
             apName )
                 #Change Router Name
                 echo $2 > /etc/hostname
@@ -279,14 +279,14 @@ if [[ $request == "update" ]]; then
                 # Update any required services.
                 systemctl restart hostapd-systemd
             ;;
-
+            
             apPASS )
                 #Change access point password
                 sudo sed -i.bak "s/.*wpa_passphrase=.*/wpa_passphrase=$2/" /etc/hostapd.conf
                 shift; shift;
                 # Update any required services.
                 sudo systemctl restart hostapd-systemd
-
+                
             ;;
             
             apSSID )
@@ -295,6 +295,12 @@ if [[ $request == "update" ]]; then
                 shift; shift;
                 # Update any required services.
                 sudo systemctl restart hostapd-systemd
+            ;;
+            
+            callsign )
+                echo -e $2 > /var/www/flags/.callsign
+                echo -e " [updated callsign to $2] "
+                shift; shift;
             ;;
             
             meshSSID )
@@ -307,12 +313,6 @@ if [[ $request == "update" ]]; then
                 sudo /etc/init.d/networking restart;cat /etc/network/interfaces
             ;;
             
-            callsign )
-                echo -e $2 > /var/www/flags/.callsign
-                echo -e " [updated callsign to $2] "
-                shift; shift;
-            ;;
-
             meshChannel )
                 #update channel
                 sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces
@@ -322,7 +322,7 @@ if [[ $request == "update" ]]; then
                 shift; shift;
                 sudo /etc/init.d/networking restart
             ;;
-
+            
             meshName )
                 #Change mesh node Name
                 newHostName=$2
@@ -336,15 +336,15 @@ if [[ $request == "update" ]]; then
                 echo -e " [updated node name to $2] "
                 shift; shift;
             ;;
-
+            
             meshEthernetType )
                 setupMeshEthernet $2
                 echo -e " [updated node to use ethernet as $2] "
                 shift; shift;
-          ;;
+            ;;
         esac
     done
-
+    
     exit 0
 fi
 
@@ -429,13 +429,13 @@ if [[ $request == "micromesh" ]]; then
     echo "Node Ethernet Mode [$meshEthMode]"
     echo "Node SSID [$nodeSSID]"
     echo ""
-
+    
     sudo echo -e $callsign > /var/www/flags/.callsign
-
+    
     createADHOC
     createOLSR
     setupMeshEthernet $meshEthMode
-
+    
     
     # Remove Access-Point config files.
     [ -f "/etc/dnsmasq/d/access_point.conf" ] && rm /etc/dnsmasq.d/access_point.conf
