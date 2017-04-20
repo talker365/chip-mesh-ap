@@ -191,6 +191,50 @@ connectWifi() {
 }
 
 
+setupMeshEthernet() {
+    meshEthernetMode=$1        # Ethernet Mode
+
+    [ -f "/var/www/flags/.lan" ] && rm /var/www/flags/.lan
+    [ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
+
+        getIP $defaultLAN
+
+    # LAN Mode...
+    if [[ $meshEthernetMode == "LAN" ]]; then
+        sudo touch /var/www/flags/.lan
+        echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
+        #       getIP $defaultWLAN
+        sudo echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
+        sudo echo -e "iface $defaultLAN inet static" >> /etc/network/interfaces
+        sudo echo -e "\taddress $lanIP" >> /etc/network/interfaces
+        sudo echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
+        # update dnsmasq
+        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
+        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*#interface=$defaultLAN.*/interface=$defaultLAN/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+    fi
+    
+    
+    if [[ $meshEthernetMode == "WAN" ]]; then
+        sudo touch /var/www/flags/.wan
+        echo "Setting up DHCP and IP Forwarding to $defaultLAN"
+        #       getIP $defaultWLAN
+        sudo echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
+        sudo echo -e "iface $defaultLAN inet dhcp" >> /etc/network/interfaces
+        sudo /etc/init.d/networking restart
+        # update dnsmasq
+        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
+        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*interface=$defaultLAN.*/#interface=$defaultLAN/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*dhcp-range=.*/#dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|.*address=/localnode.*|#address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|.*address=/node-id.*|#address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+    fi
+}
+
 #---[ MAIN ]----------------------------------------------------------------------------------
 
 clear
@@ -269,7 +313,7 @@ if [[ $request == "update" ]]; then
             
             meshSSID )
                 #update ssid
-                sudo sed -i.bak "s/.*wireless-essid.*/\twireless-essid $2/" /etc/network/interfaces;cat /etc/network/interfaces
+                sudo sed -i.bak "s/.*wireless-essid.*/\twireless-essid $2/" /etc/network/interfaces
                 sudo ifconfig $defaultWLAN down
                 sudo ifconfig $defaultWLAN up
                 echo -e " [updated node to SSID $2] "
@@ -287,7 +331,7 @@ if [[ $request == "update" ]]; then
             
             meshChannel )
                 #update channel
-                sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces;cat /etc/network/interfaces
+                sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces
                 sudo ifconfig $defaultWLAN down
                 sudo ifconfig $defaultWLAN up
                 echo -e " [updated node to channel $2] "
@@ -295,6 +339,11 @@ if [[ $request == "update" ]]; then
                 sudo /etc/init.d/networking restart
             ;;
 
+            meshEthernetType )
+                setupMeshEthernet $2
+                echo -e " [updated node to use ethernet as $2] "
+                shift; shift;
+          ;;
         esac
     done
 
@@ -387,41 +436,8 @@ if [[ $request == "micromesh" ]]; then
 
     createADHOC
     createOLSR
-    
-    if [[ $meshEthMode == "LAN" ]]; then
-        sudo touch /var/www/flags/.lan
-        echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
-        #	    getIP $defaultWLAN
-        getIP eth0
-        sudo echo -e "\nauto eth0" >> /etc/network/interfaces
-        sudo echo -e "iface eth0 inet static" >> /etc/network/interfaces
-        sudo echo -e "\taddress $lanIP" >> /etc/network/interfaces
-        sudo echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
-        # update dnsmasq
-        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
-        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*#interface=eth0.*/interface=eth0/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-    fi
-    
-    
-    if [[ $meshEthMode == "WAN" ]]; then
-        sudo touch /var/www/flags/.wan
-        echo "Setting up DHCP and IP Forwarding to $defaultLAN"
-        #	    getIP $defaultWLAN
-        sudo echo -e "\nauto eth0" >> /etc/network/interfaces
-        sudo echo -e "iface eth0 inet dhcp" >> /etc/network/interfaces
-        sudo /etc/init.d/networking restart
-        # update dnsmasq
-        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
-        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*interface=eth0.*/#interface=eth0/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*dhcp-range=.*/#dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|.*address=/localnode.*|#address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|.*address=/node-id.*|#address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-    fi
+    setupMeshEthernet $meshEthMode
+
     
     # Remove Access-Point config files.
     [ -f "/etc/dnsmasq/d/access_point.conf" ] && rm /etc/dnsmasq.d/access_point.conf

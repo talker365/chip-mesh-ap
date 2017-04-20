@@ -146,7 +146,7 @@
 			                    		echo $_POST["final_meshEthernetType"];
 			                    		if ($old_meshEthernetType != $_POST["final_meshEthernetType"]) {
 			                    			echo " (new) ";
-			                    			$command .= "sudo /var/www/html/./mmconfig update doesntexist " . $_POST["final_meshEthernetType"] . "; ";
+			                    			$command .= "sudo /var/www/html/./mmconfig update meshEthernetType " . $_POST["final_meshEthernetType"] . "; ";
 			                    		}
 		                    		?>
 		                    		<br />
