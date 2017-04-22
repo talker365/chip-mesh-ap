@@ -1,0 +1,161 @@
+#!/bin/bash
+# Valley Digital Networks
+#   N4LDR & WD4VA
+
+# Define the tags we want to pull from the json dump
+tags="node firmware_mfg ssid firmware_version model board_id channel chanbw lat lon grid_square active_tunnel_count"
+
+# filename for sysinfo.json results
+filename=/tmp/nodeSettings
+prevfilename=/tmp/prevNodeSettings
+
+
+# ----[ Functions ] -------------------------------------------------------------------------------------------------------
+
+compairFiles() {
+    newvalues=$(grep -Fvf $filename $prevfilename)
+    [[ ${#newvalues} -eq 0 ]] && exit 0
+    
+    echo "These Tags have changed !"
+    
+    for n in $newvalues
+    do
+        tagdiff=$(echo $n |sed 's/,.*//')
+        
+        if ( echo $tagdiff | grep "IP" ) || ( echo $tagdiff | grep "MAC" ) then
+            if ( echo $tagdiff | grep "IP" ) then getIpAddress ${tagdiff%"_IP"}; newdata="$newdata $tagdiff $ip"; fi
+            if ( echo $tagdiff | grep "MAC" ) then getMacAddress ${tagdiff%"_MAC"}; newdata="$newdata $tagdiff $mac"; fi
+        else
+            tagvalue=$(getNodeValues $tagdiff )
+            echo "$tagdiff ${tagvalue// /_} "
+            newdata="$newdata $tagdiff $tagvalue"
+        fi
+    done
+    
+    echo -e "\nPass this String to VDN Servers ->$newdata"
+}
+
+
+getIpAddress() {
+    ip=$(ifconfig $1 | grep inet | awk '{print $2}' | cut -d':' -f2)
+    [[ ${#ip} -eq 0 ]] && ip="none"                    # Inserting None on a Null Value
+}
+
+
+getMacAddress() {
+    mac=$(ifconfig $1 | grep  HWaddr | awk '{print $5}')
+}
+
+
+getNodeSettings() {
+    touch $filename
+    for i in $tags
+    do
+        tagvalue=$(getNodeValues $i)
+        echo "$i,${tagvalue// /_}" >> $filename
+        #        echo "$i,${tagvalue// /_}"
+    done
+}
+
+
+getAdapterSettings() {
+    adapters=$(ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d')
+    for a in $adapters
+    do
+        getIpAddress $a
+        getMacAddress $a
+        echo $a"_IP,$ip" >> $filename
+        echo $a"_MAC,$mac" >> $filename
+    done
+}
+
+getNodeValues() {
+    
+    while [ $# -gt 0 ]
+    do
+        case "$1" in
+            
+            node )
+                echo $(uname -n | awk '{print toupper($0)}')
+                shift;
+            ;;
+            
+            firmware_mfg )
+                echo 'VDN'
+                shift
+            ;;
+            
+            ssid )
+                echo $(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
+                shift
+            ;;
+            
+            firmware_version )
+                echo '1.0'
+                shift
+            ;;
+            
+            model )
+                echo 'MicroMesh'
+                shift
+            ;;
+            
+            board_id )
+                echo $(uname -m)
+                shift
+            ;;
+            
+            channel )
+                echo $(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
+                shift
+            ;;
+            
+            chanbw )
+                echo '20'
+                shift
+            ;;
+            
+            lat )
+                echo $(cat /etc/latlon | head -1 2>/dev/null)
+                shift
+            ;;
+            
+            lon )
+                echo $(tail -1 /etc/latlon 2>/dev/null)
+                shift
+            ;;
+            
+            grid_square )
+                echo ''
+                shift
+            ;;
+            
+            active_tunnel_count )
+                echo '0'
+                shift
+            ;;
+            
+        esac
+    done
+}
+# -----[ Main Code ] ------------------------------------------------------------------------------------------------------
+
+# Handle request from cli
+if [[ $# -ne 0 ]]; then
+    if ( echo $1 | grep "IP" ) || ( echo $1 | grep "MAC" ) then
+        if ( echo $1 | grep "IP" ) then getIpAddress ${1%"_IP"}; echo $1 "= $ip"; fi
+        if ( echo $1 | grep "MAC" ) then getMacAddress ${1%"_MAC"}; echo $1 "= $mac"; fi
+    else
+        echo "$1=$(getNodeValues $1 )" &&  exit 0
+    fi
+fi
+
+# Save nodeSettigns file to prevNodeSettings before writing new file.
+[[ -f $filename ]] && mv $filename $prevfilename
+
+getNodeSettings
+
+getAdapterSettings
+
+[[ -f $prevfilename ]] && compairFiles
+
