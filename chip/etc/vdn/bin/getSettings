@@ -59,7 +59,7 @@ getNodeSettings() {
 
 
 getAdapterSettings() {
-    adapters=$(ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)$/d')
+    adapters=$(ifconfig -a | sed 's/[ \t].*//;/^\(lo\|\)\(sit0\|\)$/d')
     for a in $adapters
     do
         getIpAddress $a
@@ -126,7 +126,7 @@ getNodeValues() {
             ;;
             
             grid_square )
-                echo ''
+                echo $(cat /etc/gridsquare | head -1 2>/dev/null)
                 shift
             ;;
             
