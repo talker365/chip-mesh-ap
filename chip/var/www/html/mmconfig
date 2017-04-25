@@ -107,7 +107,7 @@ createDHCP() {
     sudo echo -e "\ndhcp-range=172.20.0.100,172.20.0.250,1h" >> /etc/dnsmasq.d/access-point.conf
     
     echo "restarting dnsmasq"
-    sudo /etc/init.d/dnsmasq restart
+    sudo in/etc/init.d/dnsmasq restart
 }
 
 
@@ -196,6 +196,8 @@ setupMeshEthernet() {
     [ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
     
     getIP $defaultLAN
+    getIP $defaultWLAN
+    nodeID=$(hostname)
     
     # LAN Mode...
     if [[ $meshEthernetMode == "LAN" ]]; then
@@ -213,6 +215,8 @@ setupMeshEthernet() {
         sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
         sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
         sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+
+        sudo /etc/init.d/networking restart
     fi
     
     
