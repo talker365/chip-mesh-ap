@@ -96,60 +96,137 @@
 			                <h1>Admin Updates</h1>
 			                <p> 			            
 			                    Installation Type: <?php echo $_POST["final_microtype"]; ?> <br />
-			                    Callsign:
-			                    	<?php
-			                    		echo $_POST["final_callsign"];
-			                    		if ($old_callsign != $_POST["final_callsign"]) {
-			                    			echo " (new) ";
-			                    			$command .= "sudo /var/www/html/./mmconfig update callsign " . $_POST["final_callsign"] . "; ";
-			                    		}
-		                    		?>
-		                    		<br />
-			                    Node Name:
-			                    	<?php
-			                    		echo $_POST["final_meshhostname"];
-			                    		if ($old_meshhostname != $_POST["final_meshhostname"]) {
-			                    			echo " (new) ";
-			                    			$command .= "sudo /var/www/html/./mmconfig update meshName " . $_POST["final_meshhostname"] . "; ";
-			                    		}
-		                    		?>
-		                    		<br />
-        			            Node Password:
-        			            	<?php
-        			            		echo $_POST["final_meshpassword"];
-			                    		if ($old_meshpassword != $_POST["final_meshpassword"]) {
-			                    			echo " (new) ";
-			                    			$command .= "sudo /var/www/html/./mmconfig update adminPASS " . $_POST["final_meshpassword"] . "; ";
-			                    		}
-    			            		?>
-    			            		<br />
-			                    Node Channel:
-			                    	<?php
-			                    		echo $_POST["final_nodechannel"];
-			                    		if ($old_nodechannel != $_POST["final_nodechannel"]) {
-			                    			echo " (new) ";
-			                    			$command .= "sudo /var/www/html/./mmconfig update meshChannel " . $_POST["final_nodechannel"] . "; ";
-			                    		}
-		                    		?>
-		                    		<br />
-			                    Node SSID:
-			                    	<?php
-			                    		echo $_POST["final_nodessid"];
-			                    		if ($old_nodessid != $_POST["final_nodessid"]) {
-			                    			echo " (new) ";
-			                    			$command .= "sudo /var/www/html/./mmconfig update meshSSID " . $_POST["final_nodessid"] . "; ";
-			                    		}
-		                    		?>
-		                    		<br />
-			                    Mesh Ethernet Type:
-			                    	<?php
-			                    		echo $_POST["final_meshEthernetType"];
-			                    		if ($old_meshEthernetType != $_POST["final_meshEthernetType"]) {
-			                    			echo " (new) ";
-			                    			$command .= "sudo /var/www/html/./mmconfig update meshEthernetType " . $_POST["final_meshEthernetType"] . "; ";
-			                    		}
-		                    		?>
-		                    		<br />
+			                    <?php switch ($_POST["final_microtype"]) {
+			                    	case "micromesh": ?>
+					                    Callsign:
+					                    	<?php
+					                    		echo $_POST["final_callsign"];
+					                    		if ($old_callsign != $_POST["final_callsign"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update callsign " . $_POST["final_callsign"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    Node Name:
+					                    	<?php
+					                    		echo $_POST["final_meshhostname"];
+					                    		if ($old_meshhostname != $_POST["final_meshhostname"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update meshName " . $_POST["final_meshhostname"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+		        			            Node Password:
+		        			            	<?php
+		        			            		echo $_POST["final_meshpassword"];
+					                    		if ($old_meshpassword != $_POST["final_meshpassword"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update adminPASS " . $_POST["final_meshpassword"] . "; ";
+					                    		}
+		    			            		?>
+		    			            		<br />
+					                    Node Channel:
+					                    	<?php
+					                    		echo $_POST["final_nodechannel"];
+					                    		if ($old_nodechannel != $_POST["final_nodechannel"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update meshChannel " . $_POST["final_nodechannel"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    Node SSID:
+					                    	<?php
+					                    		echo $_POST["final_nodessid"];
+					                    		if ($old_nodessid != $_POST["final_nodessid"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update meshSSID " . $_POST["final_nodessid"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    Mesh Ethernet Type:
+					                    	<?php
+					                    		echo $_POST["final_meshEthernetType"];
+					                    		if ($old_meshEthernetType != $_POST["final_meshEthernetType"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update meshEthernetType " . $_POST["final_meshEthernetType"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+		                    	<?php
+		                    			break;
+		                    		}
+		                    		case "microrouter": ?> {
+			                    ?>
+					                    Hostname:
+					                    	<?php
+					                    		echo $_POST["final_routerhostname"];
+					                    		if ($old_callsign != $_POST["final_routerhostname"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update apName " . $_POST["final_routerhostname"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    *** SSID ***:
+					                    	<?php
+					                    		echo $_POST["final_ssid"];
+					                    		if ($old_callsign != $_POST["final_ssid"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update apSSID " . $_POST["final_ssid"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    Password:
+					                    	<?php
+					                    		echo $_POST["final_password"];
+					                    		if ($old_callsign != $_POST["final_password"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update adminPASS " . $_POST["final_password"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    *** Router Ethernet Type ***:
+					                    	<?php
+					                    		echo $_POST["final_routerEthernetType"];
+					                    		if ($old_callsign != $_POST["final_routerEthernetType"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update routerEthernetType " . $_POST["final_routerEthernetType"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    *** Access Point SSID ***:
+					                    	<?php
+					                    		echo $_POST["final_accesspointssid"];
+					                    		if ($old_callsign != $_POST["final_accesspointssid"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update apSSID " . $_POST["final_accesspointssid"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    Access Point Password:
+					                    	<?php
+					                    		echo $_POST["final_accesspointpassword"];
+					                    		if ($old_callsign != $_POST["final_accesspointpassword"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update apPASS " . $_POST["final_accesspointpassword"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+					                    Access Point Channel:
+					                    	<?php
+					                    		echo $_POST["final_accesspointchannel"];
+					                    		if ($old_callsign != $_POST["final_accesspointchannel"]) {
+					                    			echo " (new) ";
+					                    			$command .= "sudo /var/www/html/./mmconfig update apChannel " . $_POST["final_accesspointchannel"] . "; ";
+					                    		}
+				                    		?>
+				                    		<br />
+
+
+								<?php
+										break;
+									} 
+								?>
+
 			                    <div data-role="collapsible" data-collapsed="false" data-theme="e" data-content-theme="c">
 			                        <h1>Update Commmands</h1>
 			                        <p>
