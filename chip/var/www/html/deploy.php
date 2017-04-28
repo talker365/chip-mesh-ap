@@ -154,8 +154,8 @@
 				                    		<br />
 		                    	<?php
 		                    			break;
-		                    		}
-		                    		case "microrouter": ?> {
+		                    		
+		                    		case "microrouter": ?> 
 			                    ?>
 					                    Hostname:
 					                    	<?php

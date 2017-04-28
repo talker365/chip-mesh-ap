@@ -186,6 +186,8 @@ connectWifi() {
     sudo nmcli dev disconnect $defaultWLAN 2>&1
     echo "connecting to WiFi ($wifiSSID) on $defaultWLAN"
     sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname $defaultWLAN 2>&1
+    echo -e "$wifiSSID" > /var/www/flags/.wifiSSID
+    echo -e "$wifiPASS" > /var/www/flags/.wifiPASS
 }
 
 
@@ -333,7 +335,6 @@ if [[ $request == "update" ]]; then
                 getIP $defaultWLAN
                 createHosts
                 sudo echo $2 > /etc/hostname
-                #sudo sed -i.bak "s/.$nodeIP.*/$nodeIP $2/" /etc/hosts
                 sudo hostname $2
                 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$2\"/" /etc/olsrd/olsrd.conf
                 /etc/rc.local
