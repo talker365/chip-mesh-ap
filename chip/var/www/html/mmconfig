@@ -271,6 +271,13 @@ setupRouterEthernet() {
             apCH=$4
 
             newHostName=$routerName
+            nodeIP="127.20.0.1"
+            createHosts
+            sudo echo $newHostName > /etc/hostname
+            sudo hostname $newHostName
+            /etc/rc.local
+            echo -e " [updated node name to $newHostName] "
+
             echo "Router [$routerName]"
             echo "Eth Mode [$routerEthMode]"
             echo "AP [$apSSID]"
@@ -300,6 +307,13 @@ setupRouterEthernet() {
             wifiPASS=$3
 
             newHostName=$routerName
+            nodeIP="127.20.0.1"
+            createHosts
+            sudo echo $newHostName > /etc/hostname
+            sudo hostname $newHostName
+            /etc/rc.local
+            echo -e " [updated node name to $newHostName] "
+
             echo "Router [$routerName]"
             echo "Wifi [$wifiSSID]"
             echo "WifiPassword [$wifiPASS]"
