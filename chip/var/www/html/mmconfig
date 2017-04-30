@@ -500,13 +500,13 @@ sudo echo -e $adminPASS > /var/www/flags/.admin
 
 # Router Mode
 if [[ $request == "microrouter" ]]; then
-#  [[ $routerEthMode == "ETH" ]] && setupRouterEthernet $routerEthMode $routerName $apSSID $apPASS $apCH
-#  [[ $routerEthMode == "WLAN" ]] && setupRouterEthernet $routerEthMode $routerName $wifiSSID $wifiPASS
-
+    #  [[ $routerEthMode == "ETH" ]] && setupRouterEthernet $routerEthMode $routerName $apSSID $apPASS $apCH
+    #  [[ $routerEthMode == "WLAN" ]] && setupRouterEthernet $routerEthMode $routerName $wifiSSID $wifiPASS
+    
     if [[ $routerEthMode == "ETH" ]]; then
         setupRouterEthernet $routerEthMode $routerName $apSSID $apPASS $apCH
     fi
-
+    
     if [[ $routerEthMode == "WLAN" ]]; then
         setupRouterEthernet $routerEthMode $routerName $wifiSSID $wifiPASS
     fi
