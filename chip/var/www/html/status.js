@@ -25,6 +25,30 @@ function populateForm(microtype) {
 		    /*document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").value;*/
 		    document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").selectedIndex + 1;
 
+		    if (document.getElementById("ssid").value.length > 0) {
+		     	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
+		    } else {
+		        document.getElementById("final_ssid").value = "none"; 
+		    }
+    
+		    if (document.getElementById("password").value.length > 0) {
+		     	document.getElementById("final_password").value = document.getElementById("password").value;
+		    } else {
+		        document.getElementById("final_password").value = "none"; 
+		    }
+    
+		    if (document.getElementById("routerEth") != null) {
+		    	if (document.getElementById("routerEth").checked) {
+			        document.getElementById("final_routerEthernetType").value = "ETH";
+			    } else if (document.getElementById("routerWlan").checked) {
+			        document.getElementById("final_routerEthernetType").value = "WLAN";
+			    } else {
+			        document.getElementById("final_routerEthernetType").value = "unknown";
+			    }
+			} else {
+			    document.getElementById("final_routerEthernetType").value = "none";
+			}
+
 			break;
 
 
@@ -72,33 +96,6 @@ function populateForm(microtype) {
     
 			break;
 
-		case "not_sure_what_to_do_with_these":
-
-		    if (document.getElementById("ssid").value.length > 0) {
-		     	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
-		    } else {
-		        document.getElementById("final_ssid").value = "none"; 
-		    }
-    
-		    if (document.getElementById("password").value.length > 0) {
-		     	document.getElementById("final_password").value = document.getElementById("password").value;
-		    } else {
-		        document.getElementById("final_password").value = "none"; 
-		    }
-    
-		    if (document.getElementById("routerLan") != null) {
-		    	if (document.getElementById("routerLan").checked) {
-			        document.getElementById("final_routerEthernetType").value = "LAN";
-			    } else if (document.getElementById("routerWan").checked) {
-			        document.getElementById("final_routerEthernetType").value = "WAN";
-			    } else {
-			        document.getElementById("final_routerEthernetType").value = "unknown";
-			    }
-			} else {
-			    document.getElementById("final_routerEthernetType").value = "none";
-			}
- 
-		break;
 	}
     
 }

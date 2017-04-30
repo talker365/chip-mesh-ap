@@ -54,11 +54,18 @@ createAP() {
     sudo echo "wpa_pairwise=TKIP CCMP" >> /etc/hostapd.conf
     sudo echo "rsn_pairwise=CCMP" >> /etc/hostapd.conf
     sudo echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
+
+    sudo echo -e "$apSSID" > /var/www/flags/.apSSID
+    sudo echo -e "$apPASS" > /var/www/flags/.apPASS
+    sudo echo -e "$apCH" > /var/www/flags/.apChannel
     
+
     # Add call to vdn-router
-    sudo echo "" >> /usr/sbin/vdn-router
-    sudo echo "# Start the Access Point" >> /usr/sbin/vdn-router
-    sudo echo "/usr/sbin/hostapd /etc/hostapd.conf" >> /usr/sbin/vdn-router
+    if [ ! -f "/var/www/flags/.microrouter" ]; then
+        sudo echo "" >> /usr/sbin/vdn-router
+        sudo echo "# Start the Access Point" >> /usr/sbin/vdn-router
+        sudo echo "/usr/sbin/hostapd /etc/hostapd.conf" >> /usr/sbin/vdn-router
+    fi
     
     # Remove Mesh-Node config files.
     sudo rm /etc/dnsmasq.d/mesh-node.conf
@@ -239,6 +246,94 @@ setupMeshEthernet() {
     fi
 }
 
+setupRouterEthernet() {
+    if [[ $# -lt 1 ]]; then 
+        echo "mmconfig::setupRouterEthernet() No arguments provided"
+        exit 1
+    fi
+
+    defaultWLAN=wlan0
+
+    # --- Setting variables from function call ---
+    routerEthMode=$1    # Ethernet Mode (ETH, WLAN)
+    case $routerEthMode in
+        
+        ETH )
+            # Setup eth connection as the gateway
+            shift;
+            if [[ $# -lt 4 ]]; then 
+                echo "mmconfig::setupRouterEthernet() ETH mode requires more arguments"
+                exit 1
+            fi
+            routerName=$1
+            apSSID=$2
+            apPASS=$3
+            apCH=$4
+
+            newHostName=$routerName
+            echo "Router [$routerName]"
+            echo "Eth Mode [$routerEthMode]"
+            echo "AP [$apSSID]"
+            echo "AP-Pass [$apPASS]"
+            echo "AP-CH [$apCH]"
+            echo ""
+
+            # Remove existing Flags
+            [ -f "/var/www/flags/.wlan" ] && rm /var/www/flags/.wlan
+
+            sudo touch /var/www/flags/.eth
+            echo "SETUP AccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
+            createDHCP $defaultWLAN $defaultLAN
+            createRouter $defaultWLAN $defaultLAN
+            createAP
+        ;;
+
+        WLAN )
+            # Setup wlan connection as the gateway
+            shift;
+            if [[ $# -lt 3 ]]; then 
+                echo "mmconfig::setupRouterEthernet() WLAN mode requires more arguments"
+                exit 1
+            fi
+            routerName=$1
+            wifiSSID=$2
+            wifiPASS=$3
+
+            newHostName=$routerName
+            echo "Router [$routerName]"
+            echo "Wifi [$wifiSSID]"
+            echo "WifiPassword [$wifiPASS]"
+            echo "Eth Mode [$routerEthMode]"
+            echo ""
+
+            # Remove existing Flags
+            [ -f "/var/www/flags/.eth" ] && rm /var/www/flags/.eth
+
+            sudo touch /var/www/flags/.wlan
+            defaultWLAN=wlan0
+            echo "Setting up DHCP and IP Forwarding to $defaultLAN"
+            createDHCP $defaultLAN $defaultWLAN
+            createRouter $defaultLAN $defaultWLAN
+            echo "CONNECT to WiFi Hotspot using $defaultWLAN"
+            connectWifi
+        
+            # Start Service
+            sudo /bin/systemctl daemon-reload
+            sudo /bin/systemctl enable router-systemd
+            sudo /bin/systemctl start router-systemd
+            sudo /bin/systemctl status router-systemd
+        ;;
+
+        * )
+            echo "mmconfig::setupRouterEthernet() Supported modes are ETH or WLAN"
+            exit 1
+        ;;
+    esac
+   
+    # Set installation type flag for status page.
+    sudo touch /var/www/flags/.microrouter
+}
+
 #---[ MAIN ]----------------------------------------------------------------------------------
 
 clear
@@ -347,6 +442,12 @@ if [[ $request == "update" ]]; then
                 echo -e " [updated node to use ethernet as $2] "
                 shift; shift;
             ;;
+
+            routerEthernetType )
+                setupRouterEthernet $2 $3 $4 $5 $6
+                echo -e " [updated node to use $2 as the gateway interface] "
+                exit 0
+            ;;
         esac
     done
     
@@ -360,6 +461,8 @@ fi
 [ -f "/var/www/flags/.admin" ] && rm /var/www/flags/.admin
 [ -f "/var/www/flags/.lan" ] && rm /var/www/flags/.lan
 [ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
+[ -f "/var/www/flags/.eth" ] && rm /var/www/flags/.eth
+[ -f "/var/www/flags/.wlan" ] && rm /var/www/flags/.wlan
 
 # Get all Parameter Values
 callsign=$2
@@ -371,7 +474,7 @@ shift; shift; shift; shift; shift; shift;
 routerName=$1
 wifiSSID=$2
 wifiPASS=$3
-routeEthMode=$4
+routerEthMode=$4
 apSSID=$5
 apPASS=$6
 apCH=$7
@@ -383,42 +486,12 @@ sudo echo -e $adminPASS > /var/www/flags/.admin
 
 # Router Mode
 if [[ $request == "microrouter" ]]; then
-    defaultWLAN=wlan0
-    
-    newHostName=$routerName
-    echo "Router [$routerName]"
-    echo "Wifi [$wifiSSID]"
-    echo "WifiPassword [$wifiPASS]"
-    echo "Eth Mode [$routeEthMode]"
-    echo "AP [$apSSID]"
-    echo "AP-Pass [$apPASS]"
-    echo "AP-CH [$apCH]"
-    echo ""
-    
-    if [[ $routeEthMode == "ETH" ]]; then
-        echo "SETUP AccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
-        createDHCP $defaultWLAN $defaultLAN
-        createRouter $defaultWLAN $defaultLAN
-        createAP
+    if [[ $routerEthMode == "ETH" ]]; then
+        setupRouterEthernet $routerEthMode $routerName $apSSID $apPASS $apCH
     fi
-    
-    if [[ $routeEthMode == "WLAN" ]]; then
-        defaultWLAN=wlan0
-        echo "Setting up DHCP and IP Forwarding to $defaultLAN"
-        createDHCP $defaultLAN $defaultWLAN
-        createRouter $defaultLAN $defaultWLAN
-        echo "CONNECT to WiFi Hotspot using $defaultWLAN"
-        connectWifi
-        
-        # Start Service
-        sudo /bin/systemctl daemon-reload
-        sudo /bin/systemctl enable router-systemd
-        sudo /bin/systemctl start router-systemd
-        sudo /bin/systemctl status router-systemd
+    if [[ $routerEthMode == "WLAN" ]]; then
+        setupRouterEthernet $routerEthMode $routerName $wifiSSID $wifiPASS
     fi
-    
-    # Set installation type flag for status page.
-    sudo touch /var/www/flags/.microrouter
 fi
 
 # Mesh Mode

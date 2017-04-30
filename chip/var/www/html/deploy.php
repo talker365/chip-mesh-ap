@@ -81,16 +81,35 @@
 				        <?php break;
 				    case "admin":
 					    $command = "";
-				    	$old_callsign = trim(shell_exec("cat /var/www/flags/.callsign"));
-				    	$old_meshhostname = trim(shell_exec("hostname"));
-				    	$old_meshpassword = trim(shell_exec("cat /var/www/flags/.admin"));
-				    	$old_nodechannel = trim(shell_exec("cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1"));
-				    	$old_nodessid = trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)"));
-				    	if (file_exists('/var/www/flags/.lan')) { 
-				    		$old_meshEthernetType = "LAN";
-				    	} else {
-				    		$old_meshEthernetType = "WAN";
-				    	}
+
+					    /* --- Setting Old Values - Micro Mesh --- */
+						if (file_exists('/var/www/flags/.micromesh')) {
+					    	$old_callsign = trim(shell_exec("cat /var/www/flags/.callsign"));
+					    	$old_meshhostname = trim(shell_exec("hostname"));
+					    	$old_meshpassword = trim(shell_exec("cat /var/www/flags/.admin"));
+					    	$old_nodechannel = trim(shell_exec("cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1"));
+					    	$old_nodessid = trim(shell_exec("echo $(iwconfig wlan1 | grep ESSID | cut -d '\"' -f2)"));
+					    	if (file_exists('/var/www/flags/.lan')) { 
+					    		$old_meshEthernetType = "LAN";
+					    	} else {
+					    		$old_meshEthernetType = "WAN";
+					    	}
+						}				    
+
+					    /* --- Setting Old Values - Micro Router --- */
+						if (file_exists('/var/www/flags/.microrouter')) {
+							$old_routerhostname = trim(shell_exec("hostname"));
+							$old_ssid = trim(shell_exec("cat /var/www/flags/.wifiSSID"));
+							$old_password = trim(shell_exec("cat /var/www/flags/.wifiPASS"));
+							if (file_exists('/var/www/flags/.eth')) {
+								$old_routerEthernetType = "ETH";
+							} else {
+								$old_routerEthernetType = "WLAN";
+							}
+							$old_accesspointssid = trim(shell_exec("cat /var/www/flags/.apSSID"));
+							$old_accesspointpassword = trim(shell_exec("cat /var/www/flags/.apPASS"));
+							$old_accesspointchannel = trim(shell_exec("cat /var/www/flags/.apChannel"));
+						}
 				    ?>
 			            <div data-role="collapsible" data-theme="e" data-content-theme="c">
 			                <h1>Admin Updates</h1>
@@ -155,72 +174,91 @@
 		                    	<?php
 		                    			break;
 		                    		
-		                    		case "microrouter": ?> 
+		                    		case "microrouter": 
 			                    ?>
+					                    Router Ethernet Type:
+					                    	<?php
+					                    		$command .= "sudo /var/www/html/./mmconfig update routerEthernetType ";
+					                    		echo $_POST["final_routerEthernetType"];
+					                    		if ($old_routerEthernetType != $_POST["final_routerEthernetType"]) {
+					                    			echo " (new) ";
+					                    			$command .= $_POST["final_routerEthernetType"] . " ";
+					                    		} else {
+					                    			$command .= $old_routerEthernetType . " ";
+					                    		}
+				                    		?>
+				                    		<br />
 					                    Hostname:
 					                    	<?php
 					                    		echo $_POST["final_routerhostname"];
-					                    		if ($old_callsign != $_POST["final_routerhostname"]) {
+					                    		if ($old_routerhostname != $_POST["final_routerhostname"]) {
 					                    			echo " (new) ";
-					                    			$command .= "sudo /var/www/html/./mmconfig update apName " . $_POST["final_routerhostname"] . "; ";
+					                    			$command .= $_POST["final_routerhostname"] . "; ";
+					                    		} else {
+					                    			$command .= $old_routerhostname . " ";
 					                    		}
 				                    		?>
 				                    		<br />
-					                    *** SSID ***:
-					                    	<?php
-					                    		echo $_POST["final_ssid"];
-					                    		if ($old_callsign != $_POST["final_ssid"]) {
-					                    			echo " (new) ";
-					                    			$command .= "sudo /var/www/html/./mmconfig update apSSID " . $_POST["final_ssid"] . "; ";
-					                    		}
-				                    		?>
-				                    		<br />
-					                    Password:
-					                    	<?php
-					                    		echo $_POST["final_password"];
-					                    		if ($old_callsign != $_POST["final_password"]) {
-					                    			echo " (new) ";
-					                    			$command .= "sudo /var/www/html/./mmconfig update adminPASS " . $_POST["final_password"] . "; ";
-					                    		}
-				                    		?>
-				                    		<br />
-					                    *** Router Ethernet Type ***:
-					                    	<?php
-					                    		echo $_POST["final_routerEthernetType"];
-					                    		if ($old_callsign != $_POST["final_routerEthernetType"]) {
-					                    			echo " (new) ";
-					                    			$command .= "sudo /var/www/html/./mmconfig update routerEthernetType " . $_POST["final_routerEthernetType"] . "; ";
-					                    		}
-				                    		?>
-				                    		<br />
-					                    *** Access Point SSID ***:
-					                    	<?php
-					                    		echo $_POST["final_accesspointssid"];
-					                    		if ($old_callsign != $_POST["final_accesspointssid"]) {
-					                    			echo " (new) ";
-					                    			$command .= "sudo /var/www/html/./mmconfig update apSSID " . $_POST["final_accesspointssid"] . "; ";
-					                    		}
-				                    		?>
-				                    		<br />
-					                    Access Point Password:
-					                    	<?php
-					                    		echo $_POST["final_accesspointpassword"];
-					                    		if ($old_callsign != $_POST["final_accesspointpassword"]) {
-					                    			echo " (new) ";
-					                    			$command .= "sudo /var/www/html/./mmconfig update apPASS " . $_POST["final_accesspointpassword"] . "; ";
-					                    		}
-				                    		?>
-				                    		<br />
-					                    Access Point Channel:
-					                    	<?php
-					                    		echo $_POST["final_accesspointchannel"];
-					                    		if ($old_callsign != $_POST["final_accesspointchannel"]) {
-					                    			echo " (new) ";
-					                    			$command .= "sudo /var/www/html/./mmconfig update apChannel " . $_POST["final_accesspointchannel"] . "; ";
-					                    		}
-				                    		?>
-				                    		<br />
+				                    	<?php if ($_POST["final_routerEthernetType"] == "ETH") { ?>
+						                    Access Point SSID:
+						                    	<?php
+						                    		echo $_POST["final_accesspointssid"];
+						                    		if ($old_accesspointssid != $_POST["final_accesspointssid"]) {
+						                    			echo " (new) ";
+						                    			$command .= $_POST["final_accesspointssid"] . "; ";
+					                    		} else {
+					                    			$command .= $old_accesspointssid . " ";
+						                    		}
+					                    		?>
+					                    		<br />
+						                    Access Point Password:
+						                    	<?php
+						                    		echo $_POST["final_accesspointpassword"];
+						                    		if ($old_accesspointpassword != $_POST["final_accesspointpassword"]) {
+						                    			echo " (new) ";
+						                    			$command .= $_POST["final_accesspointpassword"] . "; ";
+						                    		} else {
+						                    			$command .= $old_accesspointpassword . " ";
+						                    		}
+					                    		?>
+					                    		<br />
+						                    Access Point Channel:
+						                    	<?php
+						                    		echo $_POST["final_accesspointchannel"];
+						                    		if ($old_accesspointchannel != $_POST["final_accesspointchannel"]) {
+						                    			echo " (new) ";
+						                    			$command .= $_POST["final_accesspointchannel"] . "; ";
+						                    		} else {
+						                    			$command .= $old_accesspointchannel . " ";
+						                    		}
+					                    		?>
+					                    		<br />
+				                    	<?php } ?>
 
+				                    	<?php if ($_POST["final_routerEthernetType"] == "WLAN") { ?>
+						                    WiFi SSID:
+						                    	<?php
+						                    		echo $_POST["final_ssid"];
+						                    		if ($old_ssid != $_POST["final_ssid"]) {
+						                    			echo " (new) ";
+						                    			$command .= POST["final_ssid"] . " ";
+						                    		} else {
+						                    			$command .= $old_ssid . " ";
+						                    		}
+					                    		?>
+					                    		<br />
+						                    WiFi Password:
+						                    	<?php
+						                    		echo $_POST["final_password"];
+						                    		if ($old_password != $_POST["final_password"]) {
+						                    			echo " (new) ";
+						                    			$command .= $_POST["final_password"] . " ";
+						                    		} else {
+						                    			$command .= $old_password . " ";
+						                    		}
+					                    		?>
+					                    		<br />
+				                    	<?php } ?>
 
 								<?php
 										break;

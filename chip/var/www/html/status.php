@@ -354,31 +354,63 @@
 
 
 
-
-
                 <?php
                 break;
             case (file_exists('/var/www/flags/.microrouter')) :
                 ?>
-				<!-- Router Settings -->
-		        <h2> Access Point </h2>
-		    	<fieldset data-role="controlgroup">
-		    		<legend>Choose your router mode:</legend>
-		        	<label for="hotspot">Acts as WiFi Hotspot</label>
-		        	<input type="radio" name="router_mode" id="hotspot" value="hotspot">
-		        	<label for="bridge">Connects to a WiFi Hotspot</label>
-		        	<input type="radio" name="router_mode" id="bridge" value="bridge">
-		    	</fieldset>
-		        <div class="ui-field-contain">
-		            <label for="accesspointssid">SSID:</label>
-		            <input type="text" name="accesspointssid" id="accesspointssid" value="<?php echo shell_exec("cat /etc/hostapd.conf|grep ssid|cut -d'=' -f2"); ?>" placeholder="SSID used by the access point">
-		            <label for="accesspointpassword">Password:</label>
-		            <input type="text" name="accesspointpassword" id="accesspointpassword" value="<?php echo shell_exec("cat /etc/hostapd.conf|grep wpa_passphrase|cut -d'=' -f2"); ?>" placeholder="This is the password used to access the access point">
-		            <label for="accesspointchannel">Select Channel</label>
-    		        <select name="accesspointchannel" id="accesspointchannel">
-    		            <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
-            		</select>
-		        </div>
+
+        <!-- Router Settings -->
+            <h2> Access Point </h2>
+
+                <fieldset data-role="controlgroup">
+                  <legend>Choose routing mode:</legend>
+                  <label for="routerEth">Acts as WiFi Hotspot</label>
+                  <input type="radio" name="routerEthernetType" id="routerEth" value="routerEth" onclick="document.getElementById('div1').style.display='block';document.getElementById('div2').style.display='none';" <?php if (file_exists('/var/www/flags/.eth')) { echo "checked";} ?> >
+                    <label for="routerWlan">Connects to a WiFi Hotspot</label>
+                    <input type="radio" name="routerEthernetType" id="routerWlan" value="routerWlan" onclick="document.getElementById('div2').style.display='block';document.getElementById('div1').style.display='none';" <?php if (file_exists('/var/www/flags/.wlan')) { echo "checked";} ?> >
+                </fieldset>
+                <?php
+                    $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
+                    #echo "<p> DEBUG: mmconfig=$eth0present </p>";
+            
+                    if (trim($eth0present) == "FALSE") {
+                ?>
+                <h2 style="color: red;"> Ethernet Connection Error!</h2>
+                      <p> No wired connection found!  You must have a wired connection for the micro router to function properly. </p>
+                <?php
+                    }
+                ?>
+                <div id="div1" <?php if (file_exists('/var/www/flags/.wlan')) { echo "style=\"display: none;\""; } ?> >
+                  <h2> Access Point </h2>
+                    <div class="ui-field-contain">
+                        <label for="accesspointssid">SSID:</label>
+                        <input type="text" name="accesspointssid" id="accesspointssid" value="<?php echo shell_exec("cat /etc/hostapd.conf|grep ssid|cut -d'=' -f2"); ?>" placeholder="SSID used by the access point">
+                        <label for="accesspointpassword">Password:</label>
+                        <input type="text" name="accesspointpassword" id="accesspointpassword" value="<?php echo shell_exec("cat /etc/hostapd.conf|grep wpa_passphrase|cut -d'=' -f2"); ?>" placeholder="This is the password used to access the access point">
+                        <label for="accesspointchannel">Select Channel</label>
+                        <select name="accesspointchannel" id="accesspointchannel">
+                            <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
+                        </select>
+                    </div>
+
+                </div>
+                <div id="div2" <?php if (file_exists('/var/www/flags/.eth')) { echo "style=\"display: none;\""; } ?> >
+                      <h2> WiFi Connection </h2>
+                  <span id=spanWiFiConnection>
+                        <?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");  ?>  
+                  </span>
+                  <a class="ui-btn" onclick="refreshWiFiConnection();" data-inline="true">Refresh</a>
+                      <!--<br /><br />-->
+                      <div class="ui-field-contain">
+                          <label for="ssid">SSID:</label>
+                          <input type="text" name="ssid" id="ssid" placeholder="Select SSID above or type your own..." data-clear-btn="true" value="<?php echo shell_exec("cat /var/www/flags/.wifiSSID") ?>">
+                          <label for="password">Password:</label>
+                          <input type="password" name="password" id="password" placeholder="Enter WiFi Password..." data-clear-btn="true" value="<?php echo shell_exec("cat /var/www/flags/.wifiPASS") ?>">
+                      </div>
+                </div>
+
+
+
 
                 <?php
                 break;
