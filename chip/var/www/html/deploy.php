@@ -193,7 +193,7 @@
 					                    		echo $_POST["final_routerhostname"];
 					                    		if ($old_routerhostname != $_POST["final_routerhostname"]) {
 					                    			echo " (new) ";
-					                    			$command .= $_POST["final_routerhostname"] . "; ";
+					                    			$command .= $_POST["final_routerhostname"] . " ";
 					                    		} else {
 					                    			$command .= $old_routerhostname . " ";
 					                    		}
@@ -205,7 +205,7 @@
 						                    		echo $_POST["final_accesspointssid"];
 						                    		if ($old_accesspointssid != $_POST["final_accesspointssid"]) {
 						                    			echo " (new) ";
-						                    			$command .= $_POST["final_accesspointssid"] . "; ";
+						                    			$command .= $_POST["final_accesspointssid"] . " ";
 					                    		} else {
 					                    			$command .= $old_accesspointssid . " ";
 						                    		}
@@ -216,7 +216,7 @@
 						                    		echo $_POST["final_accesspointpassword"];
 						                    		if ($old_accesspointpassword != $_POST["final_accesspointpassword"]) {
 						                    			echo " (new) ";
-						                    			$command .= $_POST["final_accesspointpassword"] . "; ";
+						                    			$command .= $_POST["final_accesspointpassword"] . " ";
 						                    		} else {
 						                    			$command .= $old_accesspointpassword . " ";
 						                    		}
@@ -227,7 +227,7 @@
 						                    		echo $_POST["final_accesspointchannel"];
 						                    		if ($old_accesspointchannel != $_POST["final_accesspointchannel"]) {
 						                    			echo " (new) ";
-						                    			$command .= $_POST["final_accesspointchannel"] . "; ";
+						                    			$command .= $_POST["final_accesspointchannel"] . " ";
 						                    		} else {
 						                    			$command .= $old_accesspointchannel . " ";
 						                    		}
