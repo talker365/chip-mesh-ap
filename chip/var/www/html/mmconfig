@@ -114,7 +114,7 @@ createDHCP() {
     sudo echo -e "\ndhcp-range=172.20.0.100,172.20.0.250,1h" >> /etc/dnsmasq.d/access-point.conf
     
     echo "restarting dnsmasq"
-    sudo in/etc/init.d/dnsmasq restart
+    sudo /etc/init.d/dnsmasq restart
 }
 
 
