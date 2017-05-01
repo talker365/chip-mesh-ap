@@ -276,6 +276,7 @@ setupRouterEthernet() {
             sudo echo $newHostName > /etc/hostname
             sudo hostname $newHostName
             /etc/rc.local
+            sudo /etc/init.d/avahi-daemon restart
             echo -e " [updated node name to $newHostName] "
             
             echo "Router [$routerName]"
@@ -312,6 +313,7 @@ setupRouterEthernet() {
             sudo echo $newHostName > /etc/hostname
             sudo hostname $newHostName
             /etc/rc.local
+            sudo /etc/init.d/avahi-daemon restart
             echo -e " [updated node name to $newHostName] "
             
             echo "Router [$routerName]"
