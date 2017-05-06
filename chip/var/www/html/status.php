@@ -491,12 +491,6 @@
 
 
 
-    <a href="#resetPopup" data-rel="popup" data-transition="slideup" data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Reset this device!</a>
-    <div data-role="popup" id="resetPopup" class="ui-content">
-        <p>Are you sure you wish to reset this device?</p>
-        <li><a href="/setup.php" data-ajax="false" data-transition="slide">Reset this device!</a></li>
-    </div>
-
     <a href="#submitChangesPopup" data-rel="popup" data-transition="slideup" 
      <?php
         switch (1) {
@@ -512,7 +506,18 @@
                 break;
         }
     ?>
-    data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Review Changes</a>
+    data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Save Changes</a>
+
+    <a href="#resetPopup" data-rel="popup" data-transition="slideup" data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Reset Device</a>
+
+    <a data-transition="slideup" data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Reboot</a>
+
+
+    <div data-role="popup" id="resetPopup" class="ui-content">
+        <p>Are you sure you wish to reset this device?</p>
+        <li><a href="/setup.php" data-ajax="false" data-transition="slide">Reset Device!</a></li>
+    </div>
+
     <div data-role="popup" id="submitChangesPopup" class="ui-content">
         <p>Here are the new values you are updating: </p>
 
