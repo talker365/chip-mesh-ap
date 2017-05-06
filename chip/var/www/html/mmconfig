@@ -71,6 +71,7 @@ createAP() {
     sudo rm /etc/dnsmasq.d/mesh-node.conf
     
     # Restart Services
+    sudo /bin/systemctl stop hostapd-systemd
     sudo /usr/sbin/update-rc.d hostapd disable
     sudo /bin/systemctl daemon-reload
     sudo /bin/systemctl enable hostapd-systemd
@@ -176,7 +177,7 @@ createRouter() {
     sudo echo "#!/bin/bash" > /usr/sbin/vdn-router
     sudo echo "" >> /usr/sbin/vdn-router
     sudo echo "# Make sure interface $routerSource is up" >> /usr/sbin/vdn-router
-    sudo echo "ifdown $routerSoure" >> /usr/sbin/vdn-router
+    sudo echo "ifdown $routerSource" >> /usr/sbin/vdn-router
     sudo echo "ifup $routerSource" >> /usr/sbin/vdn-router
     sudo echo "" >> /usr/sbin/vdn-router
     sudo echo "# Enable DNS forwarding" >> /usr/sbin/vdn-router
