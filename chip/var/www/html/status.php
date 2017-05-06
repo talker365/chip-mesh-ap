@@ -469,7 +469,7 @@
                 <div id="div2" <?php if (file_exists('/var/www/flags/.eth')) { echo "style=\"display: none;\""; } ?> >
                       <h2> WiFi Connection </h2>
                   <span id=spanWiFiConnection>
-                        <?php echo shell_exec("/var/www/html/./wifiscan AP HTML 2>&1");  ?>  
+                        <?php echo shell_exec("sudo /var/www/html/./wifiscan AP HTML 2>&1");  ?>  
                   </span>
                   <a class="ui-btn" onclick="refreshWiFiConnection();" data-inline="true">Refresh</a>
                       <!--<br /><br />-->
@@ -514,7 +514,7 @@
     ?>
     data-inline="true" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Review Changes</a>
     <div data-role="popup" id="submitChangesPopup" class="ui-content">
-        <p>Here are the new values you are updating: blah blah blah blah blah blah blah blah blah blah</p>
+        <p>Here are the new values you are updating: </p>
 
 	    <form method="post" action="deploy.php">
     			<div style="display:none;">
@@ -572,29 +572,33 @@
                   <label for="final_routerhostname">Router Name:</label>
                   <input type="text" readonly="readonly" required name="final_routerhostname" id="final_routerhostname" placeholder="Router hostname">
               </div>
-              <div id="f_wifissid" class="ui-field-contain" data-type="horizontal">
-                  <label for="final_ssid">WiFi SSID:</label>
-                  <input type="text" readonly="readonly" required name="final_ssid" id="final_ssid" placeholder="">
-              </div>
-              <div id="f_wifipassword" class="ui-field-contain" data-type="horizontal">
-                  <label for="final_password">WiFi Password:</label>
-                  <input type="text" readonly="readonly" required name="final_password" id="final_password" placeholder="">
-              </div>
               <div id="f_routerethernet" class="ui-field-contain" data-type="horizontal">
-                  <label for="final_routerEthernetType">Ethernet:</label>
+                  <label for="final_routerEthernetType">Gateway Device:</label>
                   <input type="text" readonly="readonly" required name="final_routerEthernetType" id="final_routerEthernetType" placeholder="">
               </div>
-              <div id="f_apssid" class="ui-field-contain" data-type="horizontal">
-                  <label for="final_accesspointssid">AccessPoint SSID:</label>
-                  <input type="text" readonly="readonly" required name="final_accesspointssid" id="final_accesspointssid" placeholder="">
+              <div <?php if (file_exists('/var/www/flags/.eth')) {echo " style=\"display:none;\" ";} ?> >
+                <div id="f_wifissid" class="ui-field-contain" data-type="horizontal">
+                    <label for="final_ssid">WiFi SSID:</label>
+                    <input type="text" readonly="readonly" required name="final_ssid" id="final_ssid" placeholder="">
+                </div>
+                <div id="f_wifipassword" class="ui-field-contain" data-type="horizontal">
+                    <label for="final_password">WiFi Password:</label>
+                    <input type="text" readonly="readonly" required name="final_password" id="final_password" placeholder="">
+                </div>
               </div>
-              <div id="f_appassword" class="ui-field-contain" data-type="horizontal">
-                  <label for="final_accesspointpassword">AccessPoint Password:</label>
-                  <input type="text" readonly="readonly" required name="final_accesspointpassword" id="final_accesspointpassword" placeholder="">
-              </div>
-              <div id="f_apchannel" class="ui-field-contain" data-type="horizontal">
-                  <label for="final_accesspointchannel">AccessPoint Channel:</label>
-                  <input type="text" readonly="readonly" required name="final_accesspointchannel" id="final_accesspointchannel" placeholder="">
+              <div <?php if (file_exists('/var/www/flags/.wlan')) {echo " style=\"display:none;\" ";} ?> >
+                <div id="f_apssid" class="ui-field-contain" data-type="horizontal">
+                    <label for="final_accesspointssid">AccessPoint SSID:</label>
+                    <input type="text" readonly="readonly" required name="final_accesspointssid" id="final_accesspointssid" placeholder="">
+                </div>
+                <div id="f_appassword" class="ui-field-contain" data-type="horizontal">
+                    <label for="final_accesspointpassword">AccessPoint Password:</label>
+                    <input type="text" readonly="readonly" required name="final_accesspointpassword" id="final_accesspointpassword" placeholder="">
+                </div>
+                <div id="f_apchannel" class="ui-field-contain" data-type="horizontal">
+                    <label for="final_accesspointchannel">AccessPoint Channel:</label>
+                    <input type="text" readonly="readonly" required name="final_accesspointchannel" id="final_accesspointchannel" placeholder="">
+                </div>
               </div>
             </div>
           </div>

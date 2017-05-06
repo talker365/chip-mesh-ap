@@ -19,7 +19,22 @@
 			<a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left ui-btn-active">Home</a>
 			<a href="#page_home_info" class="ui-disabled ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
 			<!--<a href="#page_home_info" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>-->
-			<h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
+		    <h1>
+		      <?php
+		        echo shell_exec("hostname");
+		        switch (1) {
+		          case (file_exists('/var/www/flags/.micromesh')):
+		            ?> - Micro Mesh <?php
+		            break;
+		          case (file_exists('/var/www/flags/.microrouter')):
+		            ?> - Micro Router <?php
+		            break;
+		          default:
+		            #echo 'no default tab set, please pick a tab (temp message)';
+		            echo 'unknown setup detected';
+		        }
+		      ?>
+		    </h1>
 		</div>
 		<div data-role="main" class="ui-content">
 			<?php
