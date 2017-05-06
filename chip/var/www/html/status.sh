@@ -8,8 +8,14 @@ host=$(hostname | awk '{print toupper($0)}')
 ssid="unknown"
 ch="unknown"
 if [ -f "/var/www/flags/.microrouter" ]; then
-	ssid=$(cat /var/www/flags/.apSSID)
-	ch=$(cat /var/www/flags/.apChannel)
+	if [ -f "/var/www/flags/.eth" ]; then
+		ssid=$(cat /var/www/flags/.apSSID)
+		ch=$(cat /var/www/flags/.apChannel)
+	fi
+	if [ -f "/var/www/flags/.wlan" ]; then
+		ssid=$(cat /var/www/flags/.wifiSSID)
+		ch="n/a"
+	fi
 fi
 if [ -f "/var/www/flags/.micromesh" ]; then
 	ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
