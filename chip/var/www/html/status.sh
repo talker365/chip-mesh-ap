@@ -5,8 +5,16 @@ echo $(ifconfig $1 | grep -o -E '([[:xdigit:]]{1,2}:){5}[[:xdigit:]]{1,2}')
 }
 
 host=$(hostname | awk '{print toupper($0)}')
-ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
-ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
+ssid="unknown"
+ch="unknown"
+if [ -f "/var/www/flags/.microrouter" ]; then
+	ssid=$(cat /var/www/flags/.apSSID)
+	ch=$(cat /var/www/flags/.apChannel)
+fi
+if [ -f "/var/www/flags/.micromesh" ]; then
+	ssid=$(iwconfig wlan1 | grep ESSID | cut -d '"' -f2)
+	ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
+fi
 pwr=$(iwconfig wlan1 | grep Tx-Power | cut -d '=' -f2)
 flash=$(df -h | grep rootfs | awk {'print $4'})
 #memfree=$(cat /proc/meminfo | awk '/MemFree:/ {print $2,$3}')
@@ -33,6 +41,14 @@ echo -e "         <table>"
 echo -e "           <tr><td>SSID:</td><td>$ssid</td></tr>"
 echo -e "    	    <tr><td>Channel:</td><td>$ch</td></tr>"
 echo -e "    	    <tr><td>Power:</td><td>$pwr</td></tr>"
+if [ -f "/var/www/flags/.microrouter" ]; then
+	[ -f "/var/www/flags/.eth" ] && echo -e "<tr><td>Gateway:</td><td>ETH</td></tr>"
+	[ -f "/var/www/flags/.wlan" ] && echo -e "<tr><td>Gateway:</td><td>WLAN</td></tr>"
+fi
+if [ -f "/var/www/flags/.micromesh" ]; then
+	[ -f "/var/www/flags/.lan" ] && echo -e "<tr><td>Ethernet:</td><td>LAN</td></tr>"
+	[ -f "/var/www/flags/.wan" ] && echo -e "<tr><td>Ethernet:</td><td>WAN</td></tr>"
+fi
 echo -e "         </table>"
 echo -e "      </td>"
 echo -e "      <td>"

@@ -3,7 +3,13 @@
 
 if [[ $# -eq 0 ]]; then echo -e "Available Parameters are AP or MESH\n\n"; exit 1; fi
 
-ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
+ch="unknown"
+if [ -f "/var/www/flags/.microrouter" ]; then
+	ch=$(cat /var/www/flags/.apChannel)
+fi
+if [ -f "/var/www/flags/.micromesh" ]; then
+	ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
+fi
 
 if [[ $1 == "AP" ]]; then mode="Infra"; fi
 if [[ $1 == "MESH" ]]; then mode="Ad-Hoc"; fi

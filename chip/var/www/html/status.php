@@ -24,7 +24,22 @@
   <div data-role="header">
     <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
 	<a href="#page_status_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
+    <h1>
+      <?php
+        echo shell_exec("hostname");
+        switch (1) {
+          case (file_exists('/var/www/flags/.micromesh')):
+            ?> - Micro Mesh <?php
+            break;
+          case (file_exists('/var/www/flags/.microrouter')):
+            ?> - Micro Router <?php
+            break;
+          default:
+            #echo 'no default tab set, please pick a tab (temp message)';
+            echo 'unknown setup detected';
+        }
+      ?>
+    </h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" class="ui-btn-active">Status</a></li>
@@ -65,10 +80,17 @@
 		    		<?php
 		        	  switch (1) {
 		      	        case (file_exists('/var/www/flags/.micromesh')):
-        		          ?><h4>Operating Mode: Mesh Node</h4><?php
+        		          ?><h4> Mesh Node </h4><?php
 		                  break;
 		                case (file_exists('/var/www/flags/.microrouter')):
-		                  ?><h2> Micro Router Status </h2><?php
+                      switch (1) {
+                        case (file_exists('/var/www/flags/.eth')):
+                          ?><h2> Micro Router (Access Point) </h2><?php
+                          break;
+                        case (file_exists('/var/www/flags/.wlan')):
+                          ?><h2> Micro Router (WiFi Bridge) </h2><?php
+                          break;
+                      }
 		                  break;
 		                default:
 		                  #echo 'no default tab set, please pick a tab (temp message)';
@@ -147,7 +169,22 @@
   <div data-role="header">
     <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_nodes_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
+    <h1>
+      <?php
+        echo shell_exec("hostname");
+        switch (1) {
+          case (file_exists('/var/www/flags/.micromesh')):
+            ?> - Micro Mesh <?php
+            break;
+          case (file_exists('/var/www/flags/.microrouter')):
+            ?> - Micro Router <?php
+            break;
+          default:
+            #echo 'no default tab set, please pick a tab (temp message)';
+            echo 'unknown setup detected';
+        }
+      ?>
+    </h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" data-transition="reverse">Status</a></li>
@@ -217,7 +254,22 @@
   <div data-role="header">
     <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_clients_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
+    <h1>
+      <?php
+        echo shell_exec("hostname");
+        switch (1) {
+          case (file_exists('/var/www/flags/.micromesh')):
+            ?> - Micro Mesh <?php
+            break;
+          case (file_exists('/var/www/flags/.microrouter')):
+            ?> - Micro Router <?php
+            break;
+          default:
+            #echo 'no default tab set, please pick a tab (temp message)';
+            echo 'unknown setup detected';
+        }
+      ?>
+    </h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" data-transition="reverse">Status</a></li>
@@ -249,7 +301,22 @@
   <div data-role="header">
     <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
     <a href="#page_admin_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
-    <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
+    <h1>
+      <?php
+        echo shell_exec("hostname");
+        switch (1) {
+          case (file_exists('/var/www/flags/.micromesh')):
+            ?> - Micro Mesh <?php
+            break;
+          case (file_exists('/var/www/flags/.microrouter')):
+            ?> - Micro Router <?php
+            break;
+          default:
+            #echo 'no default tab set, please pick a tab (temp message)';
+            echo 'unknown setup detected';
+        }
+      ?>
+    </h1>
     <div data-role="navbar">
       <ul>
         <li><a href="#page_status" data-transition="reverse">Status</a></li>
@@ -394,7 +461,7 @@
                         <input type="text" name="accesspointpassword" id="accesspointpassword" value="<?php echo shell_exec("cat /etc/hostapd.conf|grep wpa_passphrase|cut -d'=' -f2"); ?>" placeholder="This is the password used to access the access point">
                         <label for="accesspointchannel">Select Channel</label>
                         <select name="accesspointchannel" id="accesspointchannel">
-                            <?php echo shell_exec("/var/www/html/./wifiscan CH 2>&1"); ?>
+                            <?php echo shell_exec("sudo /var/www/html/./wifiscan CH 2>&1"); ?>
                         </select>
                     </div>
 
