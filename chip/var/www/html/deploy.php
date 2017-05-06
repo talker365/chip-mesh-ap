@@ -241,7 +241,7 @@
 						                    		echo $_POST["final_ssid"];
 						                    		if ($old_ssid != $_POST["final_ssid"]) {
 						                    			echo " (new) ";
-						                    			$command .= POST["final_ssid"] . " ";
+						                    			$command .= $_POST["final_ssid"] . " ";
 						                    		} else {
 						                    			$command .= $old_ssid . " ";
 						                    		}

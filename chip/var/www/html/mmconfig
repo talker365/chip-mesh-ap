@@ -61,11 +61,11 @@ createAP() {
     
     
     # Add call to vdn-router
-    if [ ! -f "/var/www/flags/.microrouter" ]; then
+    #if [ ! -f "/var/www/flags/.microrouter" ]; then
         sudo echo "" >> /usr/sbin/vdn-router
         sudo echo "# Start the Access Point" >> /usr/sbin/vdn-router
         sudo echo "/usr/sbin/hostapd /etc/hostapd.conf" >> /usr/sbin/vdn-router
-    fi
+    #fi
     
     # Remove Mesh-Node config files.
     sudo rm /etc/dnsmasq.d/mesh-node.conf
@@ -275,7 +275,7 @@ setupRouterEthernet() {
             createHosts
             sudo echo $newHostName > /etc/hostname
             sudo hostname $newHostName
-            /etc/rc.local
+            #/etc/rc.local
             sudo /etc/init.d/avahi-daemon restart
             echo -e " [updated node name to $newHostName] "
             
@@ -288,6 +288,8 @@ setupRouterEthernet() {
             
             # Remove existing Flags
             [ -f "/var/www/flags/.wlan" ] && rm /var/www/flags/.wlan
+            [ -f "/var/www/flags/.wifiSSID" ] && rm /var/www/flags/.wifiSSID
+            [ -f "/var/www/flags/.wifiPASS" ] && rm /var/www/flags/.wifiPASS
             
             sudo touch /var/www/flags/.eth
             echo "SETUP AccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
@@ -312,7 +314,7 @@ setupRouterEthernet() {
             createHosts
             sudo echo $newHostName > /etc/hostname
             sudo hostname $newHostName
-            /etc/rc.local
+            #/etc/rc.local
             sudo /etc/init.d/avahi-daemon restart
             echo -e " [updated node name to $newHostName] "
             

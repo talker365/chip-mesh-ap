@@ -43,6 +43,7 @@
 					break;
 		    }   
 		?>
+        <li><a href="#page_projects" data-transition="slide">Projects</a></li>
         <li><a href="#page_admin" data-transition="slide">Admin</a></li>
       </ul>
     </div>
@@ -152,6 +153,7 @@
         <li><a href="#page_status" data-transition="reverse">Status</a></li>
         <li><a href="#page_nodes" class="ui-btn-active">Nodes</a></li>
         <li><a href="#page_olsr" data-transition="slide">OLSR</a></li>
+        <li><a href="#page_projects" data-transition="slide">Projects</a></li>
         <li><a href="#page_admin" data-transition="slide">Admin</a></li>
       </ul>
     </div>
@@ -187,6 +189,7 @@
         <li><a href="#page_status" data-transition="reverse">Status</a></li>
         <li><a href="#page_nodes" data-transition="reverse">Nodes</a></li>
         <li><a href="#page_olsr" class="ui-btn-active">OLSR</a></li>
+        <li><a href="#page_projects" data-transition="slide">Projects</a></li>
         <li><a href="#page_admin" data-transition="slide">Admin</a></li>
       </ul>
     </div>
@@ -219,6 +222,7 @@
       <ul>
         <li><a href="#page_status" data-transition="reverse">Status</a></li>
         <li><a href="#page_clients" class="ui-btn-active">Clients</a></li>
+        <li><a href="#page_projects" data-transition="slide">Projects</a></li>
         <li><a href="#page_admin" data-transition="slide">Admin</a></li>
       </ul>
     </div>
@@ -264,6 +268,7 @@
                     break;
             }   
         ?>  
+        <li><a href="#page_projects" data-transition="slide">Projects</a></li>
         <li><a href="#page_admin" class="ui-btn-active">Admin</a></li>
       </ul>
     </div>
