@@ -105,7 +105,7 @@ createDHCP() {
     sudo echo -e "" >> /etc/network/interfaces
     sudo echo "auto $interfaceDHCP" >> /etc/network/interfaces
     sudo echo "iface $interfaceDHCP inet static" >> /etc/network/interfaces
-    sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
+    sudo echo "    address $nodeIP" >> /etc/network/interfaces
     sudo echo "    netmask 255.255.255.0" >> /etc/network/interfaces
     
     # Restart the hosting interface:
@@ -113,6 +113,12 @@ createDHCP() {
     sudo ifdown $interfaceDHCP
     echo "spinning up $interfaceDHCP"
     sudo ifup $interfaceDHCP
+
+    echo "spinning down $interfaceGateway"
+    sudo ifdown $interfaceGateway
+    echo "spinning up $interfaceGateway"
+    sudo ifup $interfaceGateway
+
     
     # Create Dnsmasq & Restart the DHCP server
     echo "Writing to /etc/dnsmasq.d/access-point.conf"
@@ -130,6 +136,8 @@ createDHCP() {
 
 createHosts()
 {
+    newHostName=$1
+    nodeIP=$2
     
     # Update host file and hostname
     sudo echo "Updating hosts file with hostname:$newHostName"
@@ -207,7 +215,7 @@ connectWifi() {
     echo -e "$wifiPASS" > /var/www/flags/.wifiPASS
 
     # Start Service
-    sudo /bin/systemctl stop hostapd-systemdud
+    sudo /bin/systemctl stop hostapd-systemd
     sudo /bin/systemctl stop router-systemd
     sudo /usr/sbin/update-rc.d hostapd disable   
 
@@ -292,14 +300,12 @@ setupRouterEthernet() {
             apPASS=$3
             apCH=$4
             
-            newHostName=$routerName
-            nodeIP="127.20.0.1"
-            createHosts
-            sudo echo $newHostName > /etc/hostname
-            sudo hostname $newHostName
+            createHosts $routerName "127.20.0.1"
+            sudo echo $routerName > /etc/hostname
+            sudo hostname $routerName
             #/etc/rc.local
             sudo /etc/init.d/avahi-daemon restart
-            echo -e " [updated node name to $newHostName] "
+            echo -e " [updated node name to $routerName] "
             
             echo "Router [$routerName]"
             echo "Eth Mode [$routerEthMode]"
@@ -331,14 +337,12 @@ setupRouterEthernet() {
             wifiSSID=$2
             wifiPASS=$3
             
-            newHostName=$routerName
-            nodeIP="127.20.0.1"
-            createHosts
-            sudo echo $newHostName > /etc/hostname
-            sudo hostname $newHostName
+            createHosts $routerName "127.20.0.1"
+            sudo echo $routerName > /etc/hostname
+            sudo hostname $routerName
             #/etc/rc.local
             sudo /etc/init.d/avahi-daemon restart
-            echo -e " [updated node name to $newHostName] "
+            echo -e " [updated node name to $routerName] "
             
             echo "Router [$routerName]"
             echo "Wifi [$wifiSSID]"
@@ -372,9 +376,50 @@ setupRouterEthernet() {
     # Set installation type flag for status page.
     sudo touch /var/www/flags/.microrouter
 
+}
+
+
+
+sanitize() {
+
+    # Remove existing Flags
+    [ -f "/var/www/flags/.installed" ] && rm /var/www/flags/.installed
+    [ -f "/var/www/flags/.micromesh" ] && rm /var/www/flags/.micromesh
+    [ -f "/var/www/flags/.microrouter" ] && rm /var/www/flags/.microrouter
+    [ -f "/var/www/flags/.admin" ] && rm /var/www/flags/.admin
+    [ -f "/var/www/flags/.lan" ] && rm /var/www/flags/.lan
+    [ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
+    [ -f "/var/www/flags/.eth" ] && rm /var/www/flags/.eth
+    [ -f "/var/www/flags/.wlan" ] && rm /var/www/flags/.wlan
+
+
+    createHosts "chip" "127.20.0.1"
+
+    sudo echo chip > /etc/hostname
+    sudo hostname chip
+    #/etc/rc.local
+    sudo /etc/init.d/avahi-daemon restart
+
+    rm /etc/network/interfaces
+    sudo /etc/init.d/networking restart
+
+
+    [ -f "/etc/dnsmasq.d/access-point.conf" ] && rm /etc/dnsmasq.d/access-point.conf
+    [ -f "/etc/dnsmasq.d/mesh-node.conf" ] && rm /etc/dnsmasq.d/mesh-node.conf
+
+    sudo /bin/systemctl stop router-systemd
+    sudo /bin/systemctl disable router-systemd
+    sudo /bin/systemctl stop hostapd-systemd
+    sudo /bin/systemctl disable hostapd-systemd
+
+
+    sudo /etc/init.d/dnsmasq restart
 
 
 }
+
+
+
 
 #---[ MAIN ]----------------------------------------------------------------------------------
 
@@ -470,7 +515,7 @@ if [[ $request == "update" ]]; then
                 #Change mesh node Name
                 newHostName=$2
                 getIP $defaultWLAN
-                createHosts
+                createHosts $newHostName $nodeIP
                 sudo echo $2 > /etc/hostname
                 sudo hostname $2
                 sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$2\"/" /etc/olsrd/olsrd.conf
@@ -582,9 +627,10 @@ sudo touch /var/www/flags/.installed
 echo "setting timezone"
 sudo timedatectl set-timezone EST
 
-# Change Hostname, no longer chip
-echo "running createHosts()"
-createHosts
+#### Change Hostname, no longer chip
+###echo "running createHosts()"
+###createHosts
 
-echo "setting hostname to $newHostName"
-echo $newHostName > /etc/hostname
+###echo "setting hostname to $newHostName"
+###echo $newHostName > /etc/hostname
+
