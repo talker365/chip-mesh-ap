@@ -581,7 +581,7 @@
                   <label for="final_routerEthernetType">Gateway Device:</label>
                   <input type="text" readonly="readonly" required name="final_routerEthernetType" id="final_routerEthernetType" placeholder="">
               </div>
-              <div <?php if (file_exists('/var/www/flags/.eth')) {echo " style=\"display:none;\" ";} ?> >
+              <div id="div2" <?php if (file_exists('/var/www/flags/.eth')) {echo " style=\"display:none;\" ";} ?> >
                 <div id="f_wifissid" class="ui-field-contain" data-type="horizontal">
                     <label for="final_ssid">WiFi SSID:</label>
                     <input type="text" readonly="readonly" required name="final_ssid" id="final_ssid" placeholder="">
@@ -591,7 +591,7 @@
                     <input type="text" readonly="readonly" required name="final_password" id="final_password" placeholder="">
                 </div>
               </div>
-              <div <?php if (file_exists('/var/www/flags/.wlan')) {echo " style=\"display:none;\" ";} ?> >
+              <div id="div1" <?php if (file_exists('/var/www/flags/.wlan')) {echo " style=\"display:none;\" ";} ?> >
                 <div id="f_apssid" class="ui-field-contain" data-type="horizontal">
                     <label for="final_accesspointssid">AccessPoint SSID:</label>
                     <input type="text" readonly="readonly" required name="final_accesspointssid" id="final_accesspointssid" placeholder="">

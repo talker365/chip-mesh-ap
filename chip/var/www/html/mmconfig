@@ -41,6 +41,9 @@ createADHOC() {
 
 
 createAP() {
+    # Disconnect from Wifi
+    echo "disconnecting any existing connections on $defaultWLAN"
+    sudo nmcli dev disconnect $defaultWLAN 2>&1
     
     # Configure the WiFi access point on wlan1
     sudo echo "interface=$defaultWLAN" > /etc/hostapd.conf
@@ -71,8 +74,10 @@ createAP() {
     sudo rm /etc/dnsmasq.d/mesh-node.conf
     
     # Restart Services
+    sudo /bin/systemctl stop router-systemd
     sudo /bin/systemctl stop hostapd-systemd
     sudo /usr/sbin/update-rc.d hostapd disable
+
     sudo /bin/systemctl daemon-reload
     sudo /bin/systemctl enable hostapd-systemd
     sudo /bin/systemctl start hostapd-systemd
@@ -94,6 +99,10 @@ createDHCP() {
     sudo echo "# automatically re-created during install & updates" >> /etc/network/interfaces
     sudo echo "auto lo" >> /etc/network/interfaces
     sudo echo -e "iface lo inet loopback\n" >> /etc/network/interfaces
+    sudo echo -e "" >> /etc/network/interfaces
+    sudo echo "auto $interfaceGateway" >> /etc/network/interfaces
+    sudo echo "iface $interfaceGateway inet dhcp" >> /etc/network/interfaces
+    sudo echo -e "" >> /etc/network/interfaces
     sudo echo "auto $interfaceDHCP" >> /etc/network/interfaces
     sudo echo "iface $interfaceDHCP inet static" >> /etc/network/interfaces
     sudo echo "    address 172.20.0.1" >> /etc/network/interfaces
@@ -196,6 +205,18 @@ connectWifi() {
     sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname $defaultWLAN 2>&1
     echo -e "$wifiSSID" > /var/www/flags/.wifiSSID
     echo -e "$wifiPASS" > /var/www/flags/.wifiPASS
+
+    # Start Service
+    sudo /bin/systemctl stop hostapd-systemdud
+    sudo /bin/systemctl stop router-systemd
+    sudo /usr/sbin/update-rc.d hostapd disable   
+
+    sudo /bin/systemctl daemon-reload
+    sudo /bin/systemctl enable router-systemd
+    sudo /bin/systemctl start router-systemd
+    sudo /bin/systemctl status router-systemd
+    sudo /etc/init.d/networking restart
+
 }
 
 
@@ -327,6 +348,9 @@ setupRouterEthernet() {
             
             # Remove existing Flags
             [ -f "/var/www/flags/.eth" ] && rm /var/www/flags/.eth
+            [ -f "/var/www/flags/.apPASS" ] && rm /var/www/flags/.apPASS
+            [ -f "/var/www/flags/.apSSID" ] && rm /var/www/flags/.apSSID
+            [ -f "/var/www/flags/.apChannel" ] && rm /var/www/flags/.apChannel
             
             sudo touch /var/www/flags/.wlan
             defaultWLAN=wlan0
@@ -336,21 +360,20 @@ setupRouterEthernet() {
             echo "CONNECT to WiFi Hotspot using $defaultWLAN"
             connectWifi
             
-            # Start Service
-            sudo /bin/systemctl daemon-reload
-            sudo /bin/systemctl enable router-systemd
-            sudo /bin/systemctl start router-systemd
-            sudo /bin/systemctl status router-systemd
         ;;
         
         * )
             echo "mmconfig::setupRouterEthernet() Supported modes are ETH or WLAN"
             exit 1
         ;;
+
     esac
     
     # Set installation type flag for status page.
     sudo touch /var/www/flags/.microrouter
+
+
+
 }
 
 #---[ MAIN ]----------------------------------------------------------------------------------
@@ -539,7 +562,7 @@ if [[ $request == "micromesh" ]]; then
     
     
     # Remove Access-Point config files.
-    [ -f "/etc/dnsmasq/d/access_point.conf" ] && rm /etc/dnsmasq.d/access_point.conf
+    [ -f "/etc/dnsmasq.d/access_point.conf" ] && rm /etc/dnsmasq.d/access_point.conf
     
     # Start Services
     echo "restarting dnsmasq"
