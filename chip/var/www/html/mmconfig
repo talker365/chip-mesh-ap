@@ -391,8 +391,12 @@ sanitize() {
     [ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
     [ -f "/var/www/flags/.eth" ] && rm /var/www/flags/.eth
     [ -f "/var/www/flags/.wlan" ] && rm /var/www/flags/.wlan
-
-
+    [ -f "/var/www/flags/.apPASS" ] && rm /var/www/flags/.apPASS
+    [ -f "/var/www/flags/.apSSID" ] && rm /var/www/flags/.apSSID
+    [ -f "/var/www/flags/.apChannel" ] && rm /var/www/flags/.apChannel
+    [ -f "/var/www/flags/.wifiSSID" ] && rm /var/www/flags/.wifiSSID
+    [ -f "/var/www/flags/.wifiPASS" ] && rm /var/www/flags/.wifiPASS
+            
     createHosts "chip" "127.20.0.1"
 
     sudo echo chip > /etc/hostname
@@ -403,7 +407,6 @@ sanitize() {
     rm /etc/network/interfaces
     sudo /etc/init.d/networking restart
 
-
     [ -f "/etc/dnsmasq.d/access-point.conf" ] && rm /etc/dnsmasq.d/access-point.conf
     [ -f "/etc/dnsmasq.d/mesh-node.conf" ] && rm /etc/dnsmasq.d/mesh-node.conf
 
@@ -411,6 +414,9 @@ sanitize() {
     sudo /bin/systemctl disable router-systemd
     sudo /bin/systemctl stop hostapd-systemd
     sudo /bin/systemctl disable hostapd-systemd
+    sudo /usr/sbin/update-rc.d hostapd disable   
+
+    sudo /bin/systemctl daemon-reload
 
 
     sudo /etc/init.d/dnsmasq restart
