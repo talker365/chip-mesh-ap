@@ -300,6 +300,8 @@ setupRouterEthernet() {
             apPASS=$3
             apCH=$4
             
+            #sanitize
+
             createHosts $routerName "127.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
@@ -337,6 +339,8 @@ setupRouterEthernet() {
             wifiSSID=$2
             wifiPASS=$3
             
+            #sanitize
+
             createHosts $routerName "127.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
