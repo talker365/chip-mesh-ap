@@ -89,7 +89,7 @@ createDHCP() {
     
     interfaceDHCP=$1        # Interface serving the DHCP
     interfaceGateway=$2     # Interface providing IP and DNS Forwarding
-    nodeIP="127.20.0.1"
+    nodeIP="172.20.0.1"
     # Set up a static IP for the AP(accesspoint)
     echo "adding $interfaceDHCP to /etc/network/interfaces"
     
@@ -240,6 +240,8 @@ setupMeshEthernet() {
     
     # LAN Mode...
     if [[ $meshEthernetMode == "LAN" ]]; then
+        sanitize
+
         sudo touch /var/www/flags/.lan
         echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
         #       getIP $defaultWLAN
@@ -260,6 +262,8 @@ setupMeshEthernet() {
     
     
     if [[ $meshEthernetMode == "WAN" ]]; then
+        sanitize
+        
         sudo touch /var/www/flags/.wan
         echo "Setting up DHCP and IP Forwarding to $defaultLAN"
         #       getIP $defaultWLAN
@@ -300,9 +304,9 @@ setupRouterEthernet() {
             apPASS=$3
             apCH=$4
             
-            #sanitize
+            sanitize
 
-            createHosts $routerName "127.20.0.1"
+            createHosts $routerName "172.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
             #/etc/rc.local
@@ -339,9 +343,9 @@ setupRouterEthernet() {
             wifiSSID=$2
             wifiPASS=$3
             
-            #sanitize
+            sanitize
 
-            createHosts $routerName "127.20.0.1"
+            createHosts $routerName "172.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
             #/etc/rc.local
@@ -380,6 +384,10 @@ setupRouterEthernet() {
     # Set installation type flag for status page.
     sudo touch /var/www/flags/.microrouter
 
+    # FINISHED SETUP
+    echo "setting installed flag"
+    sudo touch /var/www/flags/.installed
+
 }
 
 
@@ -401,7 +409,7 @@ sanitize() {
     [ -f "/var/www/flags/.wifiSSID" ] && rm /var/www/flags/.wifiSSID
     [ -f "/var/www/flags/.wifiPASS" ] && rm /var/www/flags/.wifiPASS
             
-    createHosts "chip" "127.20.0.1"
+    createHosts "chip" "127.0.0.1"
 
     sudo echo chip > /etc/hostname
     sudo hostname chip
@@ -636,11 +644,3 @@ sudo touch /var/www/flags/.installed
 # Set Timezone to EST
 echo "setting timezone"
 sudo timedatectl set-timezone EST
-
-#### Change Hostname, no longer chip
-###echo "running createHosts()"
-###createHosts
-
-###echo "setting hostname to $newHostName"
-###echo $newHostName > /etc/hostname
-
