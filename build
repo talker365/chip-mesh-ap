@@ -18,10 +18,10 @@ orig=`pwd`
 
 # Clear the deployment folder for the new build...
 rm -r $orig/deploy/*
-mkdir $orig/deploy/mac
-mkdir $orig/deploy/linux
-mkdir $orig/deploy/windows
-mkdir $orig/deploy/chip
+mkdir -p $orig/deploy/mac
+mkdir -p $orig/deploy/linux
+mkdir -p $orig/deploy/windows
+mkdir -p $orig/deploy/chip
 
 echo "Archiving chip root files..."
 # tar all folders/files
