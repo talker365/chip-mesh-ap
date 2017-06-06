@@ -599,7 +599,8 @@ fi
 if [[ $request == "micromesh" ]]; then
     
     defaultWLAN=wlan1
-    
+    getIP $defaultWLAN
+
     newHostName=$nodeID
     echo "Callsign [$callsign]"
     echo "NodeID [$nodeID]"
@@ -613,8 +614,11 @@ if [[ $request == "micromesh" ]]; then
     
     createADHOC
     createOLSR
-    setupMeshEthernet $meshEthMode
-    
+    [ -f "/sys/class/net/eth0/" ] && setupMeshEthernet $meshEthMode 
+    echo "Updating hosts files..."
+    echo "setting hostname to $newHostName"
+    echo $newHostName > /etc/hostname
+    createHosts $newHostName $nodeIP    
     
     # Remove Access-Point config files.
     [ -f "/etc/dnsmasq.d/access_point.conf" ] && rm /etc/dnsmasq.d/access_point.conf
@@ -636,11 +640,4 @@ sudo touch /var/www/flags/.installed
 # Set Timezone to EST
 echo "setting timezone"
 sudo timedatectl set-timezone EST
-
-#### Change Hostname, no longer chip
-###echo "running createHosts()"
-###createHosts
-
-###echo "setting hostname to $newHostName"
-###echo $newHostName > /etc/hostname
 
