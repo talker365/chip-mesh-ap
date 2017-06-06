@@ -16,59 +16,51 @@ defaultLAN=eth0
 #---[ FUNCTIONS ]---------------------------------------------------------------------
 
 createADHOC() {
-    
-    sudo iwconfig $defaultWLAN mode ad-hoc
-    sudo iwconfig $defaultWLAN channel $nodeCH
-    sudo iwconfig $defaultWLAN essid $nodeSSID
-    sudo iwconfig $defaultWLAN key off
-    sudo ifconfig $defaultWLAN up
-    getIP $defaultWLAN
-    
-    # add to /etc/network/interfaces
-    sudo echo "" > /etc/network/interfaces
-    sudo echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
-    sudo echo -e "\nauto lo" >> /etc/network/interfaces
-    sudo echo -e "iface lo inet loopback\n" >> /etc/network/interfaces
-    
-    sudo echo -e "\nauto $defaultWLAN" >> /etc/network/interfaces
-    sudo echo -e "iface $defaultWLAN inet static " >> /etc/network/interfaces
-    sudo echo -e "\taddress $nodeIP" >> /etc/network/interfaces
-    sudo echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
-    sudo echo -e "\twireless-channel $nodeCH " >> /etc/network/interfaces
-    sudo echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
-    sudo echo -e "\twireless-mode ad-hoc\n" >> /etc/network/interfaces
+    defaultWLAN=$1
+    nodeCH=$2
+    nodeSSID=$3
+    nodeIP=$4
+    iwconfig $defaultWLAN mode ad-hoc
+    iwconfig $defaultWLAN channel $nodeCH
+    iwconfig $defaultWLAN essid $nodeSSID
+    iwconfig $defaultWLAN key off
+    ifconfig $defaultWLAN up
+    echo "" > /etc/network/interfaces
+    echo "# Created by VDN Scripts... Do not edit directly, changes will be lost !" >> /etc/network/interfaces
+    echo -e "\nauto lo" >> /etc/network/interfaces
+    echo -e "iface lo inet loopback\n" >> /etc/network/interfaces
+    echo -e "\nauto $defaultWLAN" >> /etc/network/interfaces
+    echo -e "iface $defaultWLAN inet static " >> /etc/network/interfaces
+    echo -e "\taddress $nodeIP" >> /etc/network/interfaces
+    echo -e "\tnetmask 255.0.0.0 " >> /etc/network/interfaces
+    echo -e "\twireless-channel $nodeCH " >> /etc/network/interfaces
+    echo -e "\twireless-essid $nodeSSID" >> /etc/network/interfaces
+    echo -e "\twireless-mode ad-hoc\n" >> /etc/network/interfaces
 }
-
 
 createAP() {
     # Disconnect from Wifi
     echo "disconnecting any existing connections on $defaultWLAN"
-    sudo nmcli dev disconnect $defaultWLAN 2>&1
+    nmcli dev disconnect $defaultWLAN 2>&1
     
     # Configure the WiFi access point on wlan1
-    sudo echo "interface=$defaultWLAN" > /etc/hostapd.conf
-    sudo echo "driver=nl80211" >> /etc/hostapd.conf
-    sudo echo "ssid=$apSSID" >> /etc/hostapd.conf
-    sudo echo "channel=$apCH" >> /etc/hostapd.conf
-    sudo echo "auth_algs=3" >> /etc/hostapd.conf
-    sudo echo "max_num_sta=10" >> /etc/hostapd.conf
-    sudo echo "wpa=2" >> /etc/hostapd.conf
-    sudo echo "wpa_passphrase=$apPASS" >> /etc/hostapd.conf
-    sudo echo "wpa_pairwise=TKIP CCMP" >> /etc/hostapd.conf
-    sudo echo "rsn_pairwise=CCMP" >> /etc/hostapd.conf
-    sudo echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
-    
-    sudo echo -e "$apSSID" > /var/www/flags/.apSSID
-    sudo echo -e "$apPASS" > /var/www/flags/.apPASS
-    sudo echo -e "$apCH" > /var/www/flags/.apChannel
-    
-    
-    # Add call to vdn-router
-    #if [ ! -f "/var/www/flags/.microrouter" ]; then
-        sudo echo "" >> /usr/sbin/vdn-router
-        sudo echo "# Start the Access Point" >> /usr/sbin/vdn-router
-        sudo echo "/usr/sbin/hostapd /etc/hostapd.conf" >> /usr/sbin/vdn-router
-    #fi
+    echo "interface=$defaultWLAN" > /etc/hostapd.conf
+    echo "driver=nl80211" >> /etc/hostapd.conf
+    echo "ssid=$apSSID" >> /etc/hostapd.conf
+    echo "channel=$apCH" >> /etc/hostapd.conf
+    echo "auth_algs=3" >> /etc/hostapd.conf
+    echo "max_num_sta=10" >> /etc/hostapd.conf
+    echo "wpa=2" >> /etc/hostapd.conf
+    echo "wpa_passphrase=$apPASS" >> /etc/hostapd.conf
+    echo "wpa_pairwise=TKIP CCMP" >> /etc/hostapd.conf
+    echo "rsn_pairwise=CCMP" >> /etc/hostapd.conf
+    echo "ctrl_interface=/var/run/hostapd" >> /etc/hostapd.conf
+    echo -e "$apSSID" > /var/www/flags/.apSSID
+    echo -e "$apPASS" > /var/www/flags/.apPASS
+    echo -e "$apCH" > /var/www/flags/.apChannel
+    echo "" >> /usr/sbin/vdn-router
+    echo "# Start the Access Point" >> /usr/sbin/vdn-router
+    echo "/usr/sbin/hostapd /etc/hostapd.conf" >> /usr/sbin/vdn-router
     
     # Remove Mesh-Node config files.
     sudo rm /etc/dnsmasq.d/mesh-node.conf
@@ -77,7 +69,7 @@ createAP() {
     sudo /bin/systemctl stop router-systemd
     sudo /bin/systemctl stop hostapd-systemd
     sudo /usr/sbin/update-rc.d hostapd disable
-
+    
     sudo /bin/systemctl daemon-reload
     sudo /bin/systemctl enable hostapd-systemd
     sudo /bin/systemctl start hostapd-systemd
@@ -113,12 +105,12 @@ createDHCP() {
     sudo ifdown $interfaceDHCP
     echo "spinning up $interfaceDHCP"
     sudo ifup $interfaceDHCP
-
+    
     echo "spinning down $interfaceGateway"
     sudo ifdown $interfaceGateway
     echo "spinning up $interfaceGateway"
     sudo ifup $interfaceGateway
-
+    
     
     # Create Dnsmasq & Restart the DHCP server
     echo "Writing to /etc/dnsmasq.d/access-point.conf"
@@ -134,59 +126,68 @@ createDHCP() {
 }
 
 
-createHosts()
-{
+createHosts() {
     newHostName=$1
     nodeIP=$2
-    
     # Update host file and hostname
-    sudo echo "Updating hosts file with hostname:$newHostName"
-    sudo echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
-    sudo echo "127.0.0.1 localhost" >> /etc/hosts
-    sudo echo "$nodeIP $newHostName" >> /etc/hosts
-    sudo echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
-    sudo echo "ff02::1 ip6-allnodes" >> /etc/hosts
-    sudo echo "ff02::2 ip6-allrouters" >> /etc/hosts
+    echo "Updating hosts file with hostname:$newHostName"
+    echo "#Created by VDN Scripts. Do not edit !!!" > /etc/hosts
+    echo "127.0.0.1 localhost" >> /etc/hosts
+    echo "$nodeIP $newHostName" >> /etc/hosts
+    echo "::1 localhost ip6-localhost ip6-loopback" >> /etc/hosts
+    echo "ff02::1 ip6-allnodes" >> /etc/hosts
+    echo "ff02::2 ip6-allrouters" >> /etc/hosts
 }
 
 
 getIP() {
-    
-    
-    #Create IP Address for IFACE based on MAC Address
-    echo -e "\nCalculating the IP Address for Interface:$1"
-    MACID=`cat /sys/class/net/$1/address`
+    interface=$1
+    defaultWLAN=wlan1
+    MACID=`cat /sys/class/net/$interface/address`
     MAC4=`echo $MACID | cut -d : -f 4 `
     MAC5=`echo $MACID | cut -d : -f 5 `
     MAC6=`echo $MACID | cut -d : -f 6 `
+    
     ip1=10
     ip2=`printf %d 0x$MAC4 `
     ip3=`printf %d 0x$MAC5 `
     ip4=`printf %d 0x$MAC6 `
-    [ $1 == "eth0" ] && lanIP=$ip1.$ip3.$ip4."1"    && ifconfig $1 $lanIP && dhcpStart=$ip1.$ip3.$ip4 && echo -e "lanIP=$lanIP\n"
-    [ $1 == $defaultWLAN ] && nodeIP=$ip1.$ip2.$ip3.$ip4 && ifconfig $1 $nodeIP && echo -e "nodeIP=$nodeIP\n"
+    
+    lanIP=$ip1.$ip3.$ip4."1"
+    nodeIP=$ip1.$ip2.$ip3.$ip4
+    dhcpStart=$ip1.$ip3.$ip4
+    
+    if [[ $interface == "eth0" ]]; then
+        echo $lanIP
+        ifconfig $interface $lanIP
+        sed -i  "s/.*#interface=$defaultLAN.*/interface=$defaultLAN/" /etc/dnsmasq.d/mesh-node.conf
+        sed -i  "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
+        sed -i  "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+        sed -i  "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+    fi
+    
+    if [[ $interface == $defaultWLAN ]]; then
+        echo $nodeIP
+        ifconfig $interface $nodeIP
+    fi
+    
+    printf "*********** DHCP Start = $dhcpStart *************\n"
 }
-
 
 createOLSR() {
-    
-    # Create the OLSRD Config File
-    sudo cp /etc/default/olsrd.conf.vdn /etc/olsrd/olsrd.conf
-    sudo sed -i.bak "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
-    sudo sed -i.bak "s/.*Interface.*/Interface \"$defaultWLAN\"/" /etc/olsrd/olsrd.conf
-    sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
-    #sudo sed -i.bak "s/.*#   0.0.0.0      0.0.0.0.*/$INET_ADDRESS  255.255.255.255/" /etc/olsrd/olsrd.conf
-    
-    # Packet masquerading - /etc/rc.local
-    sudo sed -i.bak "s/.*to-source.*/iptables -t nat -A POSTROUTING -o $defaultWLAN -j SNAT --to-source $nodeIP/" /etc/rc.local
-    sudo sed -i.bak "s/wlan./$defaultWLAN/g" /etc/rc.local
-    
-    # Update resolv.conf file
-    sudo echo "# Generated by VDN Scripts" > /etc/resolv.conf
-    sudo echo "127.0.0.1" >> /etc/resolv.conf
-    sudo echo "8.8.8.8" >> /etc/resolv.conf
+    defaultWLAN=$1
+    nodeID=$2
+    nodeIP=$3
+    cp /etc/default/olsrd.conf.vdn /etc/olsrd/olsrd.conf
+    sed -i  "s/.*MainIp.*/MainIp $nodeIP/" /etc/olsrd/olsrd.conf
+    sed -i  "s/.*Interface.*/Interface \"$defaultWLAN\"/" /etc/olsrd/olsrd.conf
+    sed -i  "s/.*PlParam \"name\".*/    PlParam \"name\" \"$nodeID\"/" /etc/olsrd/olsrd.conf
+    sed -i  "s/.*to-source.*/iptables -t nat -A POSTROUTING -o $defaultWLAN -j SNAT --to-source $nodeIP/" /etc/rc.local
+    sed -i  "s/wlan./$defaultWLAN/g" /etc/rc.local
+    echo "# Generated by VDN Scripts" > /etc/resolv.conf
+    echo "127.0.0.1" >> /etc/resolv.conf
+    echo "8.8.8.8" >> /etc/resolv.conf
 }
-
 
 createRouter() {
     routerSource=$1
@@ -204,7 +205,6 @@ createRouter() {
     sudo echo "iptables -t nat -A POSTROUTING -o $routerDestination -j MASQUERADE" >> /usr/sbin/vdn-router
 }
 
-
 connectWifi() {
     # Connect to Wifi
     echo "disconnecting any existing connections on $defaultWLAN"
@@ -213,67 +213,74 @@ connectWifi() {
     sudo nmcli device wifi connect $wifiSSID password $wifiPASS ifname $defaultWLAN 2>&1
     echo -e "$wifiSSID" > /var/www/flags/.wifiSSID
     echo -e "$wifiPASS" > /var/www/flags/.wifiPASS
-
+    
     # Start Service
     sudo /bin/systemctl stop hostapd-systemd
     sudo /bin/systemctl stop router-systemd
-    sudo /usr/sbin/update-rc.d hostapd disable   
-
+    sudo /usr/sbin/update-rc.d hostapd disable
+    
     sudo /bin/systemctl daemon-reload
     sudo /bin/systemctl enable router-systemd
     sudo /bin/systemctl start router-systemd
     sudo /bin/systemctl status router-systemd
     sudo /etc/init.d/networking restart
-
+    
 }
 
-
 setupMeshEthernet() {
-    meshEthernetMode=$1        # Ethernet Mode
     
-    [ -f "/var/www/flags/.lan" ] && rm /var/www/flags/.lan
-    [ -f "/var/www/flags/.wan" ] && rm /var/www/flags/.wan
+    cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
+    cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
     
-    getIP $defaultLAN
-    getIP $defaultWLAN
-    nodeID=$(hostname)
+    meshEthernetMode=$1
+    callsign=$2
+    nodeID=$3
+    adminPASS=$4
+    nodeCH=$5
+    nodeSSID=$6
+    defaultWLAN=wlan1
+    defaultLAN=eth0
+    nodeIP=$(getIP $defaultWLAN)
+    lanIP=$(getIP $defaultLAN)
+    createADHOC $defaultWLAN $nodeCH $nodeSSID $nodeIP
+    createOLSR $defaultWLAN $nodeID $nodeIP
+    createHosts $nodeID $nodeIP
+    echo $nodeID > /etc/hostname
+    hostname $nodeID
+    echo -e $callsign > /var/www/flags/.callsign
+    echo -e "Callsign [$callsign]"
+    echo -e "NodeID [$nodeID]"
+    echo -e "Admin Password [$adminPASS]"
+    echo -e "Node Channel [$nodeCH]"
+    echo -e "Node Ethernet Mode [$meshEthMode]"
+    echo -e "Node SSID [$nodeSSID]"
+    echo -e "Node IP [$nodeIP]"
+    echo -e "LAN IP [$lanIP]"
+    echo -e "DHCP Start [$dhcpStart]\n"
     
-    # LAN Mode...
-    if [[ $meshEthernetMode == "LAN" ]]; then
-        sudo touch /var/www/flags/.lan
-        echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
-        #       getIP $defaultWLAN
-        sudo echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
-        sudo echo -e "iface $defaultLAN inet static" >> /etc/network/interfaces
-        sudo echo -e "\taddress $lanIP" >> /etc/network/interfaces
-        sudo echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
-        # update dnsmasq
-        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
-        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*#interface=$defaultLAN.*/interface=$defaultLAN/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+    case $meshEthernetMode in
         
-        sudo /etc/init.d/networking restart
-    fi
+        LAN )
+            echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
+            echo -e "iface $defaultLAN inet static" >> /etc/network/interfaces
+            echo -e "\taddress $lanIP" >> /etc/network/interfaces
+            echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
+            /etc/init.d/networking restart
+            touch /var/www/flags/.lan
+        ;;
+        
+        WAN )
+            echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
+            echo -e "iface $defaultLAN inet dhcp" >> /etc/network/interfaces
+            /etc/init.d/networking restart
+            touch /var/www/flags/.wan
+        ;;
+    esac
     
-    
-    if [[ $meshEthernetMode == "WAN" ]]; then
-        sudo touch /var/www/flags/.wan
-        echo "Setting up DHCP and IP Forwarding to $defaultLAN"
-        #       getIP $defaultWLAN
-        sudo echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
-        sudo echo -e "iface $defaultLAN inet dhcp" >> /etc/network/interfaces
-        sudo /etc/init.d/networking restart
-        # update dnsmasq
-        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
-        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*interface=$defaultLAN.*/#interface=$defaultLAN/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s/.*dhcp-range=.*/#dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|.*address=/localnode.*|#address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-        sudo sed -i.bak "s|.*address=/node-id.*|#address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
-    fi
+    systemctl daemon-reload
+    /etc/init.d/dnsmasq restart
+    /etc/rc.local
+    touch /var/www/flags/.micromesh
 }
 
 setupRouterEthernet() {
@@ -301,7 +308,7 @@ setupRouterEthernet() {
             apCH=$4
             
             #sanitize
-
+            
             createHosts $routerName "127.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
@@ -340,7 +347,7 @@ setupRouterEthernet() {
             wifiPASS=$3
             
             #sanitize
-
+            
             createHosts $routerName "127.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
@@ -374,18 +381,18 @@ setupRouterEthernet() {
             echo "mmconfig::setupRouterEthernet() Supported modes are ETH or WLAN"
             exit 1
         ;;
-
+        
     esac
     
     # Set installation type flag for status page.
     sudo touch /var/www/flags/.microrouter
-
+    
 }
 
 
 
 sanitize() {
-
+    
     # Remove existing Flags
     [ -f "/var/www/flags/.installed" ] && rm /var/www/flags/.installed
     [ -f "/var/www/flags/.micromesh" ] && rm /var/www/flags/.micromesh
@@ -400,32 +407,32 @@ sanitize() {
     [ -f "/var/www/flags/.apChannel" ] && rm /var/www/flags/.apChannel
     [ -f "/var/www/flags/.wifiSSID" ] && rm /var/www/flags/.wifiSSID
     [ -f "/var/www/flags/.wifiPASS" ] && rm /var/www/flags/.wifiPASS
-            
+    
     createHosts "chip" "127.20.0.1"
-
+    
     sudo echo chip > /etc/hostname
     sudo hostname chip
     #/etc/rc.local
     sudo /etc/init.d/avahi-daemon restart
-
+    
     rm /etc/network/interfaces
     sudo /etc/init.d/networking restart
-
+    
     [ -f "/etc/dnsmasq.d/access-point.conf" ] && rm /etc/dnsmasq.d/access-point.conf
     [ -f "/etc/dnsmasq.d/mesh-node.conf" ] && rm /etc/dnsmasq.d/mesh-node.conf
-
+    
     sudo /bin/systemctl stop router-systemd
     sudo /bin/systemctl disable router-systemd
     sudo /bin/systemctl stop hostapd-systemd
     sudo /bin/systemctl disable hostapd-systemd
-    sudo /usr/sbin/update-rc.d hostapd disable   
-
+    sudo /usr/sbin/update-rc.d hostapd disable
+    
     sudo /bin/systemctl daemon-reload
-
-
+    
+    
     sudo /etc/init.d/dnsmasq restart
-
-
+    
+    
 }
 
 
@@ -436,6 +443,8 @@ sanitize() {
 clear
 
 if [[ $# -lt 1 ]]; then echo "invalid or no parameters used !"; exit 1; fi
+
+[ ! -d "/var/www/flags" ] && mkdir /var/www/flags
 
 request=$1
 
@@ -463,7 +472,7 @@ if [[ $request == "update" ]]; then
             
             apChannel )
                 #update channel
-                sudo sed -i.bak "s/.*channel=.*/channel=$2/" /etc/hostapd.conf
+                sudo sed -i  "s/.*channel=.*/channel=$2/" /etc/hostapd.conf
                 shift; shift;
                 # Update any required services.
                 sudo systemctl restart hostapd-systemd
@@ -472,7 +481,7 @@ if [[ $request == "update" ]]; then
             apName )
                 #Change Router Name
                 echo $2 > /etc/hostname
-                sudo sed -i.bak "s/.*127.0.0.1 localhost.*/127.0.0.1 localhost $2/" /etc/hosts
+                sudo sed -i  "s/.*127.0.0.1 localhost.*/127.0.0.1 localhost $2/" /etc/hosts
                 shift; shift;
                 # Update any required services.
                 systemctl restart hostapd-systemd
@@ -480,7 +489,7 @@ if [[ $request == "update" ]]; then
             
             apPASS )
                 #Change access point password
-                sudo sed -i.bak "s/.*wpa_passphrase=.*/wpa_passphrase=$2/" /etc/hostapd.conf
+                sudo sed -i  "s/.*wpa_passphrase=.*/wpa_passphrase=$2/" /etc/hostapd.conf
                 shift; shift;
                 # Update any required services.
                 sudo systemctl restart hostapd-systemd
@@ -489,7 +498,7 @@ if [[ $request == "update" ]]; then
             
             apSSID )
                 #update ssid
-                sudo sed -i.bak "s/.*ssid=.*/ssid=$2/" /etc/hostapd.conf
+                sudo sed -i  "s/.*ssid=.*/ssid=$2/" /etc/hostapd.conf
                 shift; shift;
                 # Update any required services.
                 sudo systemctl restart hostapd-systemd
@@ -503,17 +512,17 @@ if [[ $request == "update" ]]; then
             
             meshSSID )
                 #update ssid
-                sudo sed -i.bak "s/.*wireless-essid.*/\twireless-essid $2/" /etc/network/interfaces
+                sudo sed -i  "s/.*wireless-essid.*/\twireless-essid $2/" /etc/network/interfaces
                 sudo ifconfig $defaultWLAN down
                 sudo ifconfig $defaultWLAN up
                 echo -e " [updated node to SSID $2] "
                 shift; shift;
-                sudo /etc/init.d/networking restart;cat /etc/network/interfaces
+                sudo /etc/init.d/networking restart
             ;;
             
             meshChannel )
                 #update channel
-                sudo sed -i.bak "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces
+                sudo sed -i  "s/.*wireless-channel.*/\twireless-channel $2/" /etc/network/interfaces
                 sudo ifconfig $defaultWLAN down
                 sudo ifconfig $defaultWLAN up
                 echo -e " [updated node to channel $2] "
@@ -524,11 +533,11 @@ if [[ $request == "update" ]]; then
             meshName )
                 #Change mesh node Name
                 newHostName=$2
-                getIP $defaultWLAN
+                nodeIP=$(getIP $defaultWLAN)
                 createHosts $newHostName $nodeIP
                 sudo echo $2 > /etc/hostname
                 sudo hostname $2
-                sudo sed -i.bak "s/.*PlParam \"name\".*/    PlParam \"name\" \"$2\"/" /etc/olsrd/olsrd.conf
+                sudo sed -i  "s/.*PlParam \"name\".*/    PlParam \"name\" \"$2\"/" /etc/olsrd/olsrd.conf
                 /etc/rc.local
                 echo -e " [updated node name to $2] "
                 shift; shift;
@@ -578,8 +587,7 @@ apCH=$7
 nodeSSID=$8
 
 # Record password...
-sudo echo -e $adminPASS > /var/www/flags/.admin
-
+echo -e $adminPASS > /var/www/flags/.admin
 
 # Router Mode
 if [[ $request == "microrouter" ]]; then
@@ -596,48 +604,14 @@ if [[ $request == "microrouter" ]]; then
 fi
 
 # Mesh Mode
-if [[ $request == "micromesh" ]]; then
+[[ $request == "micromesh" ]] && setupMeshEthernet $meshEthMode $callsign $nodeID $adminPASS $nodeCH $nodeSSID
     
-    defaultWLAN=wlan1
-    getIP $defaultWLAN
-
-    newHostName=$nodeID
-    echo "Callsign [$callsign]"
-    echo "NodeID [$nodeID]"
-    echo "Admin Password [$adminPASS]"
-    echo "Node Channel [$nodeCH]"
-    echo "Node Ethernet Mode [$meshEthMode]"
-    echo "Node SSID [$nodeSSID]"
-    echo ""
-    
-    sudo echo -e $callsign > /var/www/flags/.callsign
-    
-    createADHOC
-    createOLSR
-    [ -f "/sys/class/net/eth0/" ] && setupMeshEthernet $meshEthMode 
-    echo "Updating hosts files..."
-    echo "setting hostname to $newHostName"
-    echo $newHostName > /etc/hostname
-    createHosts $newHostName $nodeIP    
-    
-    # Remove Access-Point config files.
-    [ -f "/etc/dnsmasq.d/access_point.conf" ] && rm /etc/dnsmasq.d/access_point.conf
-    
-    # Start Services
-    echo "restarting dnsmasq"
-    sudo systemctl daemon-reload
-    sudo /etc/init.d/dnsmasq restart
-    sudo /etc/rc.local
-    
-    # Set installation type flag for status page.
-    sudo touch /var/www/flags/.micromesh
-fi
 
 # FINISHED SETUP
 echo "setting installed flag"
-sudo touch /var/www/flags/.installed
+touch /var/www/flags/.installed
 
 # Set Timezone to EST
 echo "setting timezone"
-sudo timedatectl set-timezone EST
+timedatectl set-timezone EST
 
