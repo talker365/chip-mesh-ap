@@ -81,7 +81,7 @@ createDHCP() {
     
     interfaceDHCP=$1        # Interface serving the DHCP
     interfaceGateway=$2     # Interface providing IP and DNS Forwarding
-    nodeIP="127.20.0.1"
+    nodeIP="172.20.0.1"
     # Set up a static IP for the AP(accesspoint)
     echo "adding $interfaceDHCP to /etc/network/interfaces"
     
@@ -232,6 +232,7 @@ setupMeshEthernet() {
     cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
     cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
     
+<<<<<<< HEAD
     meshEthernetMode=$1
     callsign=$2
     nodeID=$3
@@ -259,6 +260,30 @@ setupMeshEthernet() {
     echo -e "DHCP Start [$dhcpStart]\n"
     
     case $meshEthernetMode in
+=======
+    getIP $defaultLAN
+    getIP $defaultWLAN
+    nodeID=$(hostname)
+    
+    # LAN Mode...
+    if [[ $meshEthernetMode == "LAN" ]]; then
+        sanitize
+
+        sudo touch /var/www/flags/.lan
+        echo "SETUP MeshAccessPoint on $defaultWLAN with IP Forwarding to $defaultLAN"
+        #       getIP $defaultWLAN
+        sudo echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
+        sudo echo -e "iface $defaultLAN inet static" >> /etc/network/interfaces
+        sudo echo -e "\taddress $lanIP" >> /etc/network/interfaces
+        sudo echo -e "\tnetmask 255.255.255.0\n" >> /etc/network/interfaces
+        # update dnsmasq
+        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
+        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*#interface=$defaultLAN.*/interface=$defaultLAN/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*dhcp-range=.*/dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|#address=/localnode.*|address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|.*address=/node-id.*|address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+>>>>>>> 3be5e11af88da26fbbcbe938d636ed2757302ed0
         
         LAN )
             echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
@@ -277,10 +302,30 @@ setupMeshEthernet() {
         ;;
     esac
     
+<<<<<<< HEAD
     systemctl daemon-reload
     /etc/init.d/dnsmasq restart
     /etc/rc.local
     touch /var/www/flags/.micromesh
+=======
+    if [[ $meshEthernetMode == "WAN" ]]; then
+        sanitize
+        
+        sudo touch /var/www/flags/.wan
+        echo "Setting up DHCP and IP Forwarding to $defaultLAN"
+        #       getIP $defaultWLAN
+        sudo echo -e "\nauto $defaultLAN" >> /etc/network/interfaces
+        sudo echo -e "iface $defaultLAN inet dhcp" >> /etc/network/interfaces
+        sudo /etc/init.d/networking restart
+        # update dnsmasq
+        sudo cp /etc/default/dnsmasq.vdn /etc/default/dnsmasq
+        sudo cp /etc/default/mesh-node.vdn /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*interface=$defaultLAN.*/#interface=$defaultLAN/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s/.*dhcp-range=.*/#dhcp-range=$dhcpStart.100,$dhcpStart.105,255.255.255.0,1H/" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|.*address=/localnode.*|#address=/localnode/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+        sudo sed -i.bak "s|.*address=/node-id.*|#address=/$nodeID/$nodeIP|" /etc/dnsmasq.d/mesh-node.conf
+    fi
+>>>>>>> 3be5e11af88da26fbbcbe938d636ed2757302ed0
 }
 
 setupRouterEthernet() {
@@ -307,9 +352,15 @@ setupRouterEthernet() {
             apPASS=$3
             apCH=$4
             
+<<<<<<< HEAD
             #sanitize
             
             createHosts $routerName "127.20.0.1"
+=======
+            sanitize
+
+            createHosts $routerName "172.20.0.1"
+>>>>>>> 3be5e11af88da26fbbcbe938d636ed2757302ed0
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
             #/etc/rc.local
@@ -346,9 +397,15 @@ setupRouterEthernet() {
             wifiSSID=$2
             wifiPASS=$3
             
+<<<<<<< HEAD
             #sanitize
             
             createHosts $routerName "127.20.0.1"
+=======
+            sanitize
+
+            createHosts $routerName "172.20.0.1"
+>>>>>>> 3be5e11af88da26fbbcbe938d636ed2757302ed0
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
             #/etc/rc.local
@@ -386,7 +443,15 @@ setupRouterEthernet() {
     
     # Set installation type flag for status page.
     sudo touch /var/www/flags/.microrouter
+<<<<<<< HEAD
     
+=======
+
+    # FINISHED SETUP
+    echo "setting installed flag"
+    sudo touch /var/www/flags/.installed
+
+>>>>>>> 3be5e11af88da26fbbcbe938d636ed2757302ed0
 }
 
 
@@ -407,9 +472,15 @@ sanitize() {
     [ -f "/var/www/flags/.apChannel" ] && rm /var/www/flags/.apChannel
     [ -f "/var/www/flags/.wifiSSID" ] && rm /var/www/flags/.wifiSSID
     [ -f "/var/www/flags/.wifiPASS" ] && rm /var/www/flags/.wifiPASS
+<<<<<<< HEAD
     
     createHosts "chip" "127.20.0.1"
     
+=======
+            
+    createHosts "chip" "127.0.0.1"
+
+>>>>>>> 3be5e11af88da26fbbcbe938d636ed2757302ed0
     sudo echo chip > /etc/hostname
     sudo hostname chip
     #/etc/rc.local
@@ -613,5 +684,9 @@ touch /var/www/flags/.installed
 
 # Set Timezone to EST
 echo "setting timezone"
+<<<<<<< HEAD
 timedatectl set-timezone EST
 
+=======
+sudo timedatectl set-timezone EST
+>>>>>>> 3be5e11af88da26fbbcbe938d636ed2757302ed0
