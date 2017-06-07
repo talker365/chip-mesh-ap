@@ -309,7 +309,7 @@ setupRouterEthernet() {
             
             #sanitize
             
-            createHosts $routerName "127.20.0.1"
+            createHosts $routerName "172.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
             #/etc/rc.local
@@ -348,7 +348,7 @@ setupRouterEthernet() {
             
             #sanitize
             
-            createHosts $routerName "127.20.0.1"
+            createHosts $routerName "172.20.0.1"
             sudo echo $routerName > /etc/hostname
             sudo hostname $routerName
             #/etc/rc.local
@@ -408,7 +408,7 @@ sanitize() {
     [ -f "/var/www/flags/.wifiSSID" ] && rm /var/www/flags/.wifiSSID
     [ -f "/var/www/flags/.wifiPASS" ] && rm /var/www/flags/.wifiPASS
     
-    createHosts "chip" "127.20.0.1"
+    createHosts "chip" "172.20.0.1"
     
     sudo echo chip > /etc/hostname
     sudo hostname chip
