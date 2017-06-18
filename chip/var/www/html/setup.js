@@ -59,10 +59,11 @@ function populateForm() {
 	    } else if (document.getElementById("meshWan").checked) {
 	        document.getElementById("final_meshEthernetType").value = "WAN";
 	    } else {
-	        document.getElementById("final_meshEthernetType").value = "unknown";
+            /*ADD POPUP WARNING*/
+	        document.getElementById("final_meshEthernetType").value = "WAN";
 	    }
 	} else {
-	    document.getElementById("final_meshEthernetType").value = "none";
+	    document.getElementById("final_meshEthernetType").value = "WAN";
 	}
     
     if (document.getElementById("routerhostname").value.length > 0) {

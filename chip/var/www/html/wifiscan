@@ -2,6 +2,15 @@
 # *  SSID              MODE    CHAN  RATE       SIGNAL  BARS  SECURITY
 
 if [[ $# -eq 0 ]]; then echo -e "Available Parameters are AP or MESH\n\n"; exit 1; fi
+
+ch="unknown"
+if [ -f "/var/www/flags/.microrouter" ]; then
+	ch=$(cat /var/www/flags/.apChannel)
+fi
+if [ -f "/var/www/flags/.micromesh" ]; then
+	ch=$(cat /proc/net/rtl8723bs/wlan1/rf_info | awk '/cur_ch/ { print $1}' | cut -d '=' -f2 | cut -d ',' -f1)
+fi
+
 if [[ $1 == "AP" ]]; then mode="Infra"; fi
 if [[ $1 == "MESH" ]]; then mode="Ad-Hoc"; fi
 if [[ $1 == "CH" ]]; then
@@ -19,7 +28,7 @@ if [[ $1 == "CH" ]]; then
 			echo -e "<optgroup label=\"WiFi Only\">"
 		fi
 
-        if [[ $CHANNEL == 11 ]]; then
+        if [[ $CHANNEL == $ch ]]; then
 			echo -e "<option value\"$CHANNEL\" selected='selected'>$CHANNEL" 
 		else
 			echo -e "<option value\"$CHANNEL\">$CHANNEL" 

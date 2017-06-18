@@ -145,26 +145,16 @@
 				<?php echo shell_exec("/var/www/html/./wifiscan SSID 2>&1"); ?>
 			</select>
 		</div>
+			<fieldset data-role="controlgroup">
+	        	<legend>Choose how to use your ethernet connection:</legend>
+	        	<label for="meshLan">LAN - Gives Mesh address to connected device</label>
+	        	<input type="radio" name="meshEthernetType" id="meshLan" value="meshLan" checked>
+	            <label for="meshWan">WAN - Uses connected device as the internet</label>
+	            <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan">
+	        </fieldset>
 
 
-        <?php
-            $eth0present = shell_exec("/var/www/html/./mmconfig check ethernet");
-            #echo "<p> DEBUG: mmconfig=$eth0present </p>";
-
-            if (trim($eth0present) == "TRUE") {
-        ?>
-        	<h2> Ethernet Connection </h2>
-            <fieldset data-role="controlgroup">
-                <legend>A wired connection was identified, please select how to use it:</legend>
-                <label for="meshLan"> LAN - Wired connection is treated like another connection to the Access Point</label>
-                <input type="radio" name="meshEthernetType" id="meshLan" value="meshLan" checked="checked">
-                <label for="meshWan"> WAN - Wired connection is treated as the connection to the internet (or your home network)</label>
-                <input type="radio" name="meshEthernetType" id="meshWan" value="meshWan">
-            </fieldset>
-        <?php
-            }
-        ?>
-	</div>
+ 	</div>
 
     <div id="divConfigureRouter" style="display:none;">
 		<h2> Router Configuration </h2>
@@ -277,8 +267,8 @@
     <form method="post" action="deploy.php">
 		<div class="ui-field-contain" data-type="vertical">
 	    		<input type="submit" data-inline="true" value="Install">
-				<div class="ui-field-contain" data-type="horizontal">
-			        <label for="final_microtype">Installation Type:</label>
+				<div class="ui-field-contain" data-type="horizontal" style="display: none;">
+			        <label for="deploy_mode">Installation Type:</label>
 			        <input type="text" readonly="readonly" required name="deploy_mode" id="deploy_mode" placeholder="Deploy Mode" value="install">
 				</div>
 				<div class="ui-field-contain" data-type="horizontal">

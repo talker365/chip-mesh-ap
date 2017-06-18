@@ -25,6 +25,30 @@ function populateForm(microtype) {
 		    /*document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").value;*/
 		    document.getElementById("final_accesspointchannel").value = document.getElementById("accesspointchannel").selectedIndex + 1;
 
+		    if (document.getElementById("ssid").value.length > 0) {
+		     	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
+		    } else {
+		        document.getElementById("final_ssid").value = "none"; 
+		    }
+    
+		    if (document.getElementById("password").value.length > 0) {
+		     	document.getElementById("final_password").value = document.getElementById("password").value;
+		    } else {
+		        document.getElementById("final_password").value = "none"; 
+		    }
+    
+		    if (document.getElementById("routerEth") != null) {
+		    	if (document.getElementById("routerEth").checked) {
+			        document.getElementById("final_routerEthernetType").value = "ETH";
+			    } else if (document.getElementById("routerWlan").checked) {
+			        document.getElementById("final_routerEthernetType").value = "WLAN";
+			    } else {
+			        document.getElementById("final_routerEthernetType").value = "unknown";
+			    }
+			} else {
+			    document.getElementById("final_routerEthernetType").value = "none";
+			}
+
 			break;
 
 
@@ -48,10 +72,15 @@ function populateForm(microtype) {
 		        document.getElementById("final_meshpassword").value = "micromesh"; 
 		    }
     
-			var data = document.getElementById("nodessid").value;
-			var nodeData = data.split("|||");
-		    document.getElementById("final_nodessid").value = nodeData[0];
-		    document.getElementById("final_nodechannel").value = nodeData[1];
+		    if (document.getElementById("nodessid").value.length > 0) {
+			    document.getElementById("final_nodessid").value = document.getElementById("nodessid").value;
+		    }
+    
+		    if (document.getElementById("nodechannel").value.length > 0) {
+				var data = document.getElementById("nodechannel").value;
+				var nodeData = data.split(" ");
+			    document.getElementById("final_nodechannel").value = nodeData[0];
+		    }
 
 		    if (document.getElementById("meshLan") != null) {
 			    if (document.getElementById("meshLan").checked) {
@@ -65,31 +94,8 @@ function populateForm(microtype) {
 			    document.getElementById("final_meshEthernetType").value = "none";
 			}
     
-		    if (document.getElementById("ssid").value.length > 0) {
-		     	document.getElementById("final_ssid").value = document.getElementById("ssid").value;
-		    } else {
-		        document.getElementById("final_ssid").value = "none"; 
-		    }
-    
-		    if (document.getElementById("password").value.length > 0) {
-		     	document.getElementById("final_password").value = document.getElementById("password").value;
-		    } else {
-		        document.getElementById("final_password").value = "none"; 
-		    }
-    
-		    if (document.getElementById("routerLan") != null) {
-		    	if (document.getElementById("routerLan").checked) {
-			        document.getElementById("final_routerEthernetType").value = "LAN";
-			    } else if (document.getElementById("routerWan").checked) {
-			        document.getElementById("final_routerEthernetType").value = "WAN";
-			    } else {
-			        document.getElementById("final_routerEthernetType").value = "unknown";
-			    }
-			} else {
-			    document.getElementById("final_routerEthernetType").value = "none";
-			}
- 
-		break;
+			break;
+
 	}
     
 }
@@ -121,11 +127,5 @@ function updateNodeName() {
 
 function loadDeploy() {
 	populateForm();
-}
-
-function authenticate(pwd) {
-	if (document.getElementById("adminPwd") == pwd) {
-
-	}
 }
 
