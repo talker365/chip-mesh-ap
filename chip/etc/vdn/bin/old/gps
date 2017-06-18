@@ -1,0 +1,124 @@
+#!/bin/bash
+#
+# getloc - read GPS location and echo status, latitude and longitude
+
+while true; 
+do
+
+function closePort() {
+  exec 5<&-
+}
+
+function openPort() {
+#  exec 5</dev/ttyACM0
+  exec 5</dev/vdnGPS
+}
+
+# Pass the GPS value and direction (N/S/E/W) to get the decimal latitude/longitude.
+
+function gpsDecimal() {
+    gpsVal=$1
+    gpsDir="$2"
+    # Integer part of the lat/long
+    gpsInt=`echo "scale=0;$gpsVal/100" | bc`
+    # Minutes part of the lat/long
+    gpsMin=`echo "scale=3;$gpsVal-100*$gpsInt" | bc`
+    # Convert minutes to a full decimal value
+    gpsDec=`echo "scale=5;$gpsInt+$gpsMin/60" | bc`
+    # South and West are negative
+    if [[ $gpsDir == "W" || $gpsDir == "S" ]]
+    then
+      gpsDec="-$gpsDec"
+    fi
+    echo $gpsDec
+}
+
+[ ! -d /dev/serial/ ] && exit 1
+
+setVars() {
+# Return statuses
+STATUS_OK=0
+STATUS_NOFIX_SATDATA=1
+STATUS_TIMEOUT=2
+STATUS_NOTFOUND=3
+STATUS_NOFIX_LOCDATA=4
+
+# Status and counter values
+foundReliability='false'
+foundLocation='false'
+linesRead=0
+}
+
+setVars
+openPort
+
+while [[ $linesRead -le 100 && ($foundReliability = 'false' || $foundLocation = 'false') ]]
+
+do
+  # Read the next line from the GPS port, with a timeout of 10 seconds.
+  read -t 10 RESPONSE <&5
+
+ # if [[ $? -eq 1 ]]; then
+ #   closePort
+ #   echo "$STATUS_TIMEOUT 0 0"
+ #   exit 1
+ # fi
+
+  linesRead=`expr $linesRead + 1`
+ 
+  # Get the sentence type.
+  sentenceType=`echo $RESPONSE | cut -d',' -f1`
+
+  if [[ $sentenceType = '$GPGSA' && $foundReliability = 'false' ]]
+  then
+    # Found the "fix information" sentence; see if the reliability
+    # is at least 2.
+    fixValue=`echo $RESPONSE | cut -d',' -f3`
+
+    if [[ $fixValue -eq 2 || $fixValue -eq 3 ]]
+    then
+    foundReliability='true'
+    fi
+  fi # GPGSA sentence
+
+  if [[ $sentenceType == '$GPRMC' && $foundLocation == 'false' ]]
+  then
+
+    statusValue=`echo $RESPONSE | cut -d',' -f3`
+
+    if [[ $statusValue == 'A' ]]; then
+    foundLocation='true'
+    latitudeValue=`echo $RESPONSE | cut -d',' -f4`
+    latitudeNS=`echo $RESPONSE | cut -d',' -f5`
+    latitudeDec=$(gpsDecimal $latitudeValue N)
+    longitudeValue=`echo $RESPONSE | cut -d',' -f6`
+    longitudeEW=`echo $RESPONSE | cut -d',' -f7`
+    longitudeDec=$(gpsDecimal $longitudeValue $longitudeEW)
+    fi # end of $GPRMC sentence
+  fi
+done # end of read-line loop
+
+
+# ---------------------- END OF READ --------------------------------
+#closePort
+
+if [[ $foundReliability == 'true' && $foundLocation == 'true' ]]
+then
+
+  # Lets create a latlon file.
+#  gridsq=$(gridsq $latitudeDec $longitudeDec) 2>/dev/null
+#  echo "$latitudeDec $longitudeDec"
+  echo "# Created by VDN" > /etc/latlon
+  echo "# Manual edits will be lost" >> /etc/latlon
+  echo $latitudeDec >> /etc/latlon
+  echo $longitudeDec >> /etc/latlon
+
+ # Lets Update OLSRD configuration file.
+ sudo sed -i.bak "s/.*PlParam \"lat\".*/    PlParam \"lat\" \"$latitudeDec\"/" /etc/olsrd/olsrd.conf
+ sudo sed -i.bak "s/.*PlParam \"lon\".*/    PlParam \"lon\" \"$longitudeDec\"/" /etc/olsrd/olsrd.conf
+
+fi
+
+sleep 60
+
+done

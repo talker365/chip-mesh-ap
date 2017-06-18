@@ -4,7 +4,7 @@
 
  Interface: wlan1 = AP for all modes.
 
- Parameters: type, Callsign, NodeId, AdminPassword, NodeCH, Eth0Mode, RouterName, WifiSSID, WifiPassword, Eth0Use, apSSID, apPASS, apCH, nodeSSID
+ Parameters: type, callsign, nodeID, adminPASS, nodeCH, meshEthMode, routerName, wifiSSID, wifiPASS, routerEthMode, apSSID, apPASS, apCH, nodeSSID
 
 Interface_Modes
 
@@ -435,9 +435,6 @@ sanitize() {
     
 }
 
-
-
-
 #---[ MAIN ]----------------------------------------------------------------------------------
 
 clear
@@ -606,6 +603,7 @@ fi
 # Mesh Mode
 [[ $request == "micromesh" ]] && setupMeshEthernet $meshEthMode $callsign $nodeID $adminPASS $nodeCH $nodeSSID
     
+
 
 # FINISHED SETUP
 echo "setting installed flag"
