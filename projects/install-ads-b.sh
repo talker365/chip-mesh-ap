@@ -34,10 +34,12 @@ mv /etc/apt/sources.list /etc/apt/sources.list.bak
 grep -v flightradar24 /etc/apt/sources.list.bak > /etc/apt/sources.list || echo OK
 echo 'deb http://repo.feed.flightradar24.com flightradar24 raspberrypi-stable' >> /etc/apt/sources.list
 
-echo -e "\nPerforming an APT update.... "
+echo -e "\n${g}Performing an APT update.... ${n}"
 
 # Update APT cache and install feeder software
 apt-get update -y
+
+echo -e "\n${g}Installing FlightRadar24${n}\n"
 apt-get install fr24feed -y
 
 # Stop older instances if exists
@@ -65,5 +67,5 @@ fr24feed_ini_file
 # Restart the feeder software
 ### service fr24feed restart
 
-echo "Installation and configuration completed!"
+echo -e "${g}Installation and configuration completed!${n}"
 echo -e "\nTHIS WAS ONLY A TEST\n"
