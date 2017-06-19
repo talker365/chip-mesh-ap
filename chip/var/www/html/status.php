@@ -187,7 +187,7 @@
     </h1>
     <div data-role="navbar">
       <ul>
-        <li><a href="#page_status" data-transition="reverse">Status</a></li>
+        <li><a href="#page_status" data-transition="slide" data-direction="reverse">Status</a></li>
         <li><a href="#page_nodes" class="ui-btn-active">Nodes</a></li>
         <li><a href="#page_olsr" data-transition="slide">OLSR</a></li>
         <li><a href="#page_projects" data-transition="slide">Projects</a></li>
@@ -216,6 +216,68 @@
 
 
 
+<div data-role="page" id="page_projects" data-theme="<?php echo $theme; ?>">
+  <div data-role="header">
+    <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
+    <a href="#page_projects_info" data-rel="popup" class="ui-btn ui-corner-all ui-shadow ui-icon-info ui-btn-icon-left">Help</a>
+    <h1>
+      <?php
+        echo shell_exec("hostname");
+        switch (1) {
+          case (file_exists('/var/www/flags/.micromesh')):
+            ?> - Micro Mesh <?php
+            break;
+          case (file_exists('/var/www/flags/.microrouter')):
+            ?> - Micro Router <?php
+            break;
+          default:
+            #echo 'no default tab set, please pick a tab (temp message)';
+            echo 'unknown setup detected';
+        }
+      ?>
+    </h1>
+    <div data-role="navbar">
+      <ul>
+        <li><a href="#page_status" data-transition="reverse">Status</a></li>
+    <?php
+        switch (1) {
+            case (file_exists('/var/www/flags/.micromesh')) :
+          ?>
+              <li><a href="#page_nodes" data-transition="slide" data-direction="reverse">Nodes</a></li>
+              <li><a href="#page_olsr" data-transition="slide" data-direction="reverse"">OLSR</a></li>
+                <?php
+          break;
+            case (file_exists('/var/www/flags/.microrouter')) :
+          ?>
+              <li><a href="#page_clients" data-transition="slide" data-direction="reverse">Clients</a></li>
+                <?php
+          break;
+        }   
+    ?>
+        <li><a href="#page_projects" class="ui-btn-active">Projects</a></li>
+        <li><a href="#page_admin" data-transition="slide">Admin</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div data-role="main" class="ui-content">
+    CONTENT 
+  </div>
+
+  <div data-role="footer">
+    <h1>Valley Digital Network (VDN)</h1>
+  </div>
+  <div data-role="popup" id="page_projects_info">
+    <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+    <br />
+    <p> 
+    Projects page help
+    </p>
+  </div>
+</div>
+
+
+
 <div data-role="page" id="page_olsr" data-theme="<?php echo $theme; ?>">
   <div data-role="header">
     <a href="index.php" data-ajax="false" class="ui-btn ui-corner-all ui-shadow ui-icon-home ui-btn-icon-left">Home</a>
@@ -223,8 +285,8 @@
     <h1><?php echo shell_exec("hostname"); ?> - Micro Mesh</h1>
     <div data-role="navbar">
       <ul>
-        <li><a href="#page_status" data-transition="reverse">Status</a></li>
-        <li><a href="#page_nodes" data-transition="reverse">Nodes</a></li>
+        <li><a href="#page_status" data-transition="slide" data-direction="reverse">Status</a></li>
+        <li><a href="#page_nodes" data-transition="slide" data-direction="reverse">Nodes</a></li>
         <li><a href="#page_olsr" class="ui-btn-active">OLSR</a></li>
         <li><a href="#page_projects" data-transition="slide">Projects</a></li>
         <li><a href="#page_admin" data-transition="slide">Admin</a></li>
@@ -272,7 +334,7 @@
     </h1>
     <div data-role="navbar">
       <ul>
-        <li><a href="#page_status" data-transition="reverse">Status</a></li>
+        <li><a href="#page_status" data-transition="slide" data-direction="reverse">Status</a></li>
         <li><a href="#page_clients" class="ui-btn-active">Clients</a></li>
         <li><a href="#page_projects" data-transition="slide">Projects</a></li>
         <li><a href="#page_admin" data-transition="slide">Admin</a></li>
@@ -319,18 +381,18 @@
     </h1>
     <div data-role="navbar">
       <ul>
-        <li><a href="#page_status" data-transition="reverse">Status</a></li>
+        <li><a href="#page_status" data-transition="slide" data-direction="reverse">Status</a></li>
         <?php
             switch (1) {
                 case (file_exists('/var/www/flags/.micromesh')) :
                     ?>  
-                    <li><a href="#page_nodes" data-transition="reverse">Nodes</a></li>
-                    <li><a href="#page_olsr" data-transition="reverse">OLSR</a></li>
+                    <li><a href="#page_nodes" data-transition="slide" data-direction="reverse">Nodes</a></li>
+                    <li><a href="#page_olsr" data-transition="slide" data-direction="reverse"">OLSR</a></li>
                     <?php
                     break;
                 case (file_exists('/var/www/flags/.microrouter')) :
                     ?>  
-                    <li><a href="#page_clients" data-transition="reverse">Clients</a></li>
+                    <li><a href="#page_clients" data-transition="slide" data-direction="reverse">Clients</a></li>
                     <?php
                     break;
             }   
