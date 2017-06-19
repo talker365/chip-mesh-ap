@@ -2,6 +2,10 @@
 # Project Desc: ADS-B Project. This line is possibly for the Projects Tab, to grab a description directly from the installation script.
 #!/bin/bash
 
+#####  ********* Remember to change path to repository. ************
+# Call the Installer by: bash -c "$(wget -O - https://github.com/talker365/chip-mesh-ap/raw/master/projects/install-ads-b.sh)"
+#####
+
 clear
 # Stop on first error
 set -e
