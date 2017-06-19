@@ -63,7 +63,6 @@ mlat="yes"
 mlat-without-gps="yes"
 fr24feed_ini_file
 
-
 # Restart the feeder software
 ### service fr24feed restart
 
