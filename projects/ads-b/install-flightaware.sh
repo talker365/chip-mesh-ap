@@ -36,6 +36,9 @@ sudo dpkg -i piaware-repository_3.5.0_all.deb
 echo -e "\n${g}Performing an APT update.... ${n}"
 sudo apt-get update -y
 
+mkdir /var/www/html/backup
+cp /var/www/html/* /var/www/html/backup
+
 echo -e "\n${g}Installing $title ${n}\n"
 sudo apt-get install piaware
 sudo piaware-config allow-auto-updates yes
