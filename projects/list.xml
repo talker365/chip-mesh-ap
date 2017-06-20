@@ -1,11 +1,36 @@
 <projects>
 	<project>
-		<name> ADS-B </name>
-		<description> </description>
-		<source></source>
+		<name> ADS-B - Flight Radar 24</name>
+		<description> Add a USB RTL based receiver to your chip and install this project to monitor aircraft ADS-B signals. </description>
+		<source>chip-mesh-ap/projects/ads-b/install-ads-b.sh</source>
+		<prerequisites>
+			<hardware>
+				<item url="" comment="What is a RTL USB Dongle"> RTL USB Dongle </item>
+			</hardware>
+			<software />
+			<other>
+				<item url="" comment="Click here to get setup with a FR24 sharing key."> Flight Radar 24 Sharing Key </item> 
+		</prerequisites>
+		<parameters>
+			<parameter>
+				<name> Email </name>
+				<label> Enter your email address </label>
+				<input>
+					<type> textbox </type>
+					<default> </default>
+				</input>
+			</parameter>
+			<parameter>
+				<name> FR24 Key </name>
+				<label> Enter your FR24 sharing key </label>
+					<type> textbox </type>
+					<default> </default>
+			</parameter>
+		</parameters>
 	</project>
 	<project>
 		<name> Echolink </name>
 		<description> </description>
+		<source> </source>
 	</project>
 </projects>
