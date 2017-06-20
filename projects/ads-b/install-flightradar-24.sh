@@ -6,6 +6,14 @@
 # Call the Installer by: bash -c "$(wget -O - https://github.com/talker365/chip-mesh-ap/raw/master/projects/install-ads-b.sh)"
 #####
 
+title="FlightRadar 24"
+
+#Colors
+b="\033[5m"
+r="\033[31m"
+g="\033[32m"
+n="\033[0m"
+
 clear
 # Stop on first error
 set -e
@@ -14,14 +22,10 @@ if [ "$(id -u)" != "0" ]; then
    echo "This script must be run as root" 1>&2
    exit 1
 fi
-b="\033[5m"
-r="\033[31m"
-g="\033[32m"
-n="\033[0m"
 
 echo -e "|||||||||||||||||||||||||||||||||||||||||"
 echo -e "|||||||                          ||||||||"
-echo -e "||||||| ${b}${r}INSTALLING${n} ${g}ADS-B PROJECT${n} ||||||||"
+echo -e "||||||| ${b}${r}INSTALLING${n} ${g}$title${n} ||||||||"
 echo -e "|||||||                          ||||||||"
 echo -e "|||||||||||||||||||||||||||||||||||||||||\n"
 
@@ -39,18 +43,15 @@ echo -e "\n${g}Performing an APT update.... ${n}"
 # Update APT cache and install feeder software
 apt-get update -y
 
-echo -e "\n${g}Installing FlightRadar24${n}\n"
+echo -e "\n${g}Installing $title ${n}\n"
 apt-get install fr24feed -y
 
 # Stop older instances if exists
 service fr24feed stop || echo OK
 
-# Run the signup wizard
-############################### Create a web based method of prompting for values vs running binary utility
 ### fr24feed --signup
 ### chmod a+rw /etc/fr24feed.ini
 
-#### fr24feed.ini file contents.
 <<fr24feed_ini_file
 receiver="dvbt"
 fr24key="cbcb783b796010e1"
