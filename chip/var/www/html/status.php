@@ -261,7 +261,13 @@
   </div>
 
   <div data-role="main" class="ui-content">
-    CONTENT 
+    <?php
+      $xml=simplexml_load_file("/var/www/html/list.xml") or die("Error: Cannot create object");
+      foreach($xml->children() as $projects) {
+        echo "<h2>" . $projects->name . "</h2>";
+        echo $projects->description . "<br><br><br>";
+      }
+    ?>
   </div>
 
   <div data-role="footer">

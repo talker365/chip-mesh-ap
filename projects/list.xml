@@ -10,6 +10,7 @@
             <software />
             <other>
                 <item url="" comment="Click here to get setup with a FR24 sharing key."> Flight Radar 24 Sharing Key </item>
+            </other>
         </prerequisites>
         <parameters>
             <parameter>
@@ -29,16 +30,16 @@
         </parameters>
     </project>
 
-    <projects>
-        <project>
-            <name> ADS-B - Flight Aware</name>
-            <description> Add a USB RTL based receiver to your chip and install this project to monitor aircraft ADS-B signals. </description>
-            <source>chip-mesh-ap/raw/master/projects/ads-b/install-flightaware.sh</source>
-        </project>
+    <project>
+        <name> ADS-B - Flight Aware</name>
+        <description> Add a USB RTL based receiver to your chip and install this project to monitor aircraft ADS-B signals. </description>
+        <source>chip-mesh-ap/raw/master/projects/ads-b/install-flightaware.sh</source>
+    </project>
 
-        <project>
-            <name> Echolink </name>
-            <description> </description>
-            <source> </source>
-        </project>
-    </projects>
+    <project>
+        <name> Echolink </name>
+        <description> </description>
+        <source> </source>
+    </project>
+
+</projects>
