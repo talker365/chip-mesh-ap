@@ -264,6 +264,7 @@
 
 
     <?php
+      # Building popups for each project...
       $xml=simplexml_load_file("/var/www/html/list.xml") or die("Error: Cannot create object");
       foreach($xml->children() as $projects) { ?>
         <div data-role="popup" id="<?php echo "projectPopup" . $projects->id; ?>">
@@ -272,22 +273,33 @@
           <h3> Prerequisites </h3>
           <dl>
             <?php foreach($projects->prerequisites->children() as $category) {
-            echo "<dt>" . $category->getName() . "</dt>";
-            foreach($category->children() as $prerequisites) { ?>
-              <dd>
-                <a href="<?php echo $prerequisites['url']; ?>" alt="<?php echo $prerequisites['comment']; ?>" target="_blank">
-                <?php echo $prerequisites; ?> 
-                </a>
-              </dd>
-            <?php } ?>           
+              echo "<dt>" . $category->getName() . "</dt>";
+              foreach($category->children() as $prerequisites) { ?>
+                <dd>
+                  <a href="<?php echo $prerequisites['url']; ?>" alt="<?php echo $prerequisites['comment']; ?>" target="_blank">
+                  <?php echo $prerequisites; ?> 
+                  </a>
+                </dd>
+              <?php } ?>           
             <?php } ?> 
           </dl>
+          <h3> Install Parameters </h3>
+          <form method="post" action="/action_page_post.php">
+            <div class="ui-field-contain">
+              <?php foreach($projects->parameters->children() as $parameter) { ?>
+                <label for="<?php echo $prerequisites->id; ?>"><?php echo $parameter->name; ?>:</label>
+                <input type="text" name="<?php echo $prerequisites->id; ?>" id="<?php echo $prerequisites->id; ?>">
+              <?php } ?>
+            </div>
+            <a type="submit" href="#anylink" class="ui-btn">Install</a>
+          </form>
         </div>
     <?php } ?>
 
     <ul data-role="listview" data-inset="true" data-autodividers="true">
 
     <?php
+      # Building the projects list...
       $xml=simplexml_load_file("/var/www/html/list.xml") or die("Error: Cannot create object");
       foreach($xml->children() as $projects) { ?>
         <li><a href="<?php echo "#projectPopup" . $projects->id; ?>" data-rel="popup"> <?php echo $projects->name; ?> </a></li>
