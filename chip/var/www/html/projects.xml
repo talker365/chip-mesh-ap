@@ -1,0 +1,56 @@
+<projects>
+    <project>
+    	<id>adsb-fr24</id>
+        <name> ADS-B - Flight Radar 24</name>
+        <description> Add a USB RTL based receiver to your chip and install this project to monitor aircraft ADS-B signals. And a bunch of other stuff in this element to make the popup really wide and see if it can exceed the 480px that prevents the text form from lining up label and textbox on the same line! </description>
+        <source>chip-mesh-ap/raw/master/projects/ads-b/install-flightradar-24.sh</source>
+        <prerequisites>
+            <hardware name="Hardware">
+                <item url="http://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/" comment="What is a RTL USB Dongle"> RTL USB Dongle </item>
+            </hardware>
+            <software name="Software" />
+            <optional name="Optional">
+                <item url="" comment="Click here to get setup with a FR24 sharing key."> Flight Radar 24 Sharing Key </item>
+            </optional>
+        </prerequisites>
+        <parameters>
+            <parameter>
+            	<id>adsb-fr24-email</id>
+                <name> Email </name>
+                <label> Enter your email address </label>
+                <input>
+                	<type> textbox </type>
+                	<default> </default>
+                </input>
+            </parameter>
+            <parameter>
+            	<id>adsb-fr24-key</id>
+                <name> FR24 Key </name>
+                <label> Enter your FR24 sharing key (optional) </label>
+                <input>
+	                <type> textbox </type>
+	                <default> </default>
+                </input>
+            </parameter>
+        </parameters>
+    </project>
+
+    <project>
+    	<id>adsb-fa</id>
+        <name> ADS-B - Flight Aware</name>
+        <description> Add a USB RTL based receiver to your chip and install this project to monitor aircraft ADS-B signals. </description>
+        <source>chip-mesh-ap/raw/master/projects/ads-b/install-flightaware.sh</source>
+        <prerequisites />
+        <parameters />
+    </project>
+
+    <project>
+    	<id>echolink</id>
+        <name> Echolink </name>
+        <description> </description>
+        <source> </source>
+        <prerequisites />
+        <parameters />
+    </project>
+
+</projects>

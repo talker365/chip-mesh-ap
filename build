@@ -23,6 +23,9 @@ mkdir -p $orig/deploy/linux
 mkdir -p $orig/deploy/windows
 mkdir -p $orig/deploy/chip
 
+echo "Moving Projects XML to chip folder..."
+cp $orig/projects/projects.xml $orig/chip/var/www/html/projects.xml
+
 echo "Archiving chip root files..."
 # tar all folders/files
 cd $orig/chip/
