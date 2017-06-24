@@ -3,7 +3,7 @@
 #!/bin/bash
 
 #####  ********* Remember to change path to repository. ************
-# Call the Installer by: bash -c "$(wget -O - https://github.com/talker365/chip-mesh-ap/raw/master/projects/install-ads-b.sh)"
+# Call the Installer by: bash -c "$(wget -O - https://github.com/talker365/chip-mesh-ap/raw/Projects-Tab/projects/ads-b/install-flightradar-24.sh)"
 #####
 
 title="FlightRadar 24"
