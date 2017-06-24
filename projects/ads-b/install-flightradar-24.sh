@@ -25,7 +25,7 @@ fi
 
 echo -e "|||||||||||||||||||||||||||||||||||||||||"
 echo -e "|||||||                          ||||||||"
-echo -e "||||||| ${b}${r}INSTALLING${n} ${g}$title${n} ||||||||"
+echo -e "||||||| ${b}${r}INSTALLING${n}${g}$title${n} ||||||||"
 echo -e "|||||||                          ||||||||"
 echo -e "|||||||||||||||||||||||||||||||||||||||||\n"
 
@@ -49,8 +49,8 @@ apt-get install fr24feed -y
 # Stop older instances if exists
 service fr24feed stop || echo OK
 
-### fr24feed --signup
-### chmod a+rw /etc/fr24feed.ini
+ fr24feed --signup
+ chmod a+rw /etc/fr24feed.ini
 
 <<fr24feed_ini_file
 receiver="dvbt"
@@ -65,7 +65,6 @@ mlat-without-gps="yes"
 fr24feed_ini_file
 
 # Restart the feeder software
-### service fr24feed restart
+service fr24feed restart
 
 echo -e "${g}Installation and configuration completed!${n}"
-echo -e "\nTHIS WAS ONLY A TEST\n"
