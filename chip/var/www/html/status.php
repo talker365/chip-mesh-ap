@@ -286,7 +286,8 @@
       # Building popups for each project...
       $xml=simplexml_load_file("/var/www/html/list.xml") or die("Error: Cannot create object");
       foreach($xml->children() as $projects) { ?>
-        <div data-role="popup" id="<?php echo "projectPopup" . $projects->id; ?>">
+        <div data-role="popup" id="<?php echo "projectPopup" . $projects->id; ?>" class="ui-content" data-dismissible="false" style="max-width:600px; min-width:480px;">
+          <a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-icon-delete ui-btn-icon-notext ui-btn-left">Close</a>
           <h2>  <?php echo $projects->name; ?> </h2>
           <p> <?php echo $projects->description; ?> </p>
           <h3> Prerequisites </h3>
@@ -312,17 +313,18 @@
           <?php } ?>
           <h3> Install Parameters </h3>
           <form method="post" action="/action_page_post.php">
-            <!--<div class="ui-field-contain">-->
-            <fieldset data-role="controlgroup">
+            <div class="ui-field-contain">
+            <!--<fieldset data-role="controlgroup">-->
               <?php foreach($projects->parameters->children() as $parameter) { ?>
-                <div class="ui-field-contain" data-type="horizontal">
+                <fieldset data-role="controlgroup" data-type="horizontal">
                   <label for="<?php echo $prerequisites->id; ?>"><?php echo $parameter->name; ?>:</label>
-                  <input type="text" name="<?php echo $prerequisites->id; ?>" id="<?php echo $prerequisites->id; ?>">
-                </div>
+                  <input type="text" name="<?php echo $prerequisites->id; ?>" id="<?php echo $prerequisites->id; ?>" placeholder="<?php echo $parameter->label; ?>" data-clear-btn="true">
+                </fieldset>
               <?php } ?>
-            <!--</div>-->
-            </fieldset>
-            <a type="submit" href="#anylink" class="ui-btn">Install</a>
+            <!--</fieldset>-->
+            </div>
+            <a type="submit" href="#anylink" class="ui-btn ui-btn-inline">Install</a>
+            <a href="#" data-rel="back" class="ui-btn ui-btn-inline ui-icon-delete">Close</a>
           </form>
         </div>
     <?php } ?>

@@ -9,9 +9,9 @@
                 <item url="http://www.rtl-sdr.com/buy-rtl-sdr-dvb-t-dongles/" comment="What is a RTL USB Dongle"> RTL USB Dongle </item>
             </hardware>
             <software name="Software" />
-            <other name="Other">
+            <optional name="Optional">
                 <item url="" comment="Click here to get setup with a FR24 sharing key."> Flight Radar 24 Sharing Key </item>
-            </other>
+            </optional>
         </prerequisites>
         <parameters>
             <parameter>
@@ -26,7 +26,7 @@
             <parameter>
             	<id>adsb-fr24-key</id>
                 <name> FR24 Key </name>
-                <label> Enter your FR24 sharing key </label>
+                <label> Enter your FR24 sharing key (optional) </label>
                 <input>
 	                <type> textbox </type>
 	                <default> </default>
