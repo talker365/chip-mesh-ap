@@ -53,18 +53,18 @@ service fr24feed stop || echo OK
  chmod a+rw /etc/fr24feed.ini
 
 <<fr24feed_ini_file
-receiver="dvbt"
-fr24key="cbcb783b796010e1"
-path="/usr/lib/fr24/dump1090"
-bs="yes"
-raw="yes"
-logmode="1"
-procargs="--interactive --net --net-http-port 9100"
-mlat="yes"
-mlat-without-gps="yes"
+email: loren@ristolaonline.com
+fr24key=8ee8da10cb5089e5
+Lat: 38.5948413
+Lon: -78.4318391
+Antenna Alt: 1200
+dump Args: --net --net-http-port 9100 
 fr24feed_ini_file
 
 # Restart the feeder software
 service fr24feed restart
 
 echo -e "${g}Installation and configuration completed!${n}"
+sudo service fr24feed restart
+
+
