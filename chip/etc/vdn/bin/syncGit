@@ -40,4 +40,4 @@ done
 
 echo Exporting $GH$BRANCH/${SECT[1]}$FOLDER
 
-svn ls $GH$BRANCH/${SECT[1]}$FOLDER
+svn export $GH$BRANCH/${SECT[1]}$FOLDER
