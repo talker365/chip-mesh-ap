@@ -1,0 +1,43 @@
+#!/bin/bash
+
+function checkSVN(){
+    # Lets see if Subversion is installed.
+    
+    which svn > /dev/null
+    if [ $? -eq 1 ]; then
+        echo "Subversion was not found."
+        echo "Installing Subversion !"
+        apt-get install subversion -y
+    fi
+}
+
+if [ $# -eq 0 ]
+then
+    echo -e "\nNo arguments supplied !\n"
+    echo -e "Example: ${0##*/} branch/folder\n"
+    exit 1
+fi
+
+checkSVN
+GH="https://github.com/talker365/chip-mesh-ap.git/"
+IN=$1
+IN=${IN##$GH}
+BRANCH="trunk"
+FOLDER=""
+IFS="/" read -a SECT <<< "$IN"
+
+if [[ "${SECT[0]}" != "master" ]]; then
+   BRANCH="branches/${SECT[0]}"
+else
+   BRANCH="trunk"
+fi
+
+for index in "${!SECT[@]}"; do
+  if [ $index -gt 1 ]; then
+    FOLDER=$FOLDER/${SECT[index]}
+  fi
+done
+
+echo Exporting $GH$BRANCH/${SECT[1]}$FOLDER
+
+svn ls $GH$BRANCH/${SECT[1]}$FOLDER
