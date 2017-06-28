@@ -1,4 +1,17 @@
 #!/bin/bash
+# Look for arguments
+if [ $# -eq 0 ]
+then
+    echo -e "\nNo arguments supplied !\n"
+    echo -e "Example: ${0##*/} branch/folder\n"
+    exit 1
+fi
+
+GH="https://github.com/talker365/chip-mesh-ap.git/"
+IN=$1
+IN=${IN##$GH}
+BRANCH="trunk"
+FOLDER=""
 
 function checkSVN(){
     # Lets see if Subversion is installed.
@@ -11,19 +24,19 @@ function checkSVN(){
     fi
 }
 
-if [ $# -eq 0 ]
-then
-    echo -e "\nNo arguments supplied !\n"
-    echo -e "Example: ${0##*/} branch/folder\n"
-    exit 1
-fi
 
+function testGit() {
+    git ls-remote $GH &>-
+    
+    if [ "$?" -ne 0 ]; then
+        echo "[ERROR] Unable to read from $GH"
+        exit 1;
+    fi
+}
+
+testGit
 checkSVN
-GH="https://github.com/talker365/chip-mesh-ap.git/"
-IN=$1
-IN=${IN##$GH}
-BRANCH="trunk"
-FOLDER=""
+
 IFS="/" read -a SECT <<< "$IN"
 
 if [[ "${SECT[0]}" != "master" ]]; then
