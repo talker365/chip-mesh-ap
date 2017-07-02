@@ -12,6 +12,7 @@ IN=$1
 IN=${IN##$GH}
 BRANCH="trunk"
 FOLDER=""
+CURDIR="$(pwd)"
 
 function checkSVN(){
     # Lets see if Subversion is installed.
@@ -34,7 +35,7 @@ function testGit() {
     fi
 }
 
-testGit
+#testGit
 checkSVN
 
 IFS="/" read -a SECT <<< "$IN"
@@ -51,6 +52,9 @@ for index in "${!SECT[@]}"; do
   fi
 done
 
+cd "$FOLDER/../"
+echo "--------- Syncing with Git ---------"
+echo "Changed Directory to $PWD"
 echo Exporting $GH$BRANCH/${SECT[1]}$FOLDER
-
 svn --force export $GH$BRANCH/${SECT[1]}$FOLDER
+cd $CURDIR
