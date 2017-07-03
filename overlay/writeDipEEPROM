@@ -1,0 +1,1 @@
+python3 dip-header-generator.py HamDipEEPROM.img --vid 426187129 --pid 001 --vendor 'Half Baked Circuits' --product 'HAM DIP' --product-version 001
