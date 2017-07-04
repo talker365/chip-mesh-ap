@@ -1,1 +1,5 @@
+# How to create a EEPROM .img for C.H.I.P DIP's
+
 python3 dip-header-generator.py HamDipEEPROM.img --vid 426187129 --pid 001 --vendor 'Half Baked Circuits' --product 'HAM DIP' --product-version 001
+cat HamDipEEPROM.img  > /sys/bus/w1/devices/2*/eeprom
+cat /sys/bus/w1/devices/2*/eeprom | hexdump -Cv
