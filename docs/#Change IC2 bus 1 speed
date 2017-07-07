@@ -1,0 +1,22 @@
+#Change IC2 bus 1 speed as Luma.OLED recommends 400K. The default is 100K or about 8 FPS max using Luma.OLED.
+# Install SSD1306 Libraries for use with GROVE Connector.
+
+sudo apt install device-tree-compiler
+sudo cp /boot/sun5i-r8-chip.dtb /boot/sun5i-r8-chip.dtb.bak
+sudo fdtput --type u /boot/sun5i-r8-chip.dtb i2c1 clock-frequency 400000
+sudo systemctl reboot
+
+# install Luma.OLED for OLED 1306
+
+sudo apt-get install python-dev python-pip libfreetype6-dev libjpeg-dev
+sudo -H pip install --upgrade pip setuptools
+sudo -H pip install --upgrade luma.oled
+
+# install examples
+
+cd
+sudo apt-get install git-core libsdl-dev libportmidi-dev libsdl-ttf2.0-dev libsdl-mixer1.2-dev libsdl-image1.2-dev
+git clone https://github.com/rm-hull/luma.examples.git
+cd luma.examples
+sudo -H pip install -e .
+

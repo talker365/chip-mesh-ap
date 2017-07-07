@@ -1,0 +1,16 @@
+#!/bin/bash
+
+delay=.1
+
+echo 132 > /sys/class/gpio/export
+# Set Pin for Output
+echo out > /sys/class/gpio/gpio132/direction
+
+while true
+do
+    
+    echo 1 > /sys/class/gpio/gpio132/value
+    sleep $delay
+    echo 0 > /sys/class/gpio/gpio132/value
+    sleep $delay
+done
