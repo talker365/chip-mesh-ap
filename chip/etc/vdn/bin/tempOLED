@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 import os
 import threading
 from luma.oled.device import ssd1306
@@ -10,17 +11,17 @@ def printText():
         threading.Timer(5,printText).start()
 	font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',29)
         
-	temperature = os.popen("sudo axp209 --temperature").read()
-        print temperature
+#	temperature = os.popen("sudo axp209 --temperature").read()
+	temperature = os.popen("bme280 | grep Temp | cut -d '=' -f2").read()
+#        print temperature
 	temperature = temperature[:-3]
-        temperature = temperature+"\xb0C"
 	with canvas(oled) as draw:
 		draw.text((15,20),temperature,font = font, fill = 255)
 
 
 def main():
- 	printText()
- 
- 
+        printText()
+
 main()
+
 
