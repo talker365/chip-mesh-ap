@@ -1,0 +1,1 @@
+<?php echo shell_exec("sudo python /var/www/html/adc.py 2>&1");  ?>
